@@ -4,8 +4,7 @@ import Import.NoFoundation
 import Database.Persist.Sql (ConnectionPool, runSqlPool)
 import Text.Hamlet          (hamletFile)
 import Text.Jasmine         (minifym)
-import Yesod.Auth.BrowserId (authBrowserId)
-import Yesod.Auth.Message   (AuthMessage (InvalidLogin))
+import Yesod.Auth.Message   (AuthMessage(..))
 import Yesod.Default.Util   (addStaticContentExternal)
 import Yesod.Core.Types     (Logger)
 import qualified Yesod.Core.Unsafe as Unsafe
@@ -81,6 +80,7 @@ instance Yesod App where
     isAuthorized (AuthR _) _ = return Authorized
     isAuthorized FaviconR _ = return Authorized
     isAuthorized RobotsR _ = return Authorized
+    isAuthorized HomeR _ = loggedInAuth
     -- Default to Authorized for now.
     isAuthorized _ _ = return Authorized
 
@@ -112,6 +112,9 @@ instance Yesod App where
 
     makeLogger = return . appLogger
 
+loggedInAuth :: Handler AuthResult
+loggedInAuth = fmap (maybe AuthenticationRequired $ const Authorized) maybeAuthId
+
 -- How to run database actions.
 instance YesodPersist App where
     type YesodPersistBackend App = SqlBackend
@@ -131,11 +134,14 @@ instance YesodAuth App where
     -- Override the above two destinations when a Referer: header is present
     redirectToReferer _ = True
 
-    authenticate creds = runDB $ do
+    authenticate creds = do
+      runDB $ do
         x <- getBy $ UniqueUser $ credsIdent creds
-        return $ case x of
-            Just (Entity uid _) -> Authenticated uid
-            Nothing -> UserError InvalidLogin
+        case x of
+          Just (Entity uid _) -> do
+            return $ Authenticated uid
+          Nothing -> do
+            fmap Authenticated $ insert $ User (credsIdent creds) Nothing
 
     -- You can add other plugins like BrowserID, email or OAuth here
     authPlugins _ = [authOwl' Bootstrap3]
