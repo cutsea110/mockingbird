@@ -11,8 +11,9 @@ import qualified Yesod.Core.Unsafe as Unsafe
 
 import Yesod.Auth.Owl       (YesodAuthOwl(..)
                             , authOwl'
-                            , NotifyStyling(..)
                             )
+import Yesod.Form.Jquery
+import Yesod.Goodies.PNotify
 
 -- | The foundation datatype for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
@@ -69,6 +70,7 @@ instance Yesod App where
         -- you to use normal widget features in default-layout.
 
         pc <- widgetToPageContent $ do
+            pnotify master
             addStylesheet $ StaticR css_bootstrap_css
             $(widgetFile "default-layout")
         withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
@@ -134,17 +136,15 @@ instance YesodAuth App where
     -- Override the above two destinations when a Referer: header is present
     redirectToReferer _ = True
 
-    authenticate creds = do
-      runDB $ do
-        x <- getBy $ UniqueUser $ credsIdent creds
-        case x of
-          Just (Entity uid _) -> do
-            return $ Authenticated uid
-          Nothing -> do
-            fmap Authenticated $ insert $ User (credsIdent creds) Nothing
+    authenticate creds = runDB $ do
+      x <- getBy $ UniqueUser $ credsIdent creds
+      case x of
+        Just (Entity uid _) -> do
+          return $ Authenticated uid
+        Nothing -> return $ UserError InvalidLogin
 
     -- You can add other plugins like BrowserID, email or OAuth here
-    authPlugins _ = [authOwl' Bootstrap3]
+    authPlugins _ = [authOwl' defaultPNotify { _styling = Just BrightTheme }]
 
     authHttpManager = getHttpManager
 
@@ -155,6 +155,14 @@ instance YesodAuthOwl App where
   myPrivkey _ = mockingbird_priv
   endpoint_auth _ = owl_auth_service_url
   endpoint_pass _ = owl_pass_service_url
+
+instance YesodJquery App where
+  urlJqueryJs _ = Right "//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"
+  urlJqueryUiJs _ = Right "//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"
+  urlJqueryUiCss _ = Right "//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/trontastic/jquery-ui.css"
+
+instance YesodJqueryPnotify App where
+  urlJqueryUiCss _ = Right "//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/trontastic/jquery-ui.css"
 
 instance YesodAuthPersist App
 
