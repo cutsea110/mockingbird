@@ -10,6 +10,11 @@ import Yesod.Default.Util   (addStaticContentExternal)
 import Yesod.Core.Types     (Logger)
 import qualified Yesod.Core.Unsafe as Unsafe
 
+import Yesod.Auth.Owl       (YesodAuthOwl(..)
+                            , authOwl'
+                            , NotifyStyling(..)
+                            )
+
 -- | The foundation datatype for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
 -- starts running, such as database connections. Every handler will have
@@ -133,9 +138,17 @@ instance YesodAuth App where
             Nothing -> UserError InvalidLogin
 
     -- You can add other plugins like BrowserID, email or OAuth here
-    authPlugins _ = [authBrowserId def]
+    authPlugins _ = [authOwl' Bootstrap3]
 
     authHttpManager = getHttpManager
+
+instance YesodAuthOwl App where
+  getOwlIdent = lift $ fmap (userIdent . entityVal) requireAuth
+  clientId _ = mockingbird_clientId
+  owlPubkey _ = owl_pub
+  myPrivkey _ = mockingbird_priv
+  endpoint_auth _ = owl_auth_service_url
+  endpoint_pass _ = owl_pass_service_url
 
 instance YesodAuthPersist App
 
