@@ -4,5 +4,7 @@ flags:
     dev: false
 packages:
 - '.'
-extra-deps: []
+- '../owl-auth'
+extra-deps:
+- yesod-pnotify-1.1.2
 resolver: lts-3.5

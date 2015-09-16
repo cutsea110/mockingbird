@@ -83,6 +83,8 @@ library
                  , vector
                  , time
 
+                 , owl-auth                      >= 0.5 && < 0.6
+
 executable         mockingbird
     if flag(library-only)
         Buildable: False
