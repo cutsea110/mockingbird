@@ -176,11 +176,10 @@ instance YesodAuth App where
     authHttpManager = getHttpManager
 
     loginHandler = lift $ do
-      render <- getMessageRender
-      (widget, enc) <- generateFormPost $ renderBootstrap3 hGrid $ accountForm render
+      y <- getYesod
       defaultLayout $ do
-        setTitle $ toHtml $ render MsgLogin
-        $(widgetFile "login")
+        setTitle "Login"
+        mkLoginWidget y AuthR
 
 instance YesodAuthOwl App where
   getOwlIdent = lift $ fmap (userIdent . entityVal) requireAuth
@@ -189,6 +188,10 @@ instance YesodAuthOwl App where
   myPrivkey _ = mockingbird_priv
   endpoint_auth _ = owl_auth_service_url
   endpoint_pass _ = owl_pass_service_url
+  mkLoginWidget _ toParent = do
+    render <- getMessageRender
+    (widget, enc) <- generateFormPost $ renderBootstrap3 hGrid $ accountForm render
+    $(widgetFile "login")
 
 instance YesodJquery App where
   urlJqueryJs _ = Right "//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"
