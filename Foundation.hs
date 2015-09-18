@@ -79,7 +79,8 @@ instance Yesod App where
 
         pc <- widgetToPageContent $ do
             pnotify master
-            addStylesheet $ StaticR css_bootstrap_css
+            addScriptEither $ urlBootstrap3Js master
+            addStylesheetEither $ urlBootstrap3Css master
             $(widgetFile "default-layout")
         withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
 
