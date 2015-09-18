@@ -11,8 +11,10 @@ import qualified Yesod.Core.Unsafe as Unsafe
 
 import Yesod.Auth.Owl       (YesodAuthOwl(..)
                             , authOwl'
+                            , loginR
                             )
 import Yesod.Form.Jquery
+import Yesod.Form.Bootstrap3
 import Yesod.Goodies.PNotify
 
 -- | The foundation datatype for your application. This can be a good place to
@@ -26,6 +28,12 @@ data App = App
     , appHttpManager :: Manager
     , appLogger      :: Logger
     }
+
+-- Set up i18n messages. See the message folder.
+-- Automatically generate AppMesage data type and data constructor Msg-prefixed.
+-- and make it instance for RenderMessage class.
+-- So, we can use renderMessage for AppMessage data.
+mkMessage "App" "messages" "en"
 
 instance HasHttpManager App where
     getHttpManager = appHttpManager
@@ -126,6 +134,25 @@ instance YesodPersist App where
 instance YesodPersistRunner App where
     getDBRunner = defaultGetDBRunner appConnPool
 
+data Account = Account { ident :: Text
+                       , password :: Text
+                       } deriving (Show, Read, Eq)
+
+accountForm :: (MonadHandler m, RenderMessage (HandlerSite m) msg,
+                RenderMessage (HandlerSite m) FormMessage) =>
+               (AppMessage -> msg) -> AForm m Account
+accountForm render = Account
+                     <$> areq textField bfs'account Nothing
+                     <*> areq passwordField bfs'passwd Nothing
+                     <*  bootstrapSubmit bs'submit
+  where
+    bfs'account = (bfs $ render MsgAccountID) { fsName = Just "ident" }
+    bfs'passwd = (bfs $ render MsgPassword) { fsName = Just "password" }
+    bs'submit =  BootstrapSubmit (render MsgLogin) "btn-primary" []
+
+hGrid :: BootstrapFormLayout
+hGrid = BootstrapHorizontalForm (ColSm 0) (ColSm 4) (ColSm 0) (ColSm 6)
+
 instance YesodAuth App where
     type AuthId App = UserId
 
@@ -147,6 +174,13 @@ instance YesodAuth App where
     authPlugins _ = [authOwl' defaultPNotify { _styling = Just BrightTheme }]
 
     authHttpManager = getHttpManager
+
+    loginHandler = lift $ do
+      render <- getMessageRender
+      (widget, enc) <- generateFormPost $ renderBootstrap3 hGrid $ accountForm render
+      defaultLayout $ do
+        setTitle $ toHtml $ render MsgLogin
+        $(widgetFile "login")
 
 instance YesodAuthOwl App where
   getOwlIdent = lift $ fmap (userIdent . entityVal) requireAuth
