@@ -1,3 +1,6 @@
-$maybe msg <- mmsg
-  <div #message>#{msg}
-^{widget}
+<div class="container">
+  <header>
+  <div id="main" role="main">
+    ^{widget}
+  <footer>
+    #{appCopyright $ appSettings master}

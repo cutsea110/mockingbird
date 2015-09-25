@@ -1,4 +1,4 @@
-<form .form-horizontal role=form method=post action=@{AuthR loginR} enctype=#{enc}>
+<form .form-horizontal role=form method=post action=@{toParent loginR} enctype=#{enc}>
   <div .form-group>
     <div .col-sm-4>
     <h1 .col-sm-6>_{MsgWelcome}

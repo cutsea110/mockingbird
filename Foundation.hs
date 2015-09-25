@@ -69,7 +69,6 @@ instance Yesod App where
 
     defaultLayout widget = do
         master <- getYesod
-        mmsg <- getMessage
 
         -- We break up the default layout into two components:
         -- default-layout is the contents of the body tag, and
@@ -79,7 +78,8 @@ instance Yesod App where
 
         pc <- widgetToPageContent $ do
             pnotify master
-            addStylesheet $ StaticR css_bootstrap_css
+            addScriptEither $ urlBootstrap3Js master
+            addStylesheetEither $ urlBootstrap3Css master
             $(widgetFile "default-layout")
         withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
 
@@ -176,11 +176,10 @@ instance YesodAuth App where
     authHttpManager = getHttpManager
 
     loginHandler = lift $ do
-      render <- getMessageRender
-      (widget, enc) <- generateFormPost $ renderBootstrap3 hGrid $ accountForm render
+      y <- getYesod
       defaultLayout $ do
-        setTitle $ toHtml $ render MsgLogin
-        $(widgetFile "login")
+        setTitle "Login"
+        mkLoginWidget y AuthR
 
 instance YesodAuthOwl App where
   getOwlIdent = lift $ fmap (userIdent . entityVal) requireAuth
@@ -189,6 +188,10 @@ instance YesodAuthOwl App where
   myPrivkey _ = mockingbird_priv
   endpoint_auth _ = owl_auth_service_url
   endpoint_pass _ = owl_pass_service_url
+  mkLoginWidget _ toParent = do
+    render <- getMessageRender
+    (widget, enc) <- generateFormPost $ renderBootstrap3 hGrid $ accountForm render
+    $(widgetFile "login")
 
 instance YesodJquery App where
   urlJqueryJs _ = Right "//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"
