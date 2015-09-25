@@ -3,3 +3,7 @@ AccountID: アカウント
 Password: パスワード
 Login: ログイン
 Welcome: ようこそ!
+CurrentPassword: 現在のパスワード
+NewPassword: 新しいパスワード
+NewPassword2: 新しいパスワード(確認)
+ChangePassword: パスワード変更

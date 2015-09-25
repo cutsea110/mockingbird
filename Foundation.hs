@@ -12,6 +12,7 @@ import qualified Yesod.Core.Unsafe as Unsafe
 import Yesod.Auth.Owl       (YesodAuthOwl(..)
                             , authOwl'
                             , loginR
+                            , setPassR
                             )
 import Yesod.Form.Jquery
 import Yesod.Form.Bootstrap3
@@ -150,6 +151,24 @@ accountForm render = Account
     bfs'passwd = (bfs $ render MsgPassword) { fsName = Just "password" }
     bs'submit =  BootstrapSubmit (render MsgLogin) "btn-primary" []
 
+data ChangePassword = ChangePassword { current_pass :: Text
+                                     , new_pass :: Text
+                                     , new_pass2 :: Text
+                                     } deriving (Show, Read, Eq)
+changePasswordForm :: (MonadHandler m, RenderMessage (HandlerSite m) msg,
+                       RenderMessage (HandlerSite m) FormMessage) =>
+                      (AppMessage -> msg) -> AForm m ChangePassword
+changePasswordForm render = ChangePassword
+                            <$> areq passwordField bfs'cur Nothing
+                            <*> areq passwordField bfs'new Nothing
+                            <*> areq passwordField bfs'new2 Nothing
+                            <*  bootstrapSubmit bs'submit
+  where
+    bfs'cur = (bfs $ render MsgCurrentPassword) { fsName = Just "current_pass" }
+    bfs'new = (bfs $ render MsgNewPassword) { fsName = Just "new_pass" }
+    bfs'new2 = (bfs $ render MsgNewPassword2) { fsName = Just "new_pass2" }
+    bs'submit =  BootstrapSubmit (render MsgChangePassword) "btn-primary" []
+
 hGrid :: BootstrapFormLayout
 hGrid = BootstrapHorizontalForm (ColSm 0) (ColSm 4) (ColSm 0) (ColSm 6)
 
@@ -192,6 +211,10 @@ instance YesodAuthOwl App where
     render <- getMessageRender
     (widget, enc) <- generateFormPost $ renderBootstrap3 hGrid $ accountForm render
     $(widgetFile "login")
+  mkChangePasswordWidget _ toParent = do
+    render <- getMessageRender
+    (widget, enc) <- generateFormPost $ renderBootstrap3 hGrid $ changePasswordForm render
+    $(widgetFile "change-password")
 
 instance YesodJquery App where
   urlJqueryJs _ = Right "//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"
