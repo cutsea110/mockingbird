@@ -178,7 +178,7 @@ instance YesodAuth App where
     loginHandler = lift $ do
       y <- getYesod
       defaultLayout $ do
-        setTitle "Login"
+        setTitleI MsgLogin
         mkLoginWidget y AuthR
 
 instance YesodAuthOwl App where
