@@ -16,7 +16,7 @@ import Yesod.Auth.Owl       (YesodAuthOwl(..)
                             )
 import Yesod.Form.Jquery
 import Yesod.Form.Bootstrap3
-import Yesod.Goodies.PNotify
+import Yesod.Goodies.PNotify hiding (urlJqueryJs)
 
 -- | The foundation datatype for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
@@ -80,6 +80,7 @@ instance Yesod App where
 
         pc <- widgetToPageContent $ do
             pnotify master
+            addScriptEither $ urlJqueryJs master
             addScriptEither $ urlBootstrap3Js master
             addStylesheetEither $ urlBootstrap3Css master
             $(widgetFile "default-layout")
