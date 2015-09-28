@@ -8,27 +8,25 @@
           <span class="icon-bar">
           <span class="icon-bar">
 
-        <a class="navbar-brand" href="#">Mockingbird
+        <a class="navbar-brand" href="#">_{MsgSystemName}
 
       <div class="collapse navbar-collapse" #global-nav-menu>
-        <ul class="nav navbar-nav">
-          <li class="active"><a href="#">Link</a></li>
-          <li><a href="#">Link2</a></li>
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <li><a href="#">Action</a></li>
-              <li><a href="#">Another action</a></li>
-              <li><a href="#">Something else here</a></li>
-              <li class="divider">
-              <li><a href="#">Separated link</a></li>
-              <li class="divider">
-              <li><a href="#">One more separated</a></li>
+        $maybe Entity uid u <- mu
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">_{MsgTimeline}</a></li>
+            <li><a href="#">_{MsgMyTasks}</a></li>
+            <li><a href="#">_{MsgCreateNewIssue}</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">_{MsgDropdown u} <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li class="divider">
+                <li><a href=@{ProfileR uid}>_{MsgProfile}</a></li>
+                <li><a href=@{AuthR setPassR}>_{MsgChangePassword}</a></li>
+                <li class="divider">
+                <li><a href=@{AuthR LogoutR}>_{MsgLogout}</a></li>
 
   <div id="main" role="main">
-    $maybe u <- mu
-      <a href=@{AuthR LogoutR}>_{MsgLogout}
-      <a href=@{AuthR setPassR}>_{MsgChangePassword}
-    $nothing
-      <a href=@{AuthR LoginR}>_{MsgLogin}
     ^{widget}

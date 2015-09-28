@@ -1,3 +1,4 @@
+SystemName: Mockingbird
 Mockingbird: Mockingbird
 AccountID: Account ID
 Password: Password
@@ -8,3 +9,11 @@ CurrentPassword: Current Password
 NewPassword: New Password
 NewPassword2: New Password(Confirm)
 ChangePassword: Change Password
+
+Timeline: Timeline
+MyTasks: My tasks
+CreateNewIssue: Create new issue
+Dropdown u@User: #{userIdent u}
+
+Profile: Profile
+
