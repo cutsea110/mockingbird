@@ -16,7 +16,7 @@ import Yesod.Auth.Owl       (YesodAuthOwl(..)
                             )
 import Yesod.Form.Jquery
 import Yesod.Form.Bootstrap3
-import Yesod.Goodies.PNotify
+import Yesod.Goodies.PNotify hiding (urlJqueryJs)
 
 -- | The foundation datatype for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
@@ -69,6 +69,7 @@ instance Yesod App where
         "config/client_session_key.aes"
 
     defaultLayout widget = do
+        mu <- maybeAuth
         master <- getYesod
 
         -- We break up the default layout into two components:
@@ -79,8 +80,10 @@ instance Yesod App where
 
         pc <- widgetToPageContent $ do
             pnotify master
+            addScriptEither $ urlJqueryJs master
             addScriptEither $ urlBootstrap3Js master
             addStylesheetEither $ urlBootstrap3Css master
+            let navbar = $(widgetFile "navbar")
             $(widgetFile "default-layout")
         withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
 
@@ -197,7 +200,7 @@ instance YesodAuth App where
     loginHandler = lift $ do
       y <- getYesod
       defaultLayout $ do
-        setTitle "Login"
+        setTitleI MsgLogin
         mkLoginWidget y AuthR
 
 instance YesodAuthOwl App where

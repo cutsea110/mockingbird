@@ -1,0 +1,8 @@
+body{
+  /* Navbarを固定しているのでその分空ける */
+  padding-top: 70px;
+}
+
+hr{
+  margin: 60px 0;
+}

@@ -1,6 +1,9 @@
 <div class="container">
-  <header>
+  ^{navbar}
   <div id="main" role="main">
+    $maybe u <- mu
+      <a href=@{AuthR LogoutR}>_{MsgLogout}
+      <a href=@{AuthR setPassR}>_{MsgChangePassword}
+    $nothing
+      <a href=@{AuthR LoginR}>_{MsgLogin}
     ^{widget}
-  <footer>
-    #{appCopyright $ appSettings master}
