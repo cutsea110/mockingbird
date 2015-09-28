@@ -13,7 +13,7 @@ ChangePassword: パスワード変更
 Timeline: タイムライン
 MyTasks: マイタスク
 CreateNewIssue: イシュー作成
-Dropdown u@User: #{userIdent u}
+Dropdown u@User: #{userName u}
 
 Profile: プロフィール
 

@@ -13,7 +13,7 @@ ChangePassword: Change Password
 Timeline: Timeline
 MyTasks: My tasks
 CreateNewIssue: Create new issue
-Dropdown u@User: #{userIdent u}
+Dropdown u@User: #{userName u}
 
 Profile: Profile
 
