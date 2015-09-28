@@ -1,15 +1,31 @@
 <div .container>
-  <nav .navbar.navbar-inverse.navbar-fixed-top>
-    <div .navbar-header>
-      <a .navbar-brand href="">Mockingbird
-    <ul .nav.navbar-nav>
-      <li .active>
-        <a href="">Link1
-      <li>
-        <a href="">Link2
-    <ul .nav.navbar-nav.navbar-right>
-      <li>
-        <a href="">Link3
+  <nav .navbar.navbar-default.navbar-origin>
+    <div .container-fluid>
+      <div .navbar-header>
+        <button type="button" .navbar-toggle data-toggle="collapse" data-target="#global-nav-menu">
+          <span .sr-only>Toggle navigation
+          <span .icon-bar>
+          <span .icon-bar>
+          <span .icon-bar>
+
+        <a .navbar-brand href="#">Mockingbird
+
+      <div .collapse.navbar-collapse #global-nav-menu>
+        <ul .nav.navbar-nav>
+          <li .active>
+            <a href="#">Link
+          <li>
+            <a href="#">Link2
+          <li .dropdown>
+            <a href="#" .dropdown-toggle data-toggle="dropdown">Dropdown <b .caret></b></a>
+            <ul .dropdown-menu>
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li .divider>
+              <li><a href="#">Separated link</a></li>
+              <li .divider>
+              <li><a href="#">One more separated</a></li>
 
   <div #main role="main">
     $maybe u <- mu
