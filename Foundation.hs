@@ -83,7 +83,6 @@ instance Yesod App where
             addScriptEither $ urlJqueryJs master
             addScriptEither $ urlBootstrap3Js master
             addStylesheetEither $ urlBootstrap3Css master
-            let navbar = $(widgetFile "navbar")
             $(widgetFile "default-layout")
         withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
 
