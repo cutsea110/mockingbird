@@ -2,6 +2,7 @@ Mockingbird: Mockingbird
 AccountID: アカウント
 Password: パスワード
 Login: ログイン
+Logout: ログアウト
 Welcome: ようこそ!
 CurrentPassword: 現在のパスワード
 NewPassword: 新しいパスワード

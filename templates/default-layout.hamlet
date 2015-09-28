@@ -2,10 +2,10 @@
   <header>
   <div id="main" role="main">
     $maybe u <- mu
-      <a href=@{AuthR LogoutR}>Logout
-      <a href=@{AuthR setPassR}>Change Password
+      <a href=@{AuthR LogoutR}>_{MsgLogout}
+      <a href=@{AuthR setPassR}>_{MsgChangePassword}
     $nothing
-      <a href=@{AuthR LoginR}>Login
+      <a href=@{AuthR LoginR}>_{MsgLogin}
     ^{widget}
   <footer>
     #{appCopyright $ appSettings master}
