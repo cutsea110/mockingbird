@@ -1,8 +1,11 @@
 <div class="container">
   <header>
   <div id="main" role="main">
-    <a href=@{AuthR LogoutR}>Logout
-    <a href=@{AuthR setPassR}>Change Password
+    $maybe u <- mu
+      <a href=@{AuthR LogoutR}>Logout
+      <a href=@{AuthR setPassR}>Change Password
+    $nothing
+      <a href=@{AuthR LoginR}>Login
     ^{widget}
   <footer>
     #{appCopyright $ appSettings master}

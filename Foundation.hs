@@ -69,6 +69,7 @@ instance Yesod App where
         "config/client_session_key.aes"
 
     defaultLayout widget = do
+        mu <- maybeAuth
         master <- getYesod
 
         -- We break up the default layout into two components:
