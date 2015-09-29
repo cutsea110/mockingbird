@@ -7,4 +7,35 @@ User
     UniqueUser ident
     deriving Typeable
 
+Issue
+    subject Text
+    description Text Maybe
+
+    limitdate Day Maybe
+
+    opener UserId
+    created UTCTime default=now()
+    updated UTCTime default=now()
+
+Channel
+    type     Logic
+    issue    IssueId
+
+Ticket
+    channel  ChannelId
+    domain   UserId
+    codomain UserId
+    assign   UserId
+
+    created UTCTime default=now()
+    updated UTCTime default=now()
+
+Comment
+    channel ChannelId
+    comment Text
+    speaker UserId
+
+    created UTCTime default=now()
+    updated UTCTime default=now()
+
  -- By default this file is used in Model.hs (which is imported by Foundation.hs)
