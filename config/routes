@@ -8,3 +8,6 @@
 /home            HOME:
   /tl/#UserId      TimelineR   GET
   /tasks/#UserId   TaskR       GET
+
+/issue           ISSUE:
+  /new             NewIssueR   GET POST

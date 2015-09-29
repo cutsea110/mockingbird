@@ -4,6 +4,7 @@ import ClassyPrelude.Yesod
 import Database.Persist.Quasi
 
 import Data.Text as T
+import Data.Time (Day, TimeOfDay(..))
 
 import Model.Fields
 

@@ -22,3 +22,13 @@ CreateNewIssue: イシュー作成
 Dropdown u@User: #{userName u}
 
 HomeOf u@User: #{userName u}のホーム
+
+IssueSubject: 課題
+IssueDescription: 内容
+IssueLimitDate: 期限
+IssueOpener: 起票者
+IssueCreatedDay: 作成日
+IssueCreatedTime: 作成時刻
+IssueUpdatedDay: 更新日
+IssueUpdatedTime: 更新時刻
+CreateIssue: 起票する

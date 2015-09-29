@@ -9,13 +9,15 @@ User
 
 Issue
     subject Text
-    description Text Maybe
+    description Textarea Maybe
 
     limitdate Day Maybe
 
     opener UserId
-    created UTCTime default=now()
-    updated UTCTime default=now()
+    createdDay Day
+    createdTime TimeOfDay
+    updatedDay Day
+    updatedTime TimeOfDay
 
 Channel
     type     Logic

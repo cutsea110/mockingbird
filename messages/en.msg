@@ -22,3 +22,13 @@ CreateNewIssue: Create new issue
 Dropdown u@User: #{userName u}
 
 HomeOf u@User: #{userName u}'s Home
+
+IssueSubject: Subject
+IssueDescription: Description
+IssueLimitDate: Limit date
+IssueOpener: Opener
+IssueCreatedDay: Created day
+IssueCreatedTime: Created time
+IssueUpdatedDay: Updated day
+IssueUpdatedTime: Updated time
+CreateIssue: Create Issue
