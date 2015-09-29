@@ -36,6 +36,7 @@ IssueLimitTime: Limit time
 IssueOpener: Opener
 IssueCreated: Created datetime
 IssueUpdated: Updated datetime
+IssueLimitDatetime: Limit datetime
 CreateIssue: Create Issue
 
 SucceedToCreateIssue: Succeed to create a issue

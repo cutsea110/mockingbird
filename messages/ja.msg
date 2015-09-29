@@ -36,6 +36,7 @@ IssueLimitTime: 期限時間
 IssueOpener: 起票者
 IssueCreated: 作成日
 IssueUpdated: 更新日
+IssueLimitDatetime: 期限
 CreateIssue: 起票する
 
 SucceedToCreateIssue: 起票に成功しました
