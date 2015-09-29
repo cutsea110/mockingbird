@@ -6,7 +6,7 @@ Password: パスワード
 Login: ログイン
 Logout: ログアウト
 Welcome: ようこそ!
-ThisisMockingbird: Mockingbird イシュートラッキングシステムです
+ThisisMockingbird: Mockingbirdタスク管理システム
 LoginFromHere: ここからログインしてください
 CurrentPassword: 現在のパスワード
 NewPassword: 新しいパスワード
@@ -15,7 +15,9 @@ ChangePassword: パスワード変更
 
 Top: トップ
 Timeline: タイムライン
+TimelineOf u@User: #{userName u}のタイムライン
 MyTasks: マイタスク
+TasksOf u@User: #{userName u}のタスク
 CreateNewIssue: イシュー作成
 Dropdown u@User: #{userName u}
 

@@ -6,7 +6,7 @@ Password: Password
 Login: Login
 Logout: Logout
 Welcome: Welcome!
-ThisisMockingbird: This is Mockingbird issue tracking system
+ThisisMockingbird: Mockingbird is one of BTS
 LoginFromHere: Login from here.
 CurrentPassword: Current Password
 NewPassword: New Password
@@ -15,7 +15,9 @@ ChangePassword: Change Password
 
 Top: Top
 Timeline: Timeline
+TimelineOf u@User: #{userName u}'s Timeline
 MyTasks: My tasks
+TasksOf u@User: #{userName u}'s Tasks
 CreateNewIssue: Create new issue
 Dropdown u@User: #{userName u}
 
