@@ -6,6 +6,7 @@ import Yesod.Form.Bootstrap3 (BootstrapFormLayout (..), renderBootstrap3,
 
 getProfileR :: UserId -> Handler Html
 getProfileR uid = do
-    defaultLayout $ do
-        setTitle "Welcome To Yesod!"
-        $(widgetFile "homepage")
+  u <- requireAuth
+  defaultLayout $ do
+    setTitleI $ MsgProfileOf $ entityVal u
+    $(widgetFile "homepage")

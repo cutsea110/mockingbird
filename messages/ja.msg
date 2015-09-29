@@ -16,4 +16,6 @@ CreateNewIssue: イシュー作成
 Dropdown u@User: #{userName u}
 
 Profile: プロフィール
+ProfileOf u@User: #{userName u}のプロフィール
 
+HomeOf u@User: #{userName u}のホーム

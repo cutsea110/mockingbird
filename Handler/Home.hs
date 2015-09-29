@@ -4,6 +4,7 @@ import Import
 
 getHomeR :: Handler Html
 getHomeR = do
-    defaultLayout $ do
-        setTitle "Welcome To Yesod!"
-        $(widgetFile "homepage")
+  u <- requireAuth
+  defaultLayout $ do
+    setTitleI $ MsgHomeOf $ entityVal u
+    $(widgetFile "homepage")

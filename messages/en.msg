@@ -16,4 +16,6 @@ CreateNewIssue: Create new issue
 Dropdown u@User: #{userName u}
 
 Profile: Profile
+ProfileOf u@User: #{userName u}'s Profile
 
+HomeOf u@User: #{userName u}'s Home
