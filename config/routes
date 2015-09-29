@@ -5,5 +5,4 @@
 /robots.txt RobotsR GET
 
 / HomeR GET
-/profile/#UserId ProfileR GET
 

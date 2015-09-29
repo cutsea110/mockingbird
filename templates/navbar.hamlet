@@ -1,16 +1,17 @@
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#global-nav-menu">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=#{globalNavMenuId}>
         <span class="sr-only">Toggle navigation
         <span class="icon-bar">
         <span class="icon-bar">
         <span class="icon-bar">
 
-      <a class="navbar-brand" href="#">_{MsgSystemName}
+      <a class="navbar-brand hidden-xs" href="#">_{MsgSystemName}
+      <a class="navbar-brand visible-xs" href="#">_{MsgSystemInitialName}
 
-    <div class="collapse navbar-collapse" #global-nav-menu>
-      $maybe Entity uid u <- mu
+    <div class="collapse navbar-collapse" id=#{globalNavMenuId}>
+      $maybe Entity _uid u <- mu
         <ul class="nav navbar-nav">
           <li class="active"><a href="#">_{MsgTimeline}</a></li>
           <li><a href="#">_{MsgMyTasks}</a></li>
@@ -22,7 +23,6 @@
               <li><a href="#">Another action</a></li>
               <li><a href="#">Something else here</a></li>
               <li class="divider">
-              <li><a href=@{ProfileR uid}>_{MsgProfile}</a></li>
               <li><a href=@{AuthR setPassR}>_{MsgChangePassword}</a></li>
               <li class="divider">
               <li><a href=@{AuthR LogoutR}>_{MsgLogout}</a></li>

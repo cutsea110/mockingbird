@@ -1,4 +1,5 @@
 SystemName: Mockingbird
+SystemInitialName: M
 Mockingbird: Mockingbird
 AccountID: アカウント
 Password: パスワード
@@ -14,8 +15,5 @@ Timeline: タイムライン
 MyTasks: マイタスク
 CreateNewIssue: イシュー作成
 Dropdown u@User: #{userName u}
-
-Profile: プロフィール
-ProfileOf u@User: #{userName u}のプロフィール
 
 HomeOf u@User: #{userName u}のホーム
