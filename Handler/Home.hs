@@ -1,11 +1,17 @@
 module Handler.Home where
 
 import Import
-import Yesod.Form.Bootstrap3 (BootstrapFormLayout (..), renderBootstrap3,
-                              withSmallInput)
 
-getHomeR :: Handler Html
-getHomeR = do
-    defaultLayout $ do
-        setTitle "Welcome To Yesod!"
-        $(widgetFile "homepage")
+getTimelineR :: UserId -> Handler Html
+getTimelineR uid = do
+  Entity _ u <- requireAuth
+  defaultLayout $ do
+    setTitleI $ MsgTimelineOf u
+    $(widgetFile "timeline")
+
+getTaskR :: UserId -> Handler Html
+getTaskR uid = do
+  Entity _ u <- requireAuth
+  defaultLayout $ do
+    setTitleI $ MsgTasksOf u
+    $(widgetFile "tasks")

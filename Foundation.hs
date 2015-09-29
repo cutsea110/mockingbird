@@ -71,6 +71,7 @@ instance Yesod App where
     defaultLayout widget = do
         mu <- maybeAuth
         master <- getYesod
+        mcr <- getCurrentRoute
 
         -- We break up the default layout into two components:
         -- default-layout is the contents of the body tag, and
@@ -83,6 +84,8 @@ instance Yesod App where
             addScriptEither $ urlJqueryJs master
             addScriptEither $ urlBootstrap3Js master
             addStylesheetEither $ urlBootstrap3Css master
+            globalNavMenuId <- newIdent
+            let navbar = $(widgetFile "navbar")
             $(widgetFile "default-layout")
         withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
 
@@ -93,9 +96,9 @@ instance Yesod App where
     isAuthorized (AuthR _) _ = return Authorized
     isAuthorized FaviconR _ = return Authorized
     isAuthorized RobotsR _ = return Authorized
-    isAuthorized HomeR _ = loggedInAuth
+    isAuthorized TopR _ = return Authorized
     -- Default to Authorized for now.
-    isAuthorized _ _ = return Authorized
+    isAuthorized _ _ = loggedInAuth
 
     -- This function creates static content files in the static folder
     -- and names them based on a hash of their content. This allows
@@ -174,13 +177,16 @@ changePasswordForm render = ChangePassword
 hGrid :: BootstrapFormLayout
 hGrid = BootstrapHorizontalForm (ColSm 0) (ColSm 4) (ColSm 0) (ColSm 6)
 
+defNotify :: PNotify
+defNotify = defaultPNotify { _styling = Just BrightTheme }
+
 instance YesodAuth App where
     type AuthId App = UserId
 
     -- Where to send a user after successful login
-    loginDest _ = HomeR
+    loginDest _ = TopR
     -- Where to send a user after logout
-    logoutDest _ = HomeR
+    logoutDest _ = TopR
     -- Override the above two destinations when a Referer: header is present
     redirectToReferer _ = True
 

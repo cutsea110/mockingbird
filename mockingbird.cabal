@@ -18,10 +18,14 @@ library
                      Import
                      Import.NoFoundation
                      Model
+                     Model.Fields
                      Settings
                      Settings.StaticFiles
+                     Util
                      Handler.Common
+                     Handler.Top
                      Handler.Home
+                     Handler.Issue
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT

@@ -138,6 +138,9 @@ combineScripts = combineScripts'
     (appSkipCombining compileTimeAppSettings)
     combineSettings
 
+-- | TimeZone. this value used as `hoursToTimeZone tz'.
+tz :: Int
+tz = 9
 
 -- |
 -- Owl service URL

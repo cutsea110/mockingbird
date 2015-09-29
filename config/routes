@@ -4,4 +4,11 @@
 /favicon.ico FaviconR GET
 /robots.txt RobotsR GET
 
-/ HomeR GET
+/                TopR          GET
+/home            HOME:
+  /tl/#UserId      TimelineR   GET
+  /tasks/#UserId   TaskR       GET
+
+/issues          ISSUE:
+  /item/#IssueId   IssueR      GET
+  /new             NewIssueR   GET POST

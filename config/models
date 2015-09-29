@@ -1,12 +1,42 @@
 User
     ident Text
     password Text Maybe
+    familyName Text
+    givenName Text
+
     UniqueUser ident
     deriving Typeable
-Email
-    email Text
-    user UserId Maybe
-    verkey Text Maybe
-    UniqueEmail email
+
+Issue
+    subject Text
+    description Textarea Maybe
+
+    limitdate Day Maybe
+    limittime TimeOfDay Maybe
+
+    opener UserId
+    created UTCTime default=now()
+    updated UTCTime default=now()
+
+Channel
+    type     Logic
+    issue    IssueId
+
+Ticket
+    channel  ChannelId
+    domain   UserId
+    codomain UserId
+    assign   UserId
+
+    created UTCTime default=now()
+    updated UTCTime default=now()
+
+Comment
+    channel ChannelId
+    comment Text
+    speaker UserId
+
+    created UTCTime default=now()
+    updated UTCTime default=now()
 
  -- By default this file is used in Model.hs (which is imported by Foundation.hs)

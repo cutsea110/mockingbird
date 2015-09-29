@@ -1,0 +1,7 @@
+<!-- Top page -->
+<div .page-header>
+  <h1>_{MsgThisisMockingbird}
+
+$maybe _ <- mu
+$nothing
+  <a class="btn btn-large btn-success" href=@{AuthR LoginR}>_{MsgLoginFromHere}

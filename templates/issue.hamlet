@@ -1,0 +1,10 @@
+<!-- New issue page -->
+<div .page-header>
+  <h1>#{issueSubject issue}
+  $maybe desc <- issueDescription issue
+    <p>#{desc}
+  $maybe limit <- issueLimitDatetime issue
+    <p>#{showDate limit}
+  <p>#{userName opener}
+  <p>#{showDate $ issueCreated issue}
+  <p>#{showDate $ issueUpdated issue}
