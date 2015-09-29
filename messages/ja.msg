@@ -11,6 +11,7 @@ NewPassword: 新しいパスワード
 NewPassword2: 新しいパスワード(確認)
 ChangePassword: パスワード変更
 
+Keyword: キーワード
 Timeline: タイムライン
 MyTasks: マイタスク
 CreateNewIssue: イシュー作成
