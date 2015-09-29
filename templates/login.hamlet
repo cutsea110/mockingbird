@@ -1,5 +1,6 @@
+<!-- Login page -->
+<div .page-header>
+  <h1>_{MsgWelcome}
+
 <form .form-horizontal role=form method=post action=@{toParent loginR} enctype=#{enc}>
-  <div .form-group>
-    <div .col-sm-4>
-    <h1 .col-sm-6>_{MsgWelcome}
   ^{widget}

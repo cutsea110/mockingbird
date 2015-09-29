@@ -3,5 +3,4 @@
   <h1>_{MsgCreateNewIssue}
 
 <form .form-horizontal role=form method=post action=@{ISSUE NewIssueR} enctype=#{enc}>
-  <div .form-group>
-    ^{w}
+  ^{w}
