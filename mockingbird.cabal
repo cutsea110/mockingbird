@@ -21,6 +21,7 @@ library
                      Model.Fields
                      Settings
                      Settings.StaticFiles
+                     Util
                      Handler.Common
                      Handler.Top
                      Handler.Home

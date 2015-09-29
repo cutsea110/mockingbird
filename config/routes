@@ -9,5 +9,6 @@
   /tl/#UserId      TimelineR   GET
   /tasks/#UserId   TaskR       GET
 
-/issue           ISSUE:
+/issues          ISSUE:
+  /item/#IssueId   IssueR      GET
   /new             NewIssueR   GET POST

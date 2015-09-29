@@ -21,14 +21,24 @@ TasksOf u@User: #{userName u}'s Tasks
 CreateNewIssue: Create new issue
 Dropdown u@User: #{userName u}
 
+Update: Update
+
+Success: Success
+Warning: Warning
+Error: Error
+
 HomeOf u@User: #{userName u}'s Home
 
 IssueSubject: Subject
 IssueDescription: Description
-IssueLimitDate: Limit date
+IssueLimitDay: Limit day
+IssueLimitTime: Limit time
 IssueOpener: Opener
-IssueCreatedDay: Created day
-IssueCreatedTime: Created time
-IssueUpdatedDay: Updated day
-IssueUpdatedTime: Updated time
+IssueCreated: Created datetime
+IssueUpdated: Updated datetime
 CreateIssue: Create Issue
+
+SucceedToCreateIssue: Succeed to create a issue
+FailureToCreateIssue: Failure to create a issue
+
+Subject v@Issue: #{issueSubject v}

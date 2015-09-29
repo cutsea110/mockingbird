@@ -177,6 +177,9 @@ changePasswordForm render = ChangePassword
 hGrid :: BootstrapFormLayout
 hGrid = BootstrapHorizontalForm (ColSm 0) (ColSm 4) (ColSm 0) (ColSm 6)
 
+defNotify :: PNotify
+defNotify = defaultPNotify { _styling = Just BrightTheme }
+
 instance YesodAuth App where
     type AuthId App = UserId
 

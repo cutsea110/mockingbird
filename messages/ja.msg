@@ -21,14 +21,22 @@ TasksOf u@User: #{userName u}のタスク
 CreateNewIssue: イシュー作成
 Dropdown u@User: #{userName u}
 
+Update: 更新する
+
+Success: 成功
+Warning: 警告
+Error: エラー
+
 HomeOf u@User: #{userName u}のホーム
 
 IssueSubject: 課題
 IssueDescription: 内容
-IssueLimitDate: 期限
+IssueLimitDay: 期限日
+IssueLimitTime: 期限時間
 IssueOpener: 起票者
-IssueCreatedDay: 作成日
-IssueCreatedTime: 作成時刻
-IssueUpdatedDay: 更新日
-IssueUpdatedTime: 更新時刻
+IssueCreated: 作成日
+IssueUpdated: 更新日
 CreateIssue: 起票する
+
+SucceedToCreateIssue: 起票に成功しました
+FailureToCreateIssue: 起票に失敗しました

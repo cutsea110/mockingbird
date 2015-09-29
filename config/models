@@ -12,12 +12,11 @@ Issue
     description Textarea Maybe
 
     limitdate Day Maybe
+    limittime TimeOfDay Maybe
 
     opener UserId
-    createdDay Day
-    createdTime TimeOfDay
-    updatedDay Day
-    updatedTime TimeOfDay
+    created UTCTime default=now()
+    updated UTCTime default=now()
 
 Channel
     type     Logic
