@@ -95,9 +95,9 @@ instance Yesod App where
     isAuthorized (AuthR _) _ = return Authorized
     isAuthorized FaviconR _ = return Authorized
     isAuthorized RobotsR _ = return Authorized
-    isAuthorized HomeR _ = loggedInAuth
+    isAuthorized TopR _ = return Authorized
     -- Default to Authorized for now.
-    isAuthorized _ _ = return Authorized
+    isAuthorized _ _ = loggedInAuth
 
     -- This function creates static content files in the static folder
     -- and names them based on a hash of their content. This allows
@@ -180,9 +180,9 @@ instance YesodAuth App where
     type AuthId App = UserId
 
     -- Where to send a user after successful login
-    loginDest _ = HomeR
+    loginDest _ = TopR
     -- Where to send a user after logout
-    logoutDest _ = HomeR
+    logoutDest _ = TopR
     -- Override the above two destinations when a Referer: header is present
     redirectToReferer _ = True
 

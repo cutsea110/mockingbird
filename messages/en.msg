@@ -11,7 +11,7 @@ NewPassword: New Password
 NewPassword2: New Password(Confirm)
 ChangePassword: Change Password
 
-Keyword: Keyword
+Top: Top
 Timeline: Timeline
 MyTasks: My tasks
 CreateNewIssue: Create new issue
