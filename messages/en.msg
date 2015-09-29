@@ -6,6 +6,8 @@ Password: Password
 Login: Login
 Logout: Logout
 Welcome: Welcome!
+ThisisMockingbird: This is Mockingbird issue tracking system
+LoginFromHere: Login from here.
 CurrentPassword: Current Password
 NewPassword: New Password
 NewPassword2: New Password(Confirm)

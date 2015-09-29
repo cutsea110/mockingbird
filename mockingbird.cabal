@@ -22,6 +22,7 @@ library
                      Settings.StaticFiles
                      Handler.Common
                      Handler.Top
+                     Handler.Home
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT

@@ -1,21 +1,27 @@
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="##{globalNavMenuId}">
-        <span class="sr-only">Toggle navigation
-        <span class="icon-bar">
-        <span class="icon-bar">
-        <span class="icon-bar">
+      $maybe _ <- mu
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="##{globalNavMenuId}">
+          <span class="sr-only">Toggle navigation
+          <span class="icon-bar">
+          <span class="icon-bar">
+          <span class="icon-bar">
 
-      <a class="navbar-brand hidden-xs" href="#">_{MsgSystemName}
-      <a class="navbar-brand visible-xs" href="#">_{MsgSystemInitialName}
+      <a class="navbar-brand hidden-xs" href=@{TopR}>_{MsgSystemName}
+      <a class="navbar-brand visible-xs" href=@{TopR}>_{MsgSystemInitialName}
 
     <div class="collapse navbar-collapse" id=#{globalNavMenuId}>
-      $maybe Entity _uid u <- mu
+      $maybe Entity uid u <- mu
         <ul class="nav navbar-nav">
-          <li class="active"><a href="#">_{MsgTimeline}</a></li>
-          <li><a href="#">_{MsgMyTasks}</a></li>
-          <li><a href="#">_{MsgCreateNewIssue}</a></li>
+          $maybe cr <- mcr
+            <li :cr == HOME (TimelineR uid):.active><a href=@{HOME $ TimelineR uid}>_{MsgTimeline}</a></li>
+            <li :cr == HOME (TaskR uid):.active><a href=@{HOME $ TaskR uid}>_{MsgMyTasks}</a></li>
+            <li><a href="#">_{MsgCreateNewIssue}</a></li>
+          $nothing
+            <li><a href=@{HOME $ TimelineR uid}>_{MsgTimeline}</a></li>
+            <li><a href=@{HOME $ TaskR uid}>_{MsgMyTasks}</a></li>
+            <li><a href="#">_{MsgCreateNewIssue}</a></li>
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">_{MsgDropdown u} <b class="caret"></b></a>
             <ul class="dropdown-menu">

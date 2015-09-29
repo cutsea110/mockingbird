@@ -6,6 +6,8 @@ Password: パスワード
 Login: ログイン
 Logout: ログアウト
 Welcome: ようこそ!
+ThisisMockingbird: Mockingbird イシュートラッキングシステムです
+LoginFromHere: ここからログインしてください
 CurrentPassword: 現在のパスワード
 NewPassword: 新しいパスワード
 NewPassword2: 新しいパスワード(確認)

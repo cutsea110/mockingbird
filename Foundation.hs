@@ -71,6 +71,7 @@ instance Yesod App where
     defaultLayout widget = do
         mu <- maybeAuth
         master <- getYesod
+        mcr <- getCurrentRoute
 
         -- We break up the default layout into two components:
         -- default-layout is the contents of the body tag, and
