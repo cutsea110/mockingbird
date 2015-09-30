@@ -32,18 +32,17 @@ data Diff = Seconds Integer
           | Years Integer
           deriving (Show, Read, Eq, Ord)
 
-ago :: UTCTime -> IO Diff
-ago t = do
-  now <- getCurrentTime
+beforeFrom :: UTCTime -> UTCTime -> Diff
+t `beforeFrom` now =
   let (s, d) = (round $ utctDayTime now - utctDayTime t, utctDay now `diffDays` utctDay t)
-  if d == 0
+  in if d == 0
      then if s < 60
-             then return $ Seconds s
-             else if s < 60 * 60
-                     then return $ Minutes $ s `div` 60
-                     else return $ Hours $ s `div` 60 * 60
+          then Seconds s
+          else if s < 60 * 60
+               then Minutes $ s `div` 60
+               else Hours $ s `div` 60 * 60
      else if d < 30
-             then return $ Days $ fromIntegral d
-             else if d < 365
-                     then return $ Months $ fromIntegral d `div` 30
-                     else return $ Years $ fromIntegral d `div` 365
+          then Days $ fromIntegral d
+          else if d < 365
+               then Months $ fromIntegral d `div` 30
+               else Years $ fromIntegral d `div` 365

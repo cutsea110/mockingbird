@@ -1,25 +1,29 @@
 <!-- New issue page -->
-<div class="panel panel-default">
+<div class="panel panel-info">
   <!-- Default panel contents -->
-  <div class="panel-heading">#{issueSubject issue}
+  <div class="panel-heading">
+    <span>
+      #{issueSubject issue}
+    <span class="small text-muted pull-right">
+      #{userName opener}
   <div class="panel-body">
-    $maybe desc <- issueDescription issue
-      <p>#{desc}
-    $nothing
-      <p>(no description)
-
-  <!-- List group -->
-  <div class="list-group">
-    $maybe limit <- issueLimitDatetime issue
-      <a href="#" class="list-group-item">
-        <h5 class="list-group-item-heading">_{MsgIssueLimitDatetime}
-        <p class="list-group-item-text">#{showDate limit}
-    <a href="#" class="list-group-item">
-      <h5 class="list-group-item-heading">_{MsgIssueOpener}
-      <p class="list-group-item-text">#{userName opener}
-    <a href="#" class="list-group-item">
-      <h5 class="list-group-item-heading">_{MsgIssueCreated}
-      <p class="list-group-item-text">#{showDate $ issueCreated issue}
-    <a href="#" class="list-group-item">
-      <h5 class="list-group-item-heading">_{MsgIssueUpdated}
-      <p class="list-group-item-text">#{showDate $ issueUpdated issue}
+    <p class="small text-muted pull-right">
+        $case createdBefore
+          $of Seconds n
+              _{MsgSecondsAgo n}
+          $of Minutes n
+              _{MsgMinutesAgo n}
+          $of Hours n
+              _{MsgHoursAgo n}
+          $of Days n
+              _{MsgDaysAgo n}
+          $of Months n
+              _{MsgMonthsAgo n}
+          $of Years n
+              _{MsgYearsAgo n}
+    <p>
+      $maybe desc <- issueDescription issue
+        #{desc}
+      $maybe limit <- issueLimitDatetime issue
+        <hr>
+        <span class="text-info">_{MsgIssueLimitDatetime} #{showDate limit}

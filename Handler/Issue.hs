@@ -56,6 +56,8 @@ getIssueR key = do
     issue <- get404 key
     opener <- get404 (issueOpener issue)
     return (issue, opener)
+  now <- liftIO getCurrentTime
+  let createdBefore = (issueCreated issue) `beforeFrom` now
   defaultLayout $ do
     setTitleI $ MsgSubject issue
     $(widgetFile "issue")

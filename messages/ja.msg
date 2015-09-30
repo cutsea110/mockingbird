@@ -44,9 +44,9 @@ FailureToCreateIssue: 起票に失敗しました
 
 Subject v@Issue: #{issueSubject v}
 
-SecondsAgo n@Integer: #{show n}secs
-MinutesAgo n@Integer: #{show n}mins
-HoursAgo n@Integer: #{show n}hrs
-DaysAgo n@Integer: #{show n}days
-MonthsAgo n@Integer: #{show n}months
-YearsAgo n@Integer: #{show n}years
+SecondsAgo n@Integer: #{show n}秒
+MinutesAgo n@Integer: #{show n}分
+HoursAgo n@Integer: #{show n}時間
+DaysAgo n@Integer: #{show n}日
+MonthsAgo n@Integer: #{show n}ヶ月
+YearsAgo n@Integer: #{show n}年
