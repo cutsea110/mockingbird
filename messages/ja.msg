@@ -41,3 +41,12 @@ CreateIssue: 起票する
 
 SucceedToCreateIssue: 起票に成功しました
 FailureToCreateIssue: 起票に失敗しました
+
+Subject v@Issue: #{issueSubject v}
+
+SecondsAgo n@Integer: #{show n}secs
+MinutesAgo n@Integer: #{show n}mins
+HoursAgo n@Integer: #{show n}hrs
+DaysAgo n@Integer: #{show n}days
+MonthsAgo n@Integer: #{show n}months
+YearsAgo n@Integer: #{show n}years

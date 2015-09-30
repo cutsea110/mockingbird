@@ -1,15 +1,12 @@
 module Model where
 
-import Prelude (read)
 import ClassyPrelude.Yesod
 import Database.Persist.Quasi
 
-import Data.Text as T
 import Data.Time
 
 import Model.Fields
 import Util
-import Settings as Settings
 
 -- You can define all of your database entities in the entities file.
 -- You can find more information on persistent and how to declare entities

@@ -43,3 +43,10 @@ SucceedToCreateIssue: Succeed to create a issue
 FailureToCreateIssue: Failure to create a issue
 
 Subject v@Issue: #{issueSubject v}
+
+SecondsAgo n@Integer: #{show n}secs
+MinutesAgo n@Integer: #{show n}mins
+HoursAgo n@Integer: #{show n}hrs
+DaysAgo n@Integer: #{show n}days
+MonthsAgo n@Integer: #{show n}months
+YearsAgo n@Integer: #{show n}years
