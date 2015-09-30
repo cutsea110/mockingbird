@@ -24,6 +24,10 @@
     <p>
       $maybe desc <- issueDescription issue
         #{desc}
-      $maybe limit <- issueLimitDatetime issue
-        <hr>
-        <span class="text-info">_{MsgIssueLimitDatetime} #{showDate limit}
+    <hr>
+    $maybe limit <- issueLimitDatetime issue
+      <span class="text-info">_{MsgIssueLimitDatetime} #{showDate limit}
+
+<div class="btn-group" role="group">
+  <a href="#" class="btn btn-default">みんな
+  <a href="#" class="btn btn-default">だれか

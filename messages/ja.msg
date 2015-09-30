@@ -42,6 +42,8 @@ CreateIssue: 起票する
 SucceedToCreateIssue: 起票に成功しました
 FailureToCreateIssue: 起票に失敗しました
 
+AddChannel: チャンネルを追加する
+
 Subject v@Issue: #{issueSubject v}
 
 SecondsAgo n@Integer: #{show n}秒

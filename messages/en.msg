@@ -42,6 +42,8 @@ CreateIssue: Create Issue
 SucceedToCreateIssue: Succeed to create a issue
 FailureToCreateIssue: Failure to create a issue
 
+AddChannel: Add new channel
+
 Subject v@Issue: #{issueSubject v}
 
 SecondsAgo n@Integer: #{show n}secs
