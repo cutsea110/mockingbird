@@ -40,7 +40,7 @@ t `beforeFrom` now =
           then Seconds s
           else if s < 60 * 60
                then Minutes $ s `div` 60
-               else Hours $ s `div` 60 * 60
+               else Hours $ s `div` (60 * 60)
      else if d < 30
           then Days $ fromIntegral d
           else if d < 365
