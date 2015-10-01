@@ -42,7 +42,8 @@ CreateIssue: Create Issue
 SucceedToCreateIssue: Succeed to create a issue
 FailureToCreateIssue: Failure to create a issue
 
-AddChannel: Add new channel
+AddAllChannel: Add `ALL' channel
+AddAnyChannel: Add `ANY' channel
 
 Subject v@Issue: #{issueSubject v}
 

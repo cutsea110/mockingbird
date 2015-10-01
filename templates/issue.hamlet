@@ -29,5 +29,5 @@
       <span class="text-info">_{MsgIssueLimitDatetime} #{showDate limit}
 
 <div class="btn-group" role="group">
-  <a href="#" class="btn btn-default">みんな
-  <a href="#" class="btn btn-default">だれか
+  <a href="#" class="btn btn-default">_{MsgAddAllChannel}
+  <a href="#" class="btn btn-default">_{MsgAddAnyChannel}

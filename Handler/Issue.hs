@@ -4,13 +4,30 @@ import Import as Import
 import Yesod.Form.Bootstrap3
 import Yesod.Goodies.PNotify
 
-issueForm :: (MonadHandler m, RenderMessage (HandlerSite m) msg, RenderMessage (HandlerSite m) FormMessage) =>
-     UserId -> (AppMessage -> msg) -> Maybe Issue -> AForm m Issue
+bfs' = withPlaceholder <*> bfs
+bfs'focus = withAutofocus <$> bfs'
+
+issueForm
+  :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
+     Key User -> (AppMessage -> Text) -> Maybe Issue -> AForm m Issue
 issueForm uid render mv = Issue
-                          <$> areq textField (bfs $ render MsgIssueSubject) (issueSubject <$> mv)
-                          <*> aopt textareaField (bfs $ render MsgIssueDescription) (issueDescription <$> mv)
-                          <*> aopt dayField (bfs $ render MsgIssueLimitDay) (issueLimitdate <$> mv)
-                          <*> aopt timeFieldTypeTime (bfs $ render MsgIssueLimitTime) (issueLimittime <$> mv)
+                          <$> areq textField (bfs'focus $ render MsgIssueSubject) (issueSubject <$> mv)
+                          <*> aopt textareaField (bfs' $ render MsgIssueDescription) (issueDescription <$> mv)
+                          <*> aopt dayField (bfs' $ render MsgIssueLimitDay) (issueLimitdate <$> mv)
+                          <*> aopt timeFieldTypeTime (bfs' $ render MsgIssueLimitTime) (issueLimittime <$> mv)
+                          <*> pure uid
+                          <*> lift (liftIO getCurrentTime)
+                          <*> lift (liftIO getCurrentTime)
+                          <*  bootstrapSubmit (BootstrapSubmit (render MsgCreateIssue) "btn-primary" [])
+
+simpleForm
+  :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
+     Key User -> (AppMessage -> Text) -> Maybe Issue -> AForm m Issue
+simpleForm uid render mv = Issue
+                          <$> areq textField (bfs'focus $ render MsgIssueSubject) (issueSubject <$> mv)
+                          <*> pure Nothing
+                          <*> pure Nothing
+                          <*> pure Nothing
                           <*> pure uid
                           <*> lift (liftIO getCurrentTime)
                           <*> lift (liftIO getCurrentTime)
@@ -20,11 +37,25 @@ getNewIssueR :: Handler Html
 getNewIssueR = do
   render <- getMessageRender
   uid <- requireAuthId
-  (w, enc) <- generateFormPost $ renderBootstrap3 Import.hGrid $ issueForm uid render Nothing
-  defaultLayout $ do
-    setTitleI MsgCreateNewIssue
-    $(widgetFile "new-issue")
-
+  mode <- lookupGetParam "mode"
+  case mode of
+    Just "simple" -> simpleView render uid
+    Just _ -> defaultView render uid
+    Nothing -> defaultView render uid
+  where
+    -- default
+    defaultView render uid = do
+      (w, enc) <- generateFormPost $ renderBootstrap3 Import.hGrid $ issueForm uid render Nothing
+      defaultLayout $ do
+        setTitleI MsgCreateNewIssue
+        $(widgetFile "new-issue")
+    -- simple
+    simpleView render uid = do
+      (w, enc) <- generateFormPost $ renderBootstrap3 BootstrapInlineForm $ simpleForm uid render Nothing
+      defaultLayout $ do
+        setTitleI MsgCreateNewIssue
+        $(widgetFile "new-issue-simple")
+      
 postNewIssueR :: Handler ()
 postNewIssueR = do
   render <- getMessageRender

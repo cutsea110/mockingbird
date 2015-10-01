@@ -3,7 +3,7 @@ module Model.Fields where
 import Prelude
 import Yesod
 
-data Logic = AND | OR
+data Logic = ALL | ANY
            deriving (Show, Read, Eq, Ord, Enum, Bounded)
 derivePersistField "Logic"
 
