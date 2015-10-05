@@ -21,6 +21,8 @@ TasksOf u@User: #{userName u}のタスク
 CreateNewIssue: イシュー作成
 Dropdown u@User: #{userName u}
 
+Search: 検索
+
 Update: 更新する
 
 Success: 成功
@@ -44,6 +46,7 @@ FailureToCreateIssue: 起票に失敗しました
 
 AddAllChannel: 「みんな」チャネルを追加する
 AddAnyChannel: 「だれか」チャネルを追加する
+AddEachChannel: 「それぞれ」チャネルを追加する
 
 Subject v@Issue: #{issueSubject v}
 
@@ -53,3 +56,5 @@ HoursAgo n@Integer: #{show n}時間
 DaysAgo n@Integer: #{show n}日
 MonthsAgo n@Integer: #{show n}ヶ月
 YearsAgo n@Integer: #{show n}年
+
+CreateNewChannel: チャンネルをつくる

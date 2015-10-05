@@ -29,5 +29,6 @@
       <span class="text-info">_{MsgIssueLimitDatetime} #{showDate limit}
 
 <div class="btn-group" role="group">
-  <a href="#" class="btn btn-default">_{MsgAddAllChannel}
-  <a href="#" class="btn btn-default">_{MsgAddAnyChannel}
+  <a href=@?{(ISSUE $ NewChannelR key, [("logic", "ALL")])} class="btn btn-default">_{MsgAddAllChannel}
+  <a href=@?{(ISSUE $ NewChannelR key, [("logic", "ANY")])} class="btn btn-default">_{MsgAddAnyChannel}
+  <a href="#" class="btn btn-default">_{MsgAddEachChannel}

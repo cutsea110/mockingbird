@@ -21,6 +21,8 @@ TasksOf u@User: #{userName u}'s Tasks
 CreateNewIssue: Create new issue
 Dropdown u@User: #{userName u}
 
+Search: Search
+
 Update: Update
 
 Success: Success
@@ -44,6 +46,7 @@ FailureToCreateIssue: Failure to create a issue
 
 AddAllChannel: Add `ALL' channel
 AddAnyChannel: Add `ANY' channel
+AddEachChannel: Add `EACH' channel
 
 Subject v@Issue: #{issueSubject v}
 
@@ -53,3 +56,6 @@ HoursAgo n@Integer: #{show n}hrs
 DaysAgo n@Integer: #{show n}days
 MonthsAgo n@Integer: #{show n}months
 YearsAgo n@Integer: #{show n}years
+
+
+CreateNewChannel: Create new channel

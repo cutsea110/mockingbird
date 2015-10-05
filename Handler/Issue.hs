@@ -1,8 +1,13 @@
 module Handler.Issue where
 
+import Prelude (read)
+
 import Import as Import
 import Yesod.Form.Bootstrap3
 import Yesod.Goodies.PNotify
+
+import Model.Fields
+
 
 bfs' = withPlaceholder <*> bfs
 bfs'focus = withAutofocus <$> bfs'
@@ -92,3 +97,23 @@ getIssueR key = do
   defaultLayout $ do
     setTitleI $ MsgSubject issue
     $(widgetFile "issue")
+
+data Search = Seach { query :: Text } deriving Show
+
+searchForm render mv = Seach
+                       <$> areq (searchField True) (bfs' $ render MsgSearch) (query <$> mv)
+                       <*  bootstrapSubmit (BootstrapSubmit (render MsgSearch) "btn-primary" [])
+
+getNewChannelR :: IssueId -> Handler Html
+getNewChannelR key = do
+  render <- getMessageRender
+  Just logic <- lookupGetParam "logic"
+  let uri = (ISSUE $ NewChannelR key, [("logic", logic)])
+  issue <- runDB $ get404 key
+  defaultLayout $ do
+    (w, enc) <- generateFormPost $ renderBootstrap3 Import.hGrid $ searchForm render Nothing
+    setTitleI $ MsgSubject issue
+    $(widgetFile "new-channel")
+
+postNewChannelR :: IssueId -> Handler Html
+postNewChannelR key = undefined
