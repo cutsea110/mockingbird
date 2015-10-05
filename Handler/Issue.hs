@@ -100,7 +100,7 @@ getIssueR key = do
     $(widgetFile "issue")
 
 data Search = Search { query :: Text
-                     , users :: Maybe [Entity User]
+                     , users :: Maybe [Text]
                      }
 
 searchForm :: (AppMessage -> Text) -> Maybe Search -> AForm (HandlerT App IO) Search
@@ -110,7 +110,12 @@ searchForm render mv = Search
                        <*> aopt (checkboxesField collect) (bfs' $ render MsgUsers) (users <$> mv)
 
   where
-    collect = optionsPersist [] [Asc UserIdent] userName
+    collect :: Handler (OptionList Text)
+    collect = do
+      entities <- runDB $ selectList [] [Asc UserIdent]
+      let entities' = filter (match (query <$> mv) (users <$> mv)) entities
+      return (mkopts entities'){ olReadExternal = Just }
+    mkopts = mkOptionList . map ((Option <$> userName <*> userIdent <*> userIdent).entityVal)
     match Nothing _ _ = False
     match (Just q) mus (Entity uid u) =  q `isInfixOf` userIdent u ||
                                          q `isInfixOf` userName u -- ||
