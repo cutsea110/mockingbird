@@ -57,7 +57,7 @@ getNewIssueR = do
         $(widgetFile "new-issue")
     -- simple
     simpleView render uid = do
-      (w, enc) <- generateFormPost $ renderBootstrap3 BootstrapInlineForm $ simpleForm uid render Nothing
+      (w, enc) <- genForm $ simpleForm uid render Nothing
       defaultLayout $ do
         setTitleI MsgCreateNewIssue
         $(widgetFile "new-issue-simple")
