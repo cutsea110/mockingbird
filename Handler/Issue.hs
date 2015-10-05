@@ -109,6 +109,7 @@ getNewChannelR key = do
   render <- getMessageRender
   Just logic <- lookupGetParam "logic"
   let uri = (ISSUE $ NewChannelR key, [("logic", logic)])
+      users' = []
   issue <- runDB $ get404 key
   defaultLayout $ do
     (w, enc) <- generateFormPost $ renderBootstrap3 Import.hGrid $ searchForm render Nothing
@@ -119,9 +120,10 @@ postNewChannelR :: IssueId -> Handler Html
 postNewChannelR key = do
   render <- getMessageRender
   ml <- lookupPostParam "logic"
+  us <- lookupPostParams "users"
   let logic = maybe "ALL" id ml
       uri = (ISSUE $ NewChannelR key, [("logic", logic)])
-  ((r, _), _) <- runFormPost $ renderBootstrap3 Import.hGrid $ searchForm render Nothing
+  ((r, w), enc) <- runFormPost $ renderBootstrap3 Import.hGrid $ searchForm render Nothing
   case r of
     FormSuccess s -> do
       (issue, users) <- runDB $ do
@@ -131,12 +133,7 @@ postNewChannelR key = do
       let (q, users') = (query s, filter (match q) users)
       defaultLayout $ do
         setTitleI MsgCreateNewIssue
-        [whamlet|
-         <h1> search #{q}
-         <ul>
-          $forall Entity uid u <- users'
-           <li>#{userIdent u} : #{userName u}
-         |]
+        $(widgetFile "new-channel")
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
   where
