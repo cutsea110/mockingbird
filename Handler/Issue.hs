@@ -101,7 +101,7 @@ getIssueR key = do
 data Search = Seach { query :: Text } deriving Show
 
 searchForm render mv = Seach
-                       <$> areq (searchField True) (bfs' $ render MsgSearch) (query <$> mv)
+                       <$> areq (searchField True) (bfs' $ render MsgUserNameOrIdent) (query <$> mv)
                        <*  bootstrapSubmit (BootstrapSubmit (render MsgSearch) "btn-primary" [])
 
 getNewChannelR :: IssueId -> Handler Html

@@ -57,5 +57,6 @@ DaysAgo n@Integer: #{show n}days
 MonthsAgo n@Integer: #{show n}months
 YearsAgo n@Integer: #{show n}years
 
+SearchUser: Search user
+UserNameOrIdent: User name or id
 
-CreateNewChannel: Create new channel

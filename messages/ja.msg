@@ -57,4 +57,5 @@ DaysAgo n@Integer: #{show n}日
 MonthsAgo n@Integer: #{show n}ヶ月
 YearsAgo n@Integer: #{show n}年
 
-CreateNewChannel: チャンネルをつくる
+SearchUser: ユーザを探す
+UserNameOrIdent: ユーザ名またはID
