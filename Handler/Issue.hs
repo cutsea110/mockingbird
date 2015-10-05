@@ -98,12 +98,18 @@ getIssueR key = do
     setTitleI $ MsgSubject issue
     $(widgetFile "issue")
 
-data Search = Seach { query :: Text } deriving Show
+data Search = Seach { query :: Text
+                    , userIdents :: Maybe [Text]
+                    } deriving Show
 
-searchForm render mv = Seach
-                       <$> areq (searchField True) (bfs' $ render MsgUserNameOrIdent) (query <$> mv)
-                       <*  bootstrapSubmit (BootstrapSubmit (render MsgSearch) "btn-primary" [])
-
+searchForm us render mv = Seach
+                          <$> areq (searchField True) (bfs' $ render MsgUserNameOrIdent) (query <$> mv)
+                          <*> aopt (checkboxesFieldList us') "DUMMY" (userIdents <$> mv)
+                          <*  bootstrapSubmit (BootstrapSubmit (render MsgSearch) "btn-primary" [])
+  where
+    dup x = (x, x)
+    us' = map dup us
+                  
 getNewChannelR :: IssueId -> Handler Html
 getNewChannelR key = do
   render <- getMessageRender
@@ -111,8 +117,8 @@ getNewChannelR key = do
   let uri = (ISSUE $ NewChannelR key, [("logic", logic)])
       users' = []
   issue <- runDB $ get404 key
+  (w, enc) <- generateFormPost $ renderBootstrap3 Import.hGrid $ searchForm users' render Nothing
   defaultLayout $ do
-    (w, enc) <- generateFormPost $ renderBootstrap3 Import.hGrid $ searchForm render Nothing
     setTitleI $ MsgSubject issue
     $(widgetFile "new-channel")
 
@@ -123,7 +129,7 @@ postNewChannelR key = do
   us <- lookupPostParams "users"
   let logic = maybe "ALL" id ml
       uri = (ISSUE $ NewChannelR key, [("logic", logic)])
-  ((r, w), enc) <- runFormPost $ renderBootstrap3 Import.hGrid $ searchForm render Nothing
+  ((r, w), enc) <- runFormPost $ renderBootstrap3 Import.hGrid $ searchForm us render Nothing
   case r of
     FormSuccess s -> do
       (issue, users) <- runDB $ do
