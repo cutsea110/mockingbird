@@ -8,7 +8,8 @@ import Yesod.Goodies.PNotify
 
 import Model.Fields
 
-
+runForm = runFormPost . renderBootstrap3 Import.hGrid
+genForm = generateFormPost . renderBootstrap3 Import.hGrid
 bfs' = withPlaceholder <*> bfs
 bfs'focus = withAutofocus <$> bfs'
 
@@ -50,7 +51,7 @@ getNewIssueR = do
   where
     -- default
     defaultView render uid = do
-      (w, enc) <- generateFormPost $ renderBootstrap3 Import.hGrid $ issueForm uid render Nothing
+      (w, enc) <- genForm $ issueForm uid render Nothing
       defaultLayout $ do
         setTitleI MsgCreateNewIssue
         $(widgetFile "new-issue")
@@ -65,7 +66,7 @@ postNewIssueR :: Handler ()
 postNewIssueR = do
   render <- getMessageRender
   uid <- requireAuthId
-  ((r, _), _) <- runFormPost $ renderBootstrap3 Import.hGrid $ issueForm uid render Nothing
+  ((r, _), _) <- runForm $ issueForm uid render Nothing
   case r of
     FormSuccess issue -> do
       iid <- runDB $ insert issue
@@ -117,7 +118,7 @@ getNewChannelR key = do
   Just logic <- lookupGetParam "logic"
   let uri = (ISSUE $ NewChannelR key, [("logic", logic)])
   issue <- runDB $ get404 key
-  (w, enc) <- generateFormPost $ renderBootstrap3 Import.hGrid $ searchForm [] render Nothing
+  (w, enc) <- genForm $ searchForm [] render Nothing
   defaultLayout $ do
     setTitleI $ MsgSubject issue
     $(widgetFile "new-channel")
@@ -128,14 +129,14 @@ postNewChannelR key = do
   ml <- lookupPostParam "logic"
   let logic = maybe "ALL" id ml
       uri = (ISSUE $ NewChannelR key, [("logic", logic)])
-  ((r, _), _) <- runFormPost $ renderBootstrap3 Import.hGrid $ searchForm [] render Nothing
+  ((r, _), _) <- runForm $ searchForm [] render Nothing
   case r of
     FormSuccess s -> do
       (issue, users) <- runDB $ do
         issue <- get404 key
         users <- selectList [] [] 
         return (issue, users)
-      ((r, w), enc) <- runFormPost $ renderBootstrap3 Import.hGrid $ searchForm (filter (match $ query s) users) render Nothing
+      ((r, w), enc) <- runForm $ searchForm (filter (match $ query s) users) render Nothing
       let (q, users') = (query s, filter (match q) users)
       defaultLayout $ do
         setTitleI MsgCreateNewIssue
