@@ -99,25 +99,25 @@ getIssueR key = do
     $(widgetFile "issue")
 
 data Search = Seach { query :: Text
-                    , userIdents :: Maybe [Text]
-                    } deriving Show
+                    , users :: Maybe [Text]
+                    }
 
+searchForm :: RenderMessage site FormMessage =>
+              [Entity User] -> (AppMessage -> Text) -> Maybe Search -> AForm (HandlerT site IO) Search
 searchForm us render mv = Seach
                           <$> areq (searchField True) (bfs' $ render MsgUserNameOrIdent) (query <$> mv)
-                          <*> aopt (checkboxesFieldList us') "DUMMY" (userIdents <$> mv)
+                          <*> aopt (checkboxesFieldList us') (bfs' $ render MsgUsers) (users <$> mv)
                           <*  bootstrapSubmit (BootstrapSubmit (render MsgSearch) "btn-primary" [])
   where
-    dup x = (x, x)
-    us' = map dup us
-                  
+    us' = map ((\u -> (userName u, userIdent u)).entityVal) us
+
 getNewChannelR :: IssueId -> Handler Html
 getNewChannelR key = do
   render <- getMessageRender
   Just logic <- lookupGetParam "logic"
   let uri = (ISSUE $ NewChannelR key, [("logic", logic)])
-      users' = []
   issue <- runDB $ get404 key
-  (w, enc) <- generateFormPost $ renderBootstrap3 Import.hGrid $ searchForm users' render Nothing
+  (w, enc) <- generateFormPost $ renderBootstrap3 Import.hGrid $ searchForm [] render Nothing
   defaultLayout $ do
     setTitleI $ MsgSubject issue
     $(widgetFile "new-channel")
@@ -126,16 +126,16 @@ postNewChannelR :: IssueId -> Handler Html
 postNewChannelR key = do
   render <- getMessageRender
   ml <- lookupPostParam "logic"
-  us <- lookupPostParams "users"
   let logic = maybe "ALL" id ml
       uri = (ISSUE $ NewChannelR key, [("logic", logic)])
-  ((r, w), enc) <- runFormPost $ renderBootstrap3 Import.hGrid $ searchForm us render Nothing
+  ((r, _), _) <- runFormPost $ renderBootstrap3 Import.hGrid $ searchForm [] render Nothing
   case r of
     FormSuccess s -> do
       (issue, users) <- runDB $ do
         issue <- get404 key
         users <- selectList [] [] 
         return (issue, users)
+      ((r, w), enc) <- runFormPost $ renderBootstrap3 Import.hGrid $ searchForm (filter (match $ query s) users) render Nothing
       let (q, users') = (query s, filter (match q) users)
       defaultLayout $ do
         setTitleI MsgCreateNewIssue

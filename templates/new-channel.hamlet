@@ -4,7 +4,3 @@
 
 <form .form-horizontal role=form method=post action=@?{uri} enctype=#{enc}>
   ^{w}
-  <ul>
-    $forall Entity uid u <- users'
-      <li>
-        <input type=checkbox name=users value=#{userIdent u}>#{userName u}

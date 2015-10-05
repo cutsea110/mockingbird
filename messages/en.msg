@@ -22,6 +22,7 @@ CreateNewIssue: Create new issue
 Dropdown u@User: #{userName u}
 
 Search: Search
+Users: Users
 
 Update: Update
 

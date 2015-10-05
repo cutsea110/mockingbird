@@ -22,6 +22,7 @@ CreateNewIssue: イシュー作成
 Dropdown u@User: #{userName u}
 
 Search: 検索
+Users: ユーザ
 
 Update: 更新する
 
