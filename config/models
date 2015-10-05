@@ -5,7 +5,7 @@ User
     givenName Text
 
     UniqueUser ident
-    deriving Typeable
+    deriving Eq Typeable
 
 Issue
     subject Text

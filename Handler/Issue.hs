@@ -114,7 +114,7 @@ searchForm render mv = Search
     collect = do
       entities <- runDB $ selectList [] [Asc UserIdent]
       let entities' = filter (match (query <$> mv) (users <$> mv)) entities
-      return $ mkopts entities'
+      return (mkopts entities'){ olReadExternal = Just }
     mkopts = mkOptionList . map ((Option <$> userName <*> userIdent <*> userIdent).entityVal)
     match Nothing _ _ = False
     match (Just q) mus (Entity uid u) =  q `isInfixOf` userIdent u ||
