@@ -116,4 +116,28 @@ getNewChannelR key = do
     $(widgetFile "new-channel")
 
 postNewChannelR :: IssueId -> Handler Html
-postNewChannelR key = undefined
+postNewChannelR key = do
+  render <- getMessageRender
+  ml <- lookupPostParam "logic"
+  let logic = maybe "ALL" id ml
+      uri = (ISSUE $ NewChannelR key, [("logic", logic)])
+  ((r, _), _) <- runFormPost $ renderBootstrap3 Import.hGrid $ searchForm render Nothing
+  case r of
+    FormSuccess s -> do
+      (issue, users) <- runDB $ do
+        issue <- get404 key
+        users <- selectList [] [] 
+        return (issue, users)
+      let (q, users') = (query s, filter (match q) users)
+      defaultLayout $ do
+        setTitleI MsgCreateNewIssue
+        [whamlet|
+         <h1> search #{q}
+         <ul>
+          $forall Entity uid u <- users'
+           <li>#{userIdent u} : #{userName u}
+         |]
+    FormFailure (x:_) -> invalidArgs [x]
+    _ -> invalidArgs ["error occured"]
+  where
+    match q (Entity _ u) =  q `isInfixOf` userIdent u || q `isInfixOf` userName u
