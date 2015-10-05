@@ -99,18 +99,24 @@ getIssueR key = do
     setTitleI $ MsgSubject issue
     $(widgetFile "issue")
 
-data Search = Seach { query :: Text
+data Search = Search { query :: Text
                     , users :: Maybe [Text]
                     }
 
-searchForm :: RenderMessage site FormMessage =>
-              [Entity User] -> (AppMessage -> Text) -> Maybe Search -> AForm (HandlerT site IO) Search
-searchForm us render mv = Seach
-                          <$> areq (searchField True) (bfs' $ render MsgUserNameOrIdent) (query <$> mv)
-                          <*> aopt (checkboxesFieldList us') (bfs' $ render MsgUsers) (users <$> mv)
-                          <*  bootstrapSubmit (BootstrapSubmit (render MsgSearch) "btn-primary" [])
+searchForm :: (AppMessage -> Text) -> Maybe Search -> AForm (HandlerT App IO) Search
+searchForm render mv = Search
+                       <$> areq (searchField True) (bfs' $ render MsgUserNameOrIdent) (query <$> mv)
+                       <*  bootstrapSubmit (BootstrapSubmit (render MsgSearch) "btn-primary" [])
+                       <*> aopt (checkboxesField $ collect mv) (bfs' $ render MsgUsers) (users <$> mv)
   where
-    us' = map ((\u -> (userName u, userIdent u)).entityVal) us
+    collect :: Maybe Search -> Handler (OptionList Text)
+    collect Nothing = return $ mkOptionList []
+    collect (Just (Search q us')) = do
+      ulist <- runDB $ selectList [] []
+      let ulist' = filter (match q) ulist
+      return $ mkopts ulist'
+    mkopts = mkOptionList . map ((Option <$> userName <*> userIdent <*> userIdent).entityVal)
+    match q (Entity _ u) =  q `isInfixOf` userIdent u || q `isInfixOf` userName u
 
 getNewChannelR :: IssueId -> Handler Html
 getNewChannelR key = do
@@ -118,7 +124,7 @@ getNewChannelR key = do
   Just logic <- lookupGetParam "logic"
   let uri = (ISSUE $ NewChannelR key, [("logic", logic)])
   issue <- runDB $ get404 key
-  (w, enc) <- genForm $ searchForm [] render Nothing
+  (w, enc) <- genForm $ searchForm render Nothing
   defaultLayout $ do
     setTitleI $ MsgSubject issue
     $(widgetFile "new-channel")
@@ -129,19 +135,13 @@ postNewChannelR key = do
   ml <- lookupPostParam "logic"
   let logic = maybe "ALL" id ml
       uri = (ISSUE $ NewChannelR key, [("logic", logic)])
-  ((r, _), _) <- runForm $ searchForm [] render Nothing
+  ((r, _), _) <- runForm $ searchForm render Nothing
   case r of
     FormSuccess s -> do
-      (issue, users) <- runDB $ do
-        issue <- get404 key
-        users <- selectList [] [] 
-        return (issue, users)
-      ((r, w), enc) <- runForm $ searchForm (filter (match $ query s) users) render Nothing
-      let (q, users') = (query s, filter (match q) users)
+      issue <- runDB $ get404 key
+      ((r, w), enc) <- runForm $ searchForm render (Just s)
       defaultLayout $ do
         setTitleI MsgCreateNewIssue
         $(widgetFile "new-channel")
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
-  where
-    match q (Entity _ u) =  q `isInfixOf` userIdent u || q `isInfixOf` userName u
