@@ -100,23 +100,26 @@ getIssueR key = do
     $(widgetFile "issue")
 
 data Search = Search { query :: Text
-                    , users :: Maybe [Text]
-                    }
+                     , users :: Maybe [Text]
+                     }
 
 searchForm :: (AppMessage -> Text) -> Maybe Search -> AForm (HandlerT App IO) Search
 searchForm render mv = Search
                        <$> areq (searchField True) (bfs' $ render MsgUserNameOrIdent) (query <$> mv)
                        <*  bootstrapSubmit (BootstrapSubmit (render MsgSearch) "btn-primary" [])
-                       <*> aopt (checkboxesField $ collect mv) (bfs' $ render MsgUsers) (users <$> mv)
+                       <*> aopt (checkboxesField collect) (bfs' $ render MsgUsers) (users <$> mv)
+
   where
-    collect :: Maybe Search -> Handler (OptionList Text)
-    collect Nothing = return $ mkOptionList []
-    collect (Just (Search q us')) = do
-      ulist <- runDB $ selectList [] []
-      let ulist' = filter (match q) ulist
-      return $ mkopts ulist'
+    collect :: Handler (OptionList Text)
+    collect = do
+      entities <- runDB $ selectList [] [Asc UserIdent]
+      let entities' = filter (match (query <$> mv) (users <$> mv)) entities
+      return $ mkopts entities'
     mkopts = mkOptionList . map ((Option <$> userName <*> userIdent <*> userIdent).entityVal)
-    match q (Entity _ u) =  q `isInfixOf` userIdent u || q `isInfixOf` userName u
+    match Nothing _ _ = False
+    match (Just q) mus (Entity uid u) =  q `isInfixOf` userIdent u ||
+                                         q `isInfixOf` userName u -- ||
+--                                         maybe False (uid `elem`) mus
 
 getNewChannelR :: IssueId -> Handler Html
 getNewChannelR key = do
@@ -139,7 +142,7 @@ postNewChannelR key = do
   case r of
     FormSuccess s -> do
       issue <- runDB $ get404 key
-      ((r, w), enc) <- runForm $ searchForm render (Just s)
+      ((_, w), enc) <- runForm $ searchForm render (Just s)
       defaultLayout $ do
         setTitleI MsgCreateNewIssue
         $(widgetFile "new-channel")

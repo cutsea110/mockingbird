@@ -108,7 +108,7 @@ productForm mproduct = renderBootstrap3 BootstrapBasicForm $ (,)
     where
         product = Product
             <$> areq textField "Name" (productName <$> mproduct)
-        mcategories = aopt (multiSelectField categories) "Categories" Nothing
+        mcategories = aopt (checkboxesField categories) "Categories" Nothing
             where
                 categories = do
                     entities <- runDB $ selectList [CategoryName !=. ""] [Asc CategoryName]
