@@ -49,6 +49,9 @@ AddAllChannel: Add `ALL' channel
 AddAnyChannel: Add `ANY' channel
 AddEachChannel: Add `EACH' channel
 AddMyChannel: Add `MY' channel
+ALL: All
+ANY: Any
+EditChannel: Edit channel
 
 Subject v@Issue: #{issueSubject v}
 

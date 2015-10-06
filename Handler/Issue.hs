@@ -87,12 +87,27 @@ postNewIssueR = do
                              }
   redirect (ISSUE NewIssueR)
 
+
+type Opener = User
+type Codomain = User
+
+getIssueTree :: MonadIO m => IssueId -> ReaderT SqlBackend m (Issue, Opener, [(Channel, [(Ticket, Codomain)])])
+getIssueTree key = do
+  issue <- get404 key
+  opener <- get404 (issueOpener issue)
+  cs <- selectList [ChannelIssue ==. key] []
+  chans <- forM cs $ \(Entity cid c) -> do
+    ts <- selectList [TicketChannel ==. cid] []
+    tu <- forM ts $ \(Entity tid t) -> do
+      u <- get404 (ticketCodomain t)
+      return (t, u)
+    return (c, tu)
+  return (issue, opener, chans)
+
+
 getIssueR :: IssueId -> Handler Html
 getIssueR key = do
-  (issue, opener) <- runDB $ do
-    issue <- get404 key
-    opener <- get404 (issueOpener issue)
-    return (issue, opener)
+  (issue, opener, chans) <- runDB $ getIssueTree key
   now <- liftIO getCurrentTime
   let createdBefore = (issueCreated issue) `beforeFrom` now
   defaultLayout $ do
