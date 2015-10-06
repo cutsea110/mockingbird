@@ -119,7 +119,7 @@ getNewChannelR :: IssueId -> Handler Html
 getNewChannelR key = do
   render <- getMessageRender
   Just logic <- lookupGetParam "logic"
-  let uri = (ISSUE $ NewChannelR key, [("logic", logic)])
+  Just mode <- lookupGetParam "mode"
   issue <- runDB $ get404 key
   (w, enc) <- genForm $ searchForm render Nothing
   defaultLayout $ do
@@ -128,17 +128,23 @@ getNewChannelR key = do
 
 postNewChannelR :: IssueId -> Handler Html
 postNewChannelR key = do
+  creater <- requireAuthId
   render <- getMessageRender
-  ml <- lookupPostParam "logic"
-  let logic = maybe "ALL" id ml
-      uri = (ISSUE $ NewChannelR key, [("logic", logic)])
+  now <- liftIO getCurrentTime
+  Just logic <- fmap (fmap fromText) $ lookupPostParam "logic"
+  Just mode <- lookupPostParam "mode"
   ((r, _), _) <- runForm $ searchForm render Nothing
   case r of
     FormSuccess s -> do
-      issue <- runDB $ get404 key
-      ((_, w), enc) <- runForm $ searchForm render (Just s)
-      defaultLayout $ do
-        setTitleI MsgCreateNewIssue
-        $(widgetFile "new-channel")
+      runDB $ do
+        cid <- insert (Channel logic key)
+        forM_ (users s) $ \u -> do
+          let uid = entityKey u
+          _ <- insert (Ticket cid creater uid uid now now)
+          return ()
+      redirect $ ISSUE $ IssueR key
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
+  where
+    fromText :: Text -> Logic
+    fromText = read . unpack
