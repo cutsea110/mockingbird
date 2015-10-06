@@ -181,3 +181,8 @@ postNewChannelR key = do
           _ <- insert (Ticket cid creater creater creater now now)
           return ()
 
+getChannelR :: IssueId -> ChannelId -> Handler Html
+getChannelR = undefined
+
+postChannelR :: IssueId -> ChannelId -> Handler Html
+postChannelR = undefined
