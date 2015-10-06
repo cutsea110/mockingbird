@@ -27,6 +27,7 @@ Ticket
     domain   UserId
     codomain UserId
     assign   UserId
+    status   Status
 
     created UTCTime default=now()
     updated UTCTime default=now()

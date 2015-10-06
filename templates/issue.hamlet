@@ -37,8 +37,12 @@
               <span class="label label-info">_{MsgALL}
             $of ANY
               <span class="label label-warning">_{MsgANY}
-          $forall (_, _, u) <- ts
-            <a href="#"> #{userName u}
+          $forall (_, t, u) <- ts
+            $case ticketStatus t
+              $of OPEN
+                <a class="bg-danger" href="#"> #{userName u}
+              $of CLOSE
+                <a class="bg-success" href="#"> #{userName u}
           <a href=@{ISSUE $ ChannelR key cid} class="pull-right">_{MsgEditChannel}
 
 <div class="btn-group" role="group">

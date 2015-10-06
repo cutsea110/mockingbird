@@ -1,6 +1,6 @@
 module Model where
 
-import ClassyPrelude.Yesod
+import ClassyPrelude.Yesod hiding (Status)
 import Database.Persist.Quasi
 
 import Data.Time

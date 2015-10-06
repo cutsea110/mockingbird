@@ -168,17 +168,17 @@ postNewChannelR key = do
           cid <- insert (Channel logic key)
           forM_ us $ \u -> do
             let uid = entityKey u
-            _ <- insert (Ticket cid creater uid uid now now)
+            _ <- insert (Ticket cid creater uid uid OPEN now now)
             return ()
         "each" -> do
           forM_ us $ \u -> do
             let uid = entityKey u
             cid <- insert (Channel logic key)
-            _ <- insert (Ticket cid creater uid uid now now)
+            _ <- insert (Ticket cid creater uid uid OPEN now now)
             return ()
         "self" -> do
           cid <- insert (Channel logic key)
-          _ <- insert (Ticket cid creater creater creater now now)
+          _ <- insert (Ticket cid creater creater creater OPEN now now)
           return ()
 
 getChannelR :: IssueId -> ChannelId -> Handler Html
