@@ -130,21 +130,39 @@ postNewChannelR :: IssueId -> Handler Html
 postNewChannelR key = do
   creater <- requireAuthId
   render <- getMessageRender
-  now <- liftIO getCurrentTime
   Just logic <- fmap (fmap fromText) $ lookupPostParam "logic"
   Just mode <- lookupPostParam "mode"
+  now <- liftIO getCurrentTime
   ((r, _), _) <- runForm $ searchForm render Nothing
   case r of
     FormSuccess s -> do
-      runDB $ do
-        cid <- insert (Channel logic key)
-        forM_ (users s) $ \u -> do
-          let uid = entityKey u
-          _ <- insert (Ticket cid creater uid uid now now)
-          return ()
+      runDB $ create logic mode (users s) now creater
       redirect $ ISSUE $ IssueR key
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
   where
     fromText :: Text -> Logic
     fromText = read . unpack
+    
+    create :: MonadIO m =>
+              Logic -> Text -> [Entity User] -> UTCTime -> Key User
+              -> ReaderT SqlBackend m ()
+    create logic mode us now creater =
+      case mode of
+        "one" -> do
+          cid <- insert (Channel logic key)
+          forM_ us $ \u -> do
+            let uid = entityKey u
+            _ <- insert (Ticket cid creater uid uid now now)
+            return ()
+        "each" -> do
+          forM_ us $ \u -> do
+            let uid = entityKey u
+            cid <- insert (Channel logic key)
+            _ <- insert (Ticket cid creater uid uid now now)
+            return ()
+        "self" -> do
+          cid <- insert (Channel logic key)
+          _ <- insert (Ticket cid creater creater creater now now)
+          return ()
+
