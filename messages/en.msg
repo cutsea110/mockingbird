@@ -48,6 +48,7 @@ FailureToCreateIssue: Failure to create a issue
 AddAllChannel: Add `ALL' channel
 AddAnyChannel: Add `ANY' channel
 AddEachChannel: Add `EACH' channel
+AddMyChannel: Add `MY' channel
 
 Subject v@Issue: #{issueSubject v}
 

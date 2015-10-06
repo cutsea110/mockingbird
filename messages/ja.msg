@@ -45,9 +45,10 @@ CreateIssue: 起票する
 SucceedToCreateIssue: 起票に成功しました
 FailureToCreateIssue: 起票に失敗しました
 
-AddAllChannel: 「みんな」チャネルを追加する
-AddAnyChannel: 「だれか」チャネルを追加する
-AddEachChannel: 「それぞれ」チャネルを追加する
+AddAllChannel: 「みんな」でやる
+AddAnyChannel: 「だれか」がやる
+AddEachChannel: 「それぞれ」がやる
+AddMyChannel: 「じぶん」でやる
 
 Subject v@Issue: #{issueSubject v}
 

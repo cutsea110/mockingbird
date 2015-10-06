@@ -31,4 +31,5 @@
 <div class="btn-group" role="group">
   <a href=@?{(ISSUE $ NewChannelR key, [("logic", "ALL")])} class="btn btn-default">_{MsgAddAllChannel}
   <a href=@?{(ISSUE $ NewChannelR key, [("logic", "ANY")])} class="btn btn-default">_{MsgAddAnyChannel}
-  <a href="#" class="btn btn-default">_{MsgAddEachChannel}
+  <a href=@?{(ISSUE $ NewChannelR key, [("logic", "ALL"),("mode", "each")])} class="btn btn-default">_{MsgAddEachChannel}
+  <a href=@?{(ISSUE $ NewChannelR key, [("logic", "ALL"),("mode", "self")])} class="btn btn-default">_{MsgAddMyChannel}
