@@ -99,27 +99,21 @@ getIssueR key = do
     setTitleI $ MsgSubject issue
     $(widgetFile "issue")
 
-data Search = Search { query :: Text
-                     , users :: Maybe [Text]
+data Search = Search { query :: Maybe Text
+                     , users :: [Text]
                      }
 
 searchForm :: (AppMessage -> Text) -> Maybe Search -> AForm (HandlerT App IO) Search
 searchForm render mv = Search
-                       <$> areq (searchField True) (bfs' $ render MsgUserNameOrIdent) (query <$> mv)
+                       <$> aopt (searchField True) (bfs' $ render MsgUserNameOrIdent) (query <$> mv)
+                       <*> areq (checkboxesField collect) (bfs' $ render MsgUsers) (users <$> mv)
                        <*  bootstrapSubmit (BootstrapSubmit (render MsgSearch) "btn-primary" [])
-                       <*> aopt (checkboxesField collect) (bfs' $ render MsgUsers) (users <$> mv)
-
   where
     collect :: Handler (OptionList Text)
     collect = do
       entities <- runDB $ selectList [] [Asc UserIdent]
-      let entities' = filter (match (query <$> mv) (users <$> mv)) entities
-      return (mkopts entities'){ olReadExternal = Just }
+      return (mkopts entities){ olReadExternal = Just }
     mkopts = mkOptionList . map ((Option <$> userName <*> userIdent <*> userIdent).entityVal)
-    match Nothing _ _ = False
-    match (Just q) mus (Entity uid u) =  q `isInfixOf` userIdent u ||
-                                         q `isInfixOf` userName u -- ||
---                                         maybe False (uid `elem`) mus
 
 getNewChannelR :: IssueId -> Handler Html
 getNewChannelR key = do
