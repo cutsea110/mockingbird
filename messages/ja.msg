@@ -51,7 +51,7 @@ AddEachChannel: 「それぞれ」がやる
 AddMyChannel: 「じぶん」でやる
 ALL: みんな
 ANY: だれか
-EditChannel: 変更する
+EditChannel: 編集
 
 Subject v@Issue: #{issueSubject v}
 

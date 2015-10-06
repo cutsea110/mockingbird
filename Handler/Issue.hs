@@ -91,7 +91,7 @@ postNewIssueR = do
 type Opener = User
 type Codomain = User
 
-getIssueTree :: MonadIO m => IssueId -> ReaderT SqlBackend m (Issue, Opener, [(Channel, [(Ticket, Codomain)])])
+getIssueTree :: MonadIO m => IssueId -> ReaderT SqlBackend m (Issue, Opener, [(ChannelId, Channel, [(Ticket, Codomain)])])
 getIssueTree key = do
   issue <- get404 key
   opener <- get404 (issueOpener issue)
@@ -101,7 +101,7 @@ getIssueTree key = do
     tu <- forM ts $ \(Entity tid t) -> do
       u <- get404 (ticketCodomain t)
       return (t, u)
-    return (c, tu)
+    return (cid, c, tu)
   return (issue, opener, chans)
 
 

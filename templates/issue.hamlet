@@ -30,16 +30,16 @@
   $if null chans
   $else
     <ul class="list-group">
-      $forall (ch, ts) <- chans
+      $forall (cid, ch, ts) <- chans
         <li class="list-group-item">
           $case channelType ch
             $of ALL
               <span class="label label-info">_{MsgALL}
             $of ANY
               <span class="label label-warning">_{MsgANY}
-          $forall (_, u) <- ts
+          $forall (t, u) <- ts
             <a href="#"> #{userName u}
-          <a href="#" class="pull-right">_{MsgEditChannel}
+          <a href=@{ISSUE $ ChannelR key cid} class="pull-right">_{MsgEditChannel}
 
 <div class="btn-group" role="group">
   <a href=@?{(ISSUE $ NewChannelR key, [("logic", "ALL"),("mode", "one")])} class="btn btn-default">_{MsgAddAllChannel}
