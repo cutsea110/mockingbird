@@ -46,7 +46,12 @@
           <a href=@{ISSUE $ ChannelR key cid} class="pull-right">_{MsgEditChannel}
 
 <div class="btn-group" role="group">
-  <a href=@?{(ISSUE $ NewChannelR key, [("logic", "ALL"),("mode", "one")])} class="btn btn-default">_{MsgAddAllChannel}
-  <a href=@?{(ISSUE $ NewChannelR key, [("logic", "ANY"),("mode", "one")])} class="btn btn-default">_{MsgAddAnyChannel}
-  <a href=@?{(ISSUE $ NewChannelR key, [("logic", "ALL"),("mode", "each")])} class="btn btn-default">_{MsgAddEachChannel}
-  <a href=@?{(ISSUE $ NewChannelR key, [("logic", "ALL"),("mode", "self")])} class="btn btn-default">_{MsgAddMyChannel}
+
+  <form method=post action=@{ISSUE $ NewChannelR key}>
+    <input type=hidden name=logic value=ALL>
+    <input type=hidden name=mode value=self>
+    <button type=submit class="btn btn-default">_{MsgAddMyChannel}
+
+    <a href=@?{(ISSUE $ NewChannelR key, [("logic", "ALL"),("mode", "one")])} class="btn btn-default">_{MsgAddAllChannel}
+    <a href=@?{(ISSUE $ NewChannelR key, [("logic", "ANY"),("mode", "one")])} class="btn btn-default">_{MsgAddAnyChannel}
+    <a href=@?{(ISSUE $ NewChannelR key, [("logic", "ALL"),("mode", "each")])} class="btn btn-default">_{MsgAddEachChannel}
