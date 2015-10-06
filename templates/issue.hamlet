@@ -38,7 +38,7 @@
             $of ANY
               <span class="label label-warning">_{MsgANY}
           $forall (_, u) <- ts
-            <span> #{userName u}
+            <a href="#"> #{userName u}
           <a href="#" class="pull-right">_{MsgEditChannel}
 
 <div class="btn-group" role="group">
