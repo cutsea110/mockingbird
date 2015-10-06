@@ -60,3 +60,4 @@ YearsAgo n@Integer: #{show n}年
 
 SearchUser: ユーザを探す
 UserNameOrIdent: ユーザ名またはID
+CreateGroup: グループをつくる

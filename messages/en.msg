@@ -60,4 +60,5 @@ YearsAgo n@Integer: #{show n}years
 
 SearchUser: Search user
 UserNameOrIdent: User name or id
+CreateGroup: Create group
 

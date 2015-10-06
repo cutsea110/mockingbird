@@ -100,20 +100,20 @@ getIssueR key = do
     $(widgetFile "issue")
 
 data Search = Search { query :: Maybe Text
-                     , users :: [Text]
+                     , users :: [Entity User]
                      }
 
 searchForm :: (AppMessage -> Text) -> Maybe Search -> AForm (HandlerT App IO) Search
 searchForm render mv = Search
                        <$> aopt (searchField True) (bfs' $ render MsgUserNameOrIdent) (query <$> mv)
+                       <*  bootstrapSubmit (BootstrapSubmit (render MsgCreateGroup) "btn-primary" [])
                        <*> areq (checkboxesField collect) (bfs' $ render MsgUsers) (users <$> mv)
-                       <*  bootstrapSubmit (BootstrapSubmit (render MsgSearch) "btn-primary" [])
+                       <*  bootstrapSubmit (BootstrapSubmit (render MsgCreateGroup) "btn-primary" [])
   where
-    collect :: Handler (OptionList Text)
+    collect :: Handler (OptionList (Entity User))
     collect = do
       entities <- runDB $ selectList [] [Asc UserIdent]
-      return (mkopts entities){ olReadExternal = Just }
-    mkopts = mkOptionList . map ((Option <$> userName <*> userIdent <*> userIdent).entityVal)
+      optionsPersist [] [Asc UserIdent] userNameId
 
 getNewChannelR :: IssueId -> Handler Html
 getNewChannelR key = do

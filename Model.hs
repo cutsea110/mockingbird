@@ -21,6 +21,9 @@ share [mkPersist sqlSettings, mkMigrate "migrateAll"]
 userName :: User -> Text
 userName u = userFamilyName u <> " " <> userGivenName u
 
+userNameId :: User -> Text
+userNameId u = userName u <> "(" <> userIdent u <> ")"
+
 -- |
 -- Extensions for Issue
 --
