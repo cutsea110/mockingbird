@@ -70,30 +70,21 @@ getNewIssueR = do
         setTitleI MsgCreateNewIssue
         $(widgetFile "new-issue-self")
 
-postNewIssueR :: Handler ()
+postNewIssueR :: Handler Html
 postNewIssueR = do
   uid <- requireAuthId
   render <- getMessageRender
   ((r, _), _) <- runForm $ issueForm uid render Nothing
   case r of
     FormSuccess issue -> do
-      iid <- runDB $ insert issue
-      setPNotify $ defNotify { _type = Just Success
-                             , _title = Just $ Right $ render MsgSuccess
-                             , _text = Just $ Right $ render MsgSucceedToCreateIssue
-                             }
-      redirect (ISSUE $ IssueR iid)
-    FormFailure (x:_) -> do
-      setPNotify $ defNotify { _type = Just Error
-                             , _title = Just $ Right $ render MsgError
-                             , _text = Just $ Right x
-                             }
-    _ -> do
-      setPNotify $ defNotify { _type = Just Error
-                             , _title = Just $ Right $ render MsgError
-                             , _text = Just $ Right $ render MsgFailureToCreateIssue
-                             }
-  redirect (ISSUE NewIssueR)
+      ((_, w), enc) <- runForm $ searchAndHiddenIssueForm uid render (Just issue) Nothing
+      opener <- runDB $ get404 uid
+      let chans = []
+      defaultLayout $ do
+        setTitleI MsgCreateIssue
+        $(widgetFile "issue-on-the-fly")
+    FormFailure (x:_) -> invalidArgs [x]
+    _ -> invalidArgs ["error occured"]
 
 postNewSelfIssueR :: Handler ()
 postNewSelfIssueR = do
@@ -180,6 +171,11 @@ getIssueR key = do
 data Search = Search { query :: Maybe Text
                      , users :: [Entity User]
                      }
+
+searchAndHiddenIssueForm uid render mi ms
+  = (,)
+    <$> hiddenIssueForm uid mi
+    <*> searchForm render ms
 
 searchForm :: (AppMessage -> Text) -> Maybe Search -> AForm (HandlerT App IO) Search
 searchForm render mv = Search
