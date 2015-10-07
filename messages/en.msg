@@ -48,7 +48,7 @@ CloneIssue: Clone issue
 SucceedToCreateIssue: Succeed to create a issue
 FailureToCreateIssue: Failure to create a issue
 
-Channel: Channel
+UpdateChannel: Update channel
 AddAllChannel: Add `ALL' channel
 AddAnyChannel: Add `ANY' channel
 AddEachChannel: Add `EACH' channel

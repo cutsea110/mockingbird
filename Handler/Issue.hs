@@ -249,7 +249,7 @@ getChannelR key cid = do
     return (issue, us)
   ((_, w), enc) <- runForm $ searchForm render $ Just (Search Nothing us)
   defaultLayout $ do
-    setTitleI MsgChannel
+    setTitleI MsgUpdateChannel
     $(widgetFile "channel")
 
 postChannelR :: IssueId -> ChannelId -> Handler Html
@@ -269,3 +269,4 @@ postChannelR key cid = do
       redirect $ ISSUE $ IssueR key
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
+

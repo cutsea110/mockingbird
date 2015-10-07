@@ -48,7 +48,7 @@ CloneIssue: テンプレとしてつかう
 SucceedToCreateIssue: 起票に成功しました
 FailureToCreateIssue: 起票に失敗しました
 
-Channel: チャネル
+UpdateChannel: チャネル更新
 AddAllChannel: 「みんな」でやる
 AddAnyChannel: 「だれか」がやる
 AddEachChannel: 「それぞれ」がやる
