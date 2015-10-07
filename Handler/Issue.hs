@@ -59,7 +59,7 @@ getNewIssueR = do
       defaultLayout $ do
         setTitleI MsgCreateNewIssue
         $(widgetFile "new-issue-self")
-      
+
 postNewIssueR :: Handler ()
 postNewIssueR = do
   render <- getMessageRender
@@ -97,6 +97,12 @@ postNewSelfIssueR = do
       postNewSelfChanR key
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
+
+getCloneIssueR :: IssueId -> Handler Html
+getCloneIssueR key = undefined
+
+postCloneIssueR :: IssueId -> Handler ()
+postCloneIssueR key = undefined
 
 type Opener = User
 type Codomain = User

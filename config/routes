@@ -12,6 +12,7 @@
 /issues               ISSUE:
   /new                              NewIssueR      GET POST
   /new-self                         NewSelfIssueR      POST
+  /clone/#IssueId                   CloneIssueR    GET POST
   /item/#IssueId                    IssueR         GET
   /item/#IssueId/chan               NewChannelR    GET POST
   /item/#IssueId/chan/#ChannelId    ChannelR       GET POST
