@@ -43,3 +43,6 @@
                 <a class="bg-danger" href="#"> #{userName u}
               $of CLOSE
                 <a class="bg-success" href="#"> #{userName u}
+
+<form .form-horizontal role=form method=post action=@{ISSUE $ CloneIssueR key} enctype=#{enc}>
+  ^{w}

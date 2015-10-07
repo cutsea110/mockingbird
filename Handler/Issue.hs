@@ -100,15 +100,37 @@ postNewSelfIssueR = do
 
 getCloneIssueR :: IssueId -> Handler Html
 getCloneIssueR key = do
+  uid <- requireAuthId
+  render <- getMessageRender
   (issue, opener, chans) <- runDB $ getIssueTree key
   now <- liftIO getCurrentTime
   let createdBefore = (issueCreated issue) `beforeFrom` now
+  (w, enc) <- genForm $ issueForm uid render Nothing
   defaultLayout $ do
     setTitleI MsgCloneIssue
     $(widgetFile "clone-issue")
 
 postCloneIssueR :: IssueId -> Handler ()
-postCloneIssueR key = undefined
+postCloneIssueR key = do
+  uid <- requireAuthId
+  render <- getMessageRender
+  now <- liftIO getCurrentTime
+  (_, _, chans) <- runDB $ getIssueTree key
+  ((r, _), _) <- runForm $ issueForm uid render Nothing
+  case r of
+    FormSuccess issue -> do
+      iid <- runDB $ do
+        iid <- insert issue
+        forM chans $ \(_, c, ts) -> do
+          cid <- insert $ Channel (channelType c) iid
+          forM ts $ \(_, t, u) -> do
+            let uid' = ticketCodomain t
+            _ <- insert $ Ticket cid uid uid' uid' OPEN now now
+            return ()
+        return iid
+      redirect $ ISSUE $ IssueR iid
+    FormFailure (x:_) -> invalidArgs [x]
+    _ -> invalidArgs ["error occured"]
 
 type Opener = User
 type Codomain = User
