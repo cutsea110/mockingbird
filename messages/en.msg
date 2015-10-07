@@ -18,7 +18,9 @@ Timeline: Timeline
 TimelineOf u@User: #{userName u}'s Timeline
 MyTasks: My tasks
 TasksOf u@User: #{userName u}'s Tasks
+Create: Create
 CreateNewIssue: Create new issue
+CreateNewSelfIssue: Create self issue
 Dropdown u@User: #{userName u}
 
 Search: Search

@@ -18,7 +18,9 @@ Timeline: タイムライン
 TimelineOf u@User: #{userName u}のタイムライン
 MyTasks: マイタスク
 TasksOf u@User: #{userName u}のタスク
-CreateNewIssue: イシュー作成
+Create: つくる
+CreateNewIssue: ふつうのタスク
+CreateNewSelfIssue: じぶんタスク
 Dropdown u@User: #{userName u}
 
 Search: 検索
