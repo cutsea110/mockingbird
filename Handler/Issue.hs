@@ -136,6 +136,14 @@ type Opener = User
 type Codomain = User
 type IssueTree = (Issue, Opener, [(ChannelId, Channel, [(TicketId, Ticket, Codomain)])])
 
+progress :: (Channel, [(TicketId, Ticket, Codomain)]) -> Int
+progress (ch, ts) = case channelType ch of
+                      ALL -> round $ 100 * num / den
+                      ANY -> if any pred ts then 100 else 0
+  where
+   (den, num) = foldr (\(_, t, _) (ttl, cls) -> (ttl+1, if close t then cls+1 else cls)) (0, 0) ts
+   pred (_, t, _) = close t
+ 
 getIssueTree :: MonadIO m => IssueId -> ReaderT SqlBackend m IssueTree
 getIssueTree key = do
   issue <- get404 key
@@ -155,7 +163,6 @@ getIssueR key = do
   (issue, opener, chans) <- runDB $ getIssueTree key
   now <- liftIO getCurrentTime
   let createdBefore = (issueCreated issue) `beforeFrom` now
-      percent = "45%" :: Text
   defaultLayout $ do
     setTitleI $ MsgSubject issue
     $(widgetFile "issue")

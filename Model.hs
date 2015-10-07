@@ -29,3 +29,10 @@ userNameId u = userName u <> "(" <> userIdent u <> ")"
 --
 issueLimitDatetime :: Issue -> Maybe UTCTime
 issueLimitDatetime = liftM2 day'timeToUTC <$> issueLimitdate <*> issueLimittime
+
+-- |
+-- Extensions for Ticket
+--
+close :: Ticket -> Bool
+close Ticket { ticketStatus = CLOSE } = True
+close Ticket { ticketStatus = OPEN }  = False
