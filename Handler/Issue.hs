@@ -40,8 +40,8 @@ selfForm uid render mv = Issue
 
 getNewIssueR :: Handler Html
 getNewIssueR = do
-  render <- getMessageRender
   uid <- requireAuthId
+  render <- getMessageRender
   mode <- lookupGetParam "mode"
   case mode of
     Just "self" -> selfView render uid
@@ -63,8 +63,8 @@ getNewIssueR = do
 
 postNewIssueR :: Handler ()
 postNewIssueR = do
-  render <- getMessageRender
   uid <- requireAuthId
+  render <- getMessageRender
   ((r, _), _) <- runForm $ issueForm uid render Nothing
   case r of
     FormSuccess issue -> do
@@ -88,8 +88,8 @@ postNewIssueR = do
 
 postNewSelfIssueR :: Handler ()
 postNewSelfIssueR = do
-  render <- getMessageRender
   uid <- requireAuthId
+  render <- getMessageRender
   now <- liftIO getCurrentTime
   ((r, _), _) <- runForm $ selfForm uid render Nothing
   case r of
@@ -124,13 +124,14 @@ postCloneIssueR key = do
         iid <- insert issue
         forM_ chans $ \(_, c, ts) -> do
           cid <- insert $ Channel (channelType c) iid
-          forM_ ts $ \(_, t, u) -> do
-            let uid' = ticketCodomain t
-            insert_ $ Ticket cid uid uid' uid' OPEN now now
+          let uids' = map (ticketCodomain . snd3) ts
+          insertMany_ $ map (\uid' -> Ticket cid uid uid' uid' OPEN now now) uids'
         return iid
       redirect $ ISSUE $ IssueR iid
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
+  where
+    snd3 (x, y, z) = y
 
 type Opener = User
 type Codomain = User

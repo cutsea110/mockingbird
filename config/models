@@ -32,8 +32,6 @@ Ticket
     created UTCTime default=now()
     updated UTCTime default=now()
 
-    UniqueTicket channel codomain
-
 Comment
     channel ChannelId
     comment Text
