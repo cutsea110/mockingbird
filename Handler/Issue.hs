@@ -2,9 +2,10 @@ module Handler.Issue where
 
 import Prelude (read)
 
-import Import as Import
+import Import as Import hiding ((\\))
 import Yesod.Form.Bootstrap3
 import Yesod.Goodies.PNotify
+import Data.List ((\\))
 
 import Model.Fields
 
@@ -39,8 +40,8 @@ selfForm uid render mv = Issue
 
 getNewIssueR :: Handler Html
 getNewIssueR = do
-  render <- getMessageRender
   uid <- requireAuthId
+  render <- getMessageRender
   mode <- lookupGetParam "mode"
   case mode of
     Just "self" -> selfView render uid
@@ -62,8 +63,8 @@ getNewIssueR = do
 
 postNewIssueR :: Handler ()
 postNewIssueR = do
-  render <- getMessageRender
   uid <- requireAuthId
+  render <- getMessageRender
   ((r, _), _) <- runForm $ issueForm uid render Nothing
   case r of
     FormSuccess issue -> do
@@ -87,8 +88,8 @@ postNewIssueR = do
 
 postNewSelfIssueR :: Handler ()
 postNewSelfIssueR = do
-  render <- getMessageRender
   uid <- requireAuthId
+  render <- getMessageRender
   now <- liftIO getCurrentTime
   ((r, _), _) <- runForm $ selfForm uid render Nothing
   case r of
@@ -121,20 +122,21 @@ postCloneIssueR key = do
     FormSuccess issue -> do
       iid <- runDB $ do
         iid <- insert issue
-        forM chans $ \(_, c, ts) -> do
+        forM_ chans $ \(_, c, ts) -> do
           cid <- insert $ Channel (channelType c) iid
-          forM ts $ \(_, t, u) -> do
-            let uid' = ticketCodomain t
-            _ <- insert $ Ticket cid uid uid' uid' OPEN now now
-            return ()
+          let uids' = map (ticketCodomain . snd3) ts
+          insertMany_ $ map (\uid' -> Ticket cid uid uid' uid' OPEN now now) uids'
         return iid
       redirect $ ISSUE $ IssueR iid
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
+  where
+    snd3 (x, y, z) = y
 
 type Opener = User
 type Codomain = User
-type IssueTree = (Issue, Opener, [(ChannelId, Channel, [(TicketId, Ticket, Codomain)])])
+type IssueTree = (Issue, Opener, [ChannelTree])
+type ChannelTree = (ChannelId, Channel, [(TicketId, Ticket, Codomain)])
 
 progress :: (Channel, [(TicketId, Ticket, Codomain)]) -> Int
 progress (ch, ts) = case channelType ch of
@@ -156,7 +158,6 @@ getIssueTree key = do
       return (tid, t, u)
     return (cid, c, tu)
   return (issue, opener, chans)
-
 
 getIssueR :: IssueId -> Handler Html
 getIssueR key = do
@@ -220,17 +221,14 @@ postNewChannelR key = do
         "one" -> do
           cid <- insert $ Channel logic key
           forM_ us $ \(Entity uid _) -> do
-            _ <- insert $ Ticket cid creater uid uid OPEN now now
-            return ()
+            insert_ $ Ticket cid creater uid uid OPEN now now
         "each" -> do
           forM_ us $ \(Entity uid _) -> do
             cid <- insert $ Channel logic key
-            _ <- insert $ Ticket cid creater uid uid OPEN now now
-            return ()
+            insert_ $ Ticket cid creater uid uid OPEN now now
         "self" -> do
           cid <- insert $ Channel logic key
-          _ <- insert $ Ticket cid creater creater creater OPEN now now
-          return ()
+          insert_ $ Ticket cid creater creater creater OPEN now now
 
 postNewSelfChanR :: IssueId -> Handler ()
 postNewSelfChanR key = do
@@ -238,11 +236,36 @@ postNewSelfChanR key = do
   now <- liftIO getCurrentTime
   runDB $ do
     cid <- insert $ Channel ALL key
-    insert $ Ticket cid uid uid uid OPEN now now
+    insert_ $ Ticket cid uid uid uid OPEN now now
   redirect $ ISSUE $ IssueR key
 
 getChannelR :: IssueId -> ChannelId -> Handler Html
-getChannelR = undefined
+getChannelR key cid = do
+  render <- getMessageRender
+  (issue, us) <- runDB $ do
+    issue <- get404 key
+    ts <- selectList [TicketChannel ==. cid] []
+    us <- selectList [UserId <-. map (ticketCodomain.entityVal) ts] []
+    return (issue, us)
+  ((_, w), enc) <- runForm $ searchForm render $ Just (Search Nothing us)
+  defaultLayout $ do
+    setTitleI MsgChannel
+    $(widgetFile "channel")
 
 postChannelR :: IssueId -> ChannelId -> Handler Html
-postChannelR = undefined
+postChannelR key cid = do
+  uid <- requireAuthId
+  render <- getMessageRender
+  now <- liftIO getCurrentTime
+  ((r, _), _) <- runForm $ searchForm render Nothing
+  case r of
+    FormSuccess s -> do
+      let news = map entityKey $ users s
+      runDB $ do
+        ts <- selectList [TicketChannel ==. cid] []
+        let olds = map (ticketCodomain.entityVal) ts
+        deleteWhere [TicketChannel ==. cid, TicketCodomain /<-. news]
+        insertMany_ $ map (\nid -> Ticket cid uid nid nid OPEN now now) $ news \\ olds
+      redirect $ ISSUE $ IssueR key
+    FormFailure (x:_) -> invalidArgs [x]
+    _ -> invalidArgs ["error occured"]

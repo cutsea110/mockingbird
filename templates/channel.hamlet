@@ -1,0 +1,6 @@
+<!-- Channel page -->
+<div .page-header>
+  <h1>_{MsgSearchUser}
+
+<form .form-horizontal role=form method=post action=@{ISSUE $ ChannelR key cid} enctype=#{enc}>
+  ^{w}
