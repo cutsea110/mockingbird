@@ -171,25 +171,23 @@ postNewChannelR key = do
     fromText = read . unpack
     
     create :: MonadIO m =>
-              Logic -> Text -> [Entity User] -> UTCTime -> Key User
+              Logic -> Text -> [Entity User] -> UTCTime -> UserId
               -> ReaderT SqlBackend m ()
     create logic mode us now creater =
       case mode of
         "one" -> do
-          cid <- insert (Channel logic key)
-          forM_ us $ \u -> do
-            let uid = entityKey u
-            _ <- insert (Ticket cid creater uid uid OPEN now now)
+          cid <- insert $ Channel logic key
+          forM_ us $ \(Entity uid _) -> do
+            _ <- insert $ Ticket cid creater uid uid OPEN now now
             return ()
         "each" -> do
-          forM_ us $ \u -> do
-            let uid = entityKey u
-            cid <- insert (Channel logic key)
-            _ <- insert (Ticket cid creater uid uid OPEN now now)
+          forM_ us $ \(Entity uid _) -> do
+            cid <- insert $ Channel logic key
+            _ <- insert $ Ticket cid creater uid uid OPEN now now
             return ()
         "self" -> do
-          cid <- insert (Channel logic key)
-          _ <- insert (Ticket cid creater creater creater OPEN now now)
+          cid <- insert $ Channel logic key
+          _ <- insert $ Ticket cid creater creater creater OPEN now now
           return ()
 
 postNewSelfChanR :: IssueId -> Handler ()
