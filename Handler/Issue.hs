@@ -134,7 +134,8 @@ postCloneIssueR key = do
 
 type Opener = User
 type Codomain = User
-type IssueTree = (Issue, Opener, [(ChannelId, Channel, [(TicketId, Ticket, Codomain)])])
+type IssueTree = (Issue, Opener, [ChannelTree])
+type ChannelTree = (ChannelId, Channel, [(TicketId, Ticket, Codomain)])
 
 getIssueTree :: MonadIO m => IssueId -> ReaderT SqlBackend m IssueTree
 getIssueTree key = do
@@ -148,7 +149,6 @@ getIssueTree key = do
       return (tid, t, u)
     return (cid, c, tu)
   return (issue, opener, chans)
-
 
 getIssueR :: IssueId -> Handler Html
 getIssueR key = do
@@ -234,7 +234,17 @@ postNewSelfChanR key = do
   redirect $ ISSUE $ IssueR key
 
 getChannelR :: IssueId -> ChannelId -> Handler Html
-getChannelR = undefined
+getChannelR key cid = do
+  render <- getMessageRender
+  (issue, us) <- runDB $ do
+    issue <- get404 key
+    ts <- selectList [TicketChannel ==. cid] []
+    us <- selectList [UserId <-. map (ticketCodomain.entityVal) ts] []
+    return (issue, us)
+  ((_, w), enc) <- runForm $ searchForm render $ Just (Search Nothing us)
+  defaultLayout $ do
+    setTitleI MsgChannel
+    $(widgetFile "channel")
 
 postChannelR :: IssueId -> ChannelId -> Handler Html
-postChannelR = undefined
+postChannelR key cid = undefined
