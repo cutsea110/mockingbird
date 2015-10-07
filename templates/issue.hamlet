@@ -32,6 +32,9 @@
     <ul class="list-group">
       $forall (cid, ch, ts) <- chans
         <li class="list-group-item">
+          $with percent <- progress (ch, ts)
+            <div class="progress" style="width: 25%;">
+              <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: #{percent}%;">#{percent}%
           $case channelType ch
             $of ALL
               <span class="label label-info">_{MsgALL}
