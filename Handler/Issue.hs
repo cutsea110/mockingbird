@@ -257,6 +257,6 @@ postChannelR key cid = do
         let olds = map (ticketCodomain.entityVal) ts
         deleteWhere [TicketChannel ==. cid, TicketCodomain /<-. news]
         insertMany_ $ map (\nid -> Ticket cid uid nid nid OPEN now now) $ news \\ olds
-      redirect $ ISSUE $ ChannelR key cid
+      redirect $ ISSUE $ IssueR key
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
