@@ -1,0 +1,8 @@
+<!-- New channel page -->
+<div .page-header>
+  <h1>_{MsgSearchUser}
+
+<form .form-horizontal role=form method=post action=@{ISSUE $ NewChannelR key} enctype=#{enc}>
+  <input type=hidden name=logic value=#{logic}>
+  <input type=hidden name=mode value=#{mode}>
+  ^{w}

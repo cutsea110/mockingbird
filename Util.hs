@@ -23,3 +23,26 @@ localDayToUTC = localTimeToUTC (hoursToTimeZone Settings.tz) . flip LocalTime (T
 
 day'timeToUTC :: Day -> TimeOfDay -> UTCTime
 day'timeToUTC = (localTimeToUTC (hoursToTimeZone Settings.tz) .) . LocalTime
+
+data Diff = Seconds Integer
+          | Minutes Integer
+          | Hours Integer
+          | Days Integer
+          | Months Integer
+          | Years Integer
+          deriving (Show, Read, Eq, Ord)
+
+beforeFrom :: UTCTime -> UTCTime -> Diff
+t `beforeFrom` now =
+  let (s, d) = (round $ utctDayTime now - utctDayTime t, utctDay now `diffDays` utctDay t)
+  in if d == 0
+     then if s < 60
+          then Seconds s
+          else if s < 60 * 60
+               then Minutes $ s `div` 60
+               else Hours $ s `div` (60 * 60)
+     else if d < 30
+          then Days $ fromIntegral d
+          else if d < 365
+               then Months $ fromIntegral d `div` 30
+               else Years $ fromIntegral d `div` 365

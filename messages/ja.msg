@@ -18,8 +18,13 @@ Timeline: タイムライン
 TimelineOf u@User: #{userName u}のタイムライン
 MyTasks: マイタスク
 TasksOf u@User: #{userName u}のタスク
-CreateNewIssue: イシュー作成
+Create: つくる
+CreateNewIssue: ふつうのタスク
+CreateNewSelfIssue: じぶんタスク
 Dropdown u@User: #{userName u}
+
+Search: 検索
+Users: ユーザ
 
 Update: 更新する
 
@@ -36,7 +41,30 @@ IssueLimitTime: 期限時間
 IssueOpener: 起票者
 IssueCreated: 作成日
 IssueUpdated: 更新日
+IssueLimitDatetime: 期限
 CreateIssue: 起票する
+CloneIssue: テンプレとしてつかう
 
 SucceedToCreateIssue: 起票に成功しました
 FailureToCreateIssue: 起票に失敗しました
+
+AddAllChannel: 「みんな」でやる
+AddAnyChannel: 「だれか」がやる
+AddEachChannel: 「それぞれ」がやる
+AddMyChannel: 「じぶん」でやる
+ALL: みんな
+ANY: だれか
+EditChannel: 編集
+
+Subject v@Issue: #{issueSubject v}
+
+SecondsAgo n@Integer: #{show n}秒
+MinutesAgo n@Integer: #{show n}分
+HoursAgo n@Integer: #{show n}時間
+DaysAgo n@Integer: #{show n}日
+MonthsAgo n@Integer: #{show n}ヶ月
+YearsAgo n@Integer: #{show n}年
+
+SearchUser: ユーザを探す
+UserNameOrIdent: ユーザ名またはID
+CreateGroup: グループをつくる
