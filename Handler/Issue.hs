@@ -155,6 +155,7 @@ getIssueR key = do
   (issue, opener, chans) <- runDB $ getIssueTree key
   now <- liftIO getCurrentTime
   let createdBefore = (issueCreated issue) `beforeFrom` now
+      percent = "45%" :: Text
   defaultLayout $ do
     setTitleI $ MsgSubject issue
     $(widgetFile "issue")

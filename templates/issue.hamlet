@@ -44,6 +44,8 @@
               $of CLOSE
                 <a class="bg-success" href="#"> #{userName u}
           <a href=@{ISSUE $ ChannelR key cid} class="pull-right">_{MsgEditChannel}
+          <div class="progress pull-left" style="width: 15%;">
+            <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: #{percent};">#{percent}
 
 <div class="btn-group" role="group">
 
