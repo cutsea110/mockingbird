@@ -13,9 +13,8 @@ genForm = generateFormPost . renderBootstrap3 Import.hGrid
 bfs' = withPlaceholder <*> bfs
 bfs'focus = withAutofocus <$> bfs'
 
-issueForm
-  :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
-     Key User -> (AppMessage -> Text) -> Maybe Issue -> AForm m Issue
+issueForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
+             UserId -> (AppMessage -> Text) -> Maybe Issue -> AForm m Issue
 issueForm uid render mv = Issue
                           <$> areq textField (bfs'focus $ render MsgIssueSubject) (issueSubject <$> mv)
                           <*> aopt textareaField (bfs' $ render MsgIssueDescription) (issueDescription <$> mv)
@@ -26,10 +25,9 @@ issueForm uid render mv = Issue
                           <*> lift (liftIO getCurrentTime)
                           <*  bootstrapSubmit (BootstrapSubmit (render MsgCreateIssue) "btn-primary" [])
 
-simpleForm
-  :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
-     Key User -> (AppMessage -> Text) -> Maybe Issue -> AForm m Issue
-simpleForm uid render mv = Issue
+selfForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
+            UserId -> (AppMessage -> Text) -> Maybe Issue -> AForm m Issue
+selfForm uid render mv = Issue
                           <$> areq textField (bfs'focus $ render MsgIssueSubject) (issueSubject <$> mv)
                           <*> pure Nothing
                           <*> pure Nothing
@@ -45,7 +43,7 @@ getNewIssueR = do
   uid <- requireAuthId
   mode <- lookupGetParam "mode"
   case mode of
-    Just "simple" -> simpleView render uid
+    Just "self" -> selfView render uid
     Just _ -> defaultView render uid
     Nothing -> defaultView render uid
   where
@@ -55,12 +53,12 @@ getNewIssueR = do
       defaultLayout $ do
         setTitleI MsgCreateNewIssue
         $(widgetFile "new-issue")
-    -- simple
-    simpleView render uid = do
-      (w, enc) <- genForm $ simpleForm uid render Nothing
+    -- self
+    selfView render uid = do
+      (w, enc) <- genForm $ selfForm uid render Nothing
       defaultLayout $ do
         setTitleI MsgCreateNewIssue
-        $(widgetFile "new-issue-simple")
+        $(widgetFile "new-issue-self")
       
 postNewIssueR :: Handler ()
 postNewIssueR = do
@@ -87,6 +85,18 @@ postNewIssueR = do
                              }
   redirect (ISSUE NewIssueR)
 
+postNewSelfIssueR :: Handler ()
+postNewSelfIssueR = do
+  render <- getMessageRender
+  uid <- requireAuthId
+  now <- liftIO getCurrentTime
+  ((r, _), _) <- runForm $ selfForm uid render Nothing
+  case r of
+    FormSuccess issue -> do
+      key <- runDB $ insert issue { issueDescription = Just $ Textarea $ issueSubject issue }
+      postNewSelfChanR key
+    FormFailure (x:_) -> invalidArgs [x]
+    _ -> invalidArgs ["error occured"]
 
 type Opener = User
 type Codomain = User
@@ -180,6 +190,15 @@ postNewChannelR key = do
           cid <- insert (Channel logic key)
           _ <- insert (Ticket cid creater creater creater OPEN now now)
           return ()
+
+postNewSelfChanR :: IssueId -> Handler ()
+postNewSelfChanR key = do
+  uid <- requireAuthId
+  now <- liftIO getCurrentTime
+  runDB $ do
+    cid <- insert $ Channel ALL key
+    insert $ Ticket cid uid uid uid OPEN now now
+  redirect $ ISSUE $ IssueR key
 
 getChannelR :: IssueId -> ChannelId -> Handler Html
 getChannelR = undefined
