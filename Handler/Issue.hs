@@ -99,7 +99,13 @@ postNewSelfIssueR = do
     _ -> invalidArgs ["error occured"]
 
 getCloneIssueR :: IssueId -> Handler Html
-getCloneIssueR key = undefined
+getCloneIssueR key = do
+  (issue, opener, chans) <- runDB $ getIssueTree key
+  now <- liftIO getCurrentTime
+  let createdBefore = (issueCreated issue) `beforeFrom` now
+  defaultLayout $ do
+    setTitleI MsgCloneIssue
+    $(widgetFile "clone-issue")
 
 postCloneIssueR :: IssueId -> Handler ()
 postCloneIssueR key = undefined

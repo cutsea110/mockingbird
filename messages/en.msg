@@ -42,7 +42,8 @@ IssueOpener: Opener
 IssueCreated: Created datetime
 IssueUpdated: Updated datetime
 IssueLimitDatetime: Limit datetime
-CreateIssue: Create Issue
+CreateIssue: Create issue
+CloneIssue: Clone issue
 
 SucceedToCreateIssue: Succeed to create a issue
 FailureToCreateIssue: Failure to create a issue

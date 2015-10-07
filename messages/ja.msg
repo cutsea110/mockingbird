@@ -43,6 +43,7 @@ IssueCreated: 作成日
 IssueUpdated: 更新日
 IssueLimitDatetime: 期限
 CreateIssue: 起票する
+CloneIssue: テンプレとしてつかう
 
 SucceedToCreateIssue: 起票に成功しました
 FailureToCreateIssue: 起票に失敗しました
