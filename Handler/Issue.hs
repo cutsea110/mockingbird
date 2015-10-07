@@ -26,7 +26,6 @@ issueForm uid render mv = Issue
                           <*> lift (liftIO getCurrentTime)
                           <*  bootstrapSubmit (BootstrapSubmit (render MsgCreateIssue) "btn-primary" [])
 
-{-
 hiddenIssueForm uid mv = Issue
                          <$> areq hiddenField "" (issueSubject <$> mv)
                          <*> aopt hiddenField "" (issueDescription <$> mv)
@@ -35,7 +34,6 @@ hiddenIssueForm uid mv = Issue
                          <*> pure uid
                          <*> lift (liftIO getCurrentTime)
                          <*> lift (liftIO getCurrentTime)
--}
 
 selfForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
             UserId -> (AppMessage -> Text) -> Maybe Issue -> AForm m Issue
