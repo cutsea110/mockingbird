@@ -100,8 +100,9 @@ postNewSelfIssueR = do
 
 type Opener = User
 type Codomain = User
+type IssueTree = (Issue, Opener, [(ChannelId, Channel, [(TicketId, Ticket, Codomain)])])
 
-getIssueTree :: MonadIO m => IssueId -> ReaderT SqlBackend m (Issue, Opener, [(ChannelId, Channel, [(TicketId, Ticket, Codomain)])])
+getIssueTree :: MonadIO m => IssueId -> ReaderT SqlBackend m IssueTree
 getIssueTree key = do
   issue <- get404 key
   opener <- get404 (issueOpener issue)
