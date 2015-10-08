@@ -19,12 +19,12 @@ instance PathPiece Textarea where
   toPathPiece = unTextarea
 
 instance PathPiece TimeOfDay where
-  fromPathPiece = Just . read . T.unpack . safe
+  fromPathPiece = Just . read . T.unpack . sanitize
       where
-        safe t = let (h:m:s) = T.splitOn ":" t
-                in if null s
-                   then T.intercalate ":" [h,m,"00"]
-                   else t
+        sanitize t = let (h:m:s) = T.splitOn ":" t
+                     in if null s
+                        then T.intercalate ":" [h,m,"00"]
+                        else t
   toPathPiece = T.pack . show
 
 instance PathPiece UTCTime where
