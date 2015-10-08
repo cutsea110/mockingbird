@@ -13,11 +13,10 @@
   /new-issue                        NewIssueR      GET POST
   /new-chan                         NewChanR           POST
   /new-isue-chan                    NewIssueChanR      POST
-
   /new-self                         NewSelfIssueR      POST
+  /item/#IssueId/self               NewSelfChanR       POST
+
   /clone/#IssueId                   CloneIssueR    GET POST
   /item/#IssueId                    IssueR         GET
   /item/#IssueId/chan               NewChannelR    GET POST
   /item/#IssueId/chan/#ChannelId    ChannelR       GET POST
-  /item/#IssueId/self               NewSelfChanR       POST
-

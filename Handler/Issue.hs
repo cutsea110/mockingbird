@@ -92,15 +92,22 @@ postNewIssueChanR :: Handler Html
 postNewIssueChanR = do
   uid <- requireAuthId
   render <- getMessageRender
+  now <- liftIO getCurrentTime
+  Just logic <- fmap (fmap fromText) $ lookupPostParam "logic"
+  Just mode <- lookupPostParam "mode"
   ((r, _), _) <- runForm $ searchAndHiddenIssueForm uid render Nothing Nothing
   case r of
-    FormSuccess (issue, search) -> do
-      defaultLayout $ do
-        setTitleI MsgCreateIssue
-        [whamlet|OK|]
+    FormSuccess (issue, s) -> do
+      iid <- runDB $ do
+        iid <- insert issue
+        create iid logic mode (users s) now uid
+        return iid
+      redirect $ ISSUE $ IssueR iid
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
-
+  where
+    fromText :: Text -> Logic
+    fromText = read . unpack
 
 postNewSelfIssueR :: Handler ()
 postNewSelfIssueR = do
@@ -161,7 +168,26 @@ progress (ch, ts) = case channelType ch of
   where
    (den, num) = foldr (\(_, t, _) (ttl, cls) -> (ttl+1, if close t then cls+1 else cls)) (0, 0) ts
    pred (_, t, _) = close t
- 
+
+create :: MonadIO m =>
+          IssueId -> Logic -> Text -> Maybe [Entity User] -> UTCTime -> UserId
+          -> ReaderT SqlBackend m ()
+create key logic mode mus now creater = do
+  case mode of
+    "one" -> do
+      cid <- insert $ Channel logic key
+      forM_ us $ \(Entity uid _) -> do
+        insert_ $ Ticket cid creater uid uid OPEN now now
+    "each" -> do
+      forM_ us $ \(Entity uid _) -> do
+        cid <- insert $ Channel logic key
+        insert_ $ Ticket cid creater uid uid OPEN now now
+    "self" -> do
+      cid <- insert $ Channel logic key
+      insert_ $ Ticket cid creater creater creater OPEN now now
+  where
+    us = maybe [] id mus
+
 getIssueTree :: MonadIO m => IssueId -> ReaderT SqlBackend m IssueTree
 getIssueTree key = do
   issue <- get404 key
@@ -185,7 +211,7 @@ getIssueR key = do
     $(widgetFile "issue")
 
 data Search = Search { query :: Maybe Text
-                     , users :: [Entity User]
+                     , users :: Maybe [Entity User]
                      }
 
 searchAndHiddenIssueForm uid render mi ms
@@ -197,7 +223,7 @@ searchForm :: (AppMessage -> Text) -> Maybe Search -> AForm (HandlerT App IO) Se
 searchForm render mv = Search
                        <$> aopt (searchField True) (bfs' $ render MsgUserNameOrIdent) (query <$> mv)
                        <*  bootstrapSubmit (BootstrapSubmit (render MsgCreateGroup) "btn-primary" [])
-                       <*> areq (checkboxesField collect) (bfs' $ render MsgUsers) (users <$> mv)
+                       <*> aopt (checkboxesField collect) (bfs' $ render MsgUsers) (users <$> mv)
                        <*  bootstrapSubmit (BootstrapSubmit (render MsgCreateGroup) "btn-primary" [])
   where
     collect :: Handler (OptionList (Entity User))
@@ -242,7 +268,7 @@ postNewChannelR key = do
   ((r, _), _) <- runForm $ searchForm render Nothing
   case r of
     FormSuccess s -> do
-      runDB $ create logic mode (users s) now creater
+      runDB $ create key logic mode (users s) now creater
       redirect $ ISSUE $ IssueR key
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
@@ -250,23 +276,6 @@ postNewChannelR key = do
     fromText :: Text -> Logic
     fromText = read . unpack
     
-    create :: MonadIO m =>
-              Logic -> Text -> [Entity User] -> UTCTime -> UserId
-              -> ReaderT SqlBackend m ()
-    create logic mode us now creater =
-      case mode of
-        "one" -> do
-          cid <- insert $ Channel logic key
-          forM_ us $ \(Entity uid _) -> do
-            insert_ $ Ticket cid creater uid uid OPEN now now
-        "each" -> do
-          forM_ us $ \(Entity uid _) -> do
-            cid <- insert $ Channel logic key
-            insert_ $ Ticket cid creater uid uid OPEN now now
-        "self" -> do
-          cid <- insert $ Channel logic key
-          insert_ $ Ticket cid creater creater creater OPEN now now
-
 postNewSelfChanR :: IssueId -> Handler ()
 postNewSelfChanR key = do
   uid <- requireAuthId
@@ -284,7 +293,7 @@ getChannelR key cid = do
     ts <- selectList [TicketChannel ==. cid] []
     us <- selectList [UserId <-. map (ticketCodomain.entityVal) ts] []
     return (issue, us)
-  ((_, w), enc) <- runForm $ searchForm render $ Just (Search Nothing us)
+  ((_, w), enc) <- runForm $ searchForm render $ Just (Search Nothing $ Just us)
   defaultLayout $ do
     setTitleI MsgUpdateChannel
     $(widgetFile "channel")
@@ -297,7 +306,7 @@ postChannelR key cid = do
   ((r, _), _) <- runForm $ searchForm render Nothing
   case r of
     FormSuccess s -> do
-      let news = map entityKey $ users s
+      let news = map entityKey $ maybe [] id $ users s
       runDB $ do
         ts <- selectList [TicketChannel ==. cid] []
         let olds = map (ticketCodomain.entityVal) ts
