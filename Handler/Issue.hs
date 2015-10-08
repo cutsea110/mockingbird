@@ -6,9 +6,11 @@ import Import as Import hiding ((\\))
 import Yesod.Form.Bootstrap3
 import Yesod.Goodies.PNotify
 import Data.List ((\\))
+import Data.Time.LocalTime
 
 import Model.Fields
 
+runFormInline = runFormPost . renderBootstrap3 BootstrapInlineForm
 runForm = runFormPost . renderBootstrap3 Import.hGrid
 genForm = generateFormPost . renderBootstrap3 Import.hGrid
 bfs' = withPlaceholder <*> bfs
@@ -77,7 +79,7 @@ postNewIssueR = do
   ((r, _), _) <- runForm $ issueForm uid render Nothing
   case r of
     FormSuccess issue -> do
-      ((_, w), enc) <- runForm $ searchAndHiddenIssueForm uid render (Just issue) Nothing
+      ((_, w), enc) <- runFormInline $ hiddenIssueForm uid (Just issue)
       opener <- runDB $ get404 uid
       let chans = []
       defaultLayout $ do

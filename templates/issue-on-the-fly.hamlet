@@ -34,12 +34,23 @@
                 <a class="bg-success" href="#"> #{userName u}
           <a href="#" class="pull-right">_{MsgEditChannel}
 
-<div class="btn-group" role="group">
+<div class="form-group-inline">
+  <form class="form-inline pull-left" method=post action="#" enctype=#{enc}>
+    ^{w}
+    <button type=submit class="btn btn-default">_{MsgAddAllChannel}
 
-  <form method=post action="#">
+  <form class="form-inline pull-left" method=post action="#" enctype=#{enc}>
+    ^{w}
+    <button type=submit class="btn btn-default">_{MsgAddAnyChannel}
+
+  <form class="form-inline pull-left" method=post action="#" enctype=#{enc}>
+    ^{w}
+    <button type=submit class="btn btn-default">_{MsgAddEachChannel}
+
+  <form class="form-inline pull-left" method=post action="#">
+    ^{w} <!-- dummy for size adjust -->
     <button type=submit class="btn btn-default">_{MsgAddMyChannel}
 
-    <a href="#" class="btn btn-default">_{MsgAddAllChannel}
-    <a href="#" class="btn btn-default">_{MsgAddAnyChannel}
-    <a href="#" class="btn btn-default">_{MsgAddEachChannel}
-    <a href="#" class="btn btn-info">_{MsgCloneIssue}
+  <form class="form-inline pull-left" method=get action="#">
+    ^{w} <!-- dummy for size adjust -->
+    <button type=submit class="btn btn-default">_{MsgCloneIssue}
