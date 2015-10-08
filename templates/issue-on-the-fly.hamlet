@@ -35,22 +35,26 @@
           <a href="#" class="pull-right">_{MsgEditChannel}
 
 <div class="form-group-inline">
-  <form class="form-inline pull-left" method=post action="#" enctype=#{enc}>
+  <form class="form-inline pull-left" method=post action=@{ISSUE $ NewChanR} enctype=#{enc}>
+    <input type=hidden name=mode value=one>
+    <input type=hidden name=logic value=ALL>
     ^{w}
     <button type=submit class="btn btn-default">_{MsgAddAllChannel}
 
-  <form class="form-inline pull-left" method=post action="#" enctype=#{enc}>
+  <form class="form-inline pull-left" method=post action=@{ISSUE $ NewChanR} enctype=#{enc}>
+    <input type=hidden name=mode value=one>
+    <input type=hidden name=logic value=ANY>
     ^{w}
     <button type=submit class="btn btn-default">_{MsgAddAnyChannel}
 
-  <form class="form-inline pull-left" method=post action="#" enctype=#{enc}>
+  <form class="form-inline pull-left" method=post action=@{ISSUE $ NewChanR} enctype=#{enc}>
+    <input type=hidden name=mode value=each>
+    <input type=hidden name=logic value=ALL>
     ^{w}
     <button type=submit class="btn btn-default">_{MsgAddEachChannel}
 
   <form class="form-inline pull-left" method=post action="#">
+    <input type=hidden name=mode value=self>
+    <input type=hidden name=logic value=ALL>
     ^{w} <!-- dummy for size adjust -->
     <button type=submit class="btn btn-default">_{MsgAddMyChannel}
-
-  <form class="form-inline pull-left" method=get action="#">
-    ^{w} <!-- dummy for size adjust -->
-    <button type=submit class="btn btn-default">_{MsgCloneIssue}

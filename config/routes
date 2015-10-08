@@ -10,7 +10,10 @@
   /tasks/#UserId                    TaskR          GET
 
 /issues               ISSUE:
-  /new                              NewIssueR      GET POST
+  /new-issue                        NewIssueR      GET POST
+  /new-chan                         NewChanR           POST
+  /new-isue-chan                    NewIssueChanR      POST
+
   /new-self                         NewSelfIssueR      POST
   /clone/#IssueId                   CloneIssueR    GET POST
   /item/#IssueId                    IssueR         GET

@@ -88,6 +88,20 @@ postNewIssueR = do
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
 
+postNewIssueChanR :: Handler Html
+postNewIssueChanR = do
+  uid <- requireAuthId
+  render <- getMessageRender
+  ((r, _), _) <- runForm $ searchAndHiddenIssueForm uid render Nothing Nothing
+  case r of
+    FormSuccess (issue, search) -> do
+      defaultLayout $ do
+        setTitleI MsgCreateIssue
+        [whamlet|OK|]
+    FormFailure (x:_) -> invalidArgs [x]
+    _ -> invalidArgs ["error occured"]
+
+
 postNewSelfIssueR :: Handler ()
 postNewSelfIssueR = do
   uid <- requireAuthId
@@ -190,6 +204,22 @@ searchForm render mv = Search
     collect = do
       entities <- runDB $ selectList [] [Asc UserIdent]
       optionsPersist [] [Asc UserIdent] userNameId
+
+postNewChanR :: Handler Html
+postNewChanR = do
+  uid <- requireAuthId
+  render <- getMessageRender
+  Just logic <- lookupPostParam "logic"
+  Just mode <- lookupPostParam "mode"
+  ((r, _), _) <- runForm $ hiddenIssueForm uid Nothing
+  case r of
+    FormSuccess issue -> do
+      ((_, w), enc) <- runForm $ searchAndHiddenIssueForm uid render (Just issue) Nothing
+      defaultLayout $ do
+        setTitleI MsgCreateIssue
+        $(widgetFile "new-channel-on-the-fly")
+    FormFailure (x:_) -> invalidArgs [x]
+    _ -> invalidArgs ["error occured"]
 
 getNewChannelR :: IssueId -> Handler Html
 getNewChannelR key = do
