@@ -6,9 +6,11 @@ import Import as Import hiding ((\\))
 import Yesod.Form.Bootstrap3
 import Yesod.Goodies.PNotify
 import Data.List ((\\))
+import Data.Time.LocalTime
 
 import Model.Fields
 
+runFormInline = runFormPost . renderBootstrap3 BootstrapInlineForm
 runForm = runFormPost . renderBootstrap3 Import.hGrid
 genForm = generateFormPost . renderBootstrap3 Import.hGrid
 bfs' = withPlaceholder <*> bfs
@@ -25,6 +27,15 @@ issueForm uid render mv = Issue
                           <*> lift (liftIO getCurrentTime)
                           <*> lift (liftIO getCurrentTime)
                           <*  bootstrapSubmit (BootstrapSubmit (render MsgCreateIssue) "btn-primary" [])
+
+hiddenIssueForm uid mv = Issue
+                         <$> areq hiddenField "" (issueSubject <$> mv)
+                         <*> aopt hiddenField "" (issueDescription <$> mv)
+                         <*> aopt hiddenField "" (issueLimitdate <$> mv)
+                         <*> aopt hiddenField "" (issueLimittime <$> mv)
+                         <*> pure uid
+                         <*> lift (liftIO getCurrentTime)
+                         <*> lift (liftIO getCurrentTime)
 
 selfForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
             UserId -> (AppMessage -> Text) -> Maybe Issue -> AForm m Issue
@@ -61,30 +72,42 @@ getNewIssueR = do
         setTitleI MsgCreateNewIssue
         $(widgetFile "new-issue-self")
 
-postNewIssueR :: Handler ()
+postNewIssueR :: Handler Html
 postNewIssueR = do
   uid <- requireAuthId
   render <- getMessageRender
   ((r, _), _) <- runForm $ issueForm uid render Nothing
   case r of
     FormSuccess issue -> do
-      iid <- runDB $ insert issue
-      setPNotify $ defNotify { _type = Just Success
-                             , _title = Just $ Right $ render MsgSuccess
-                             , _text = Just $ Right $ render MsgSucceedToCreateIssue
-                             }
-      redirect (ISSUE $ IssueR iid)
-    FormFailure (x:_) -> do
-      setPNotify $ defNotify { _type = Just Error
-                             , _title = Just $ Right $ render MsgError
-                             , _text = Just $ Right x
-                             }
-    _ -> do
-      setPNotify $ defNotify { _type = Just Error
-                             , _title = Just $ Right $ render MsgError
-                             , _text = Just $ Right $ render MsgFailureToCreateIssue
-                             }
-  redirect (ISSUE NewIssueR)
+      ((_, w), enc) <- runFormInline $ hiddenIssueForm uid (Just issue)
+      opener <- runDB $ get404 uid
+      let chans = []
+      defaultLayout $ do
+        setTitleI MsgCreateIssue
+        $(widgetFile "issue-on-the-fly")
+    FormFailure (x:_) -> invalidArgs [x]
+    _ -> invalidArgs ["error occured"]
+
+postNewIssueChanR :: Handler Html
+postNewIssueChanR = do
+  uid <- requireAuthId
+  render <- getMessageRender
+  now <- liftIO getCurrentTime
+  Just logic <- fmap (fmap fromText) $ lookupPostParam "logic"
+  Just mode <- lookupPostParam "mode"
+  ((r, _), _) <- runForm $ searchAndHiddenIssueForm uid render Nothing Nothing
+  case r of
+    FormSuccess (issue, s) -> do
+      iid <- runDB $ do
+        iid <- insert issue
+        create iid logic mode (users s) now uid
+        return iid
+      redirect $ ISSUE $ IssueR iid
+    FormFailure (x:_) -> invalidArgs [x]
+    _ -> invalidArgs ["error occured"]
+  where
+    fromText :: Text -> Logic
+    fromText = read . unpack
 
 postNewSelfIssueR :: Handler ()
 postNewSelfIssueR = do
@@ -145,7 +168,26 @@ progress (ch, ts) = case channelType ch of
   where
    (den, num) = foldr (\(_, t, _) (ttl, cls) -> (ttl+1, if close t then cls+1 else cls)) (0, 0) ts
    pred (_, t, _) = close t
- 
+
+create :: MonadIO m =>
+          IssueId -> Logic -> Text -> Maybe [Entity User] -> UTCTime -> UserId
+          -> ReaderT SqlBackend m ()
+create key logic mode mus now creater = do
+  case mode of
+    "one" -> do
+      cid <- insert $ Channel logic key
+      forM_ us $ \(Entity uid _) -> do
+        insert_ $ Ticket cid creater uid uid OPEN now now
+    "each" -> do
+      forM_ us $ \(Entity uid _) -> do
+        cid <- insert $ Channel logic key
+        insert_ $ Ticket cid creater uid uid OPEN now now
+    "self" -> do
+      cid <- insert $ Channel logic key
+      insert_ $ Ticket cid creater creater creater OPEN now now
+  where
+    us = maybe [] id mus
+
 getIssueTree :: MonadIO m => IssueId -> ReaderT SqlBackend m IssueTree
 getIssueTree key = do
   issue <- get404 key
@@ -169,20 +211,41 @@ getIssueR key = do
     $(widgetFile "issue")
 
 data Search = Search { query :: Maybe Text
-                     , users :: [Entity User]
+                     , users :: Maybe [Entity User]
                      }
+
+searchAndHiddenIssueForm uid render mi ms
+  = (,)
+    <$> hiddenIssueForm uid mi
+    <*> searchForm render ms
 
 searchForm :: (AppMessage -> Text) -> Maybe Search -> AForm (HandlerT App IO) Search
 searchForm render mv = Search
                        <$> aopt (searchField True) (bfs' $ render MsgUserNameOrIdent) (query <$> mv)
                        <*  bootstrapSubmit (BootstrapSubmit (render MsgCreateGroup) "btn-primary" [])
-                       <*> areq (checkboxesField collect) (bfs' $ render MsgUsers) (users <$> mv)
+                       <*> aopt (checkboxesField collect) (bfs' $ render MsgUsers) (users <$> mv)
                        <*  bootstrapSubmit (BootstrapSubmit (render MsgCreateGroup) "btn-primary" [])
   where
     collect :: Handler (OptionList (Entity User))
     collect = do
       entities <- runDB $ selectList [] [Asc UserIdent]
       optionsPersist [] [Asc UserIdent] userNameId
+
+postNewChanR :: Handler Html
+postNewChanR = do
+  uid <- requireAuthId
+  render <- getMessageRender
+  Just logic <- lookupPostParam "logic"
+  Just mode <- lookupPostParam "mode"
+  ((r, _), _) <- runForm $ hiddenIssueForm uid Nothing
+  case r of
+    FormSuccess issue -> do
+      ((_, w), enc) <- runForm $ searchAndHiddenIssueForm uid render (Just issue) Nothing
+      defaultLayout $ do
+        setTitleI MsgCreateIssue
+        $(widgetFile "new-channel-on-the-fly")
+    FormFailure (x:_) -> invalidArgs [x]
+    _ -> invalidArgs ["error occured"]
 
 getNewChannelR :: IssueId -> Handler Html
 getNewChannelR key = do
@@ -205,7 +268,7 @@ postNewChannelR key = do
   ((r, _), _) <- runForm $ searchForm render Nothing
   case r of
     FormSuccess s -> do
-      runDB $ create logic mode (users s) now creater
+      runDB $ create key logic mode (users s) now creater
       redirect $ ISSUE $ IssueR key
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
@@ -213,23 +276,6 @@ postNewChannelR key = do
     fromText :: Text -> Logic
     fromText = read . unpack
     
-    create :: MonadIO m =>
-              Logic -> Text -> [Entity User] -> UTCTime -> UserId
-              -> ReaderT SqlBackend m ()
-    create logic mode us now creater =
-      case mode of
-        "one" -> do
-          cid <- insert $ Channel logic key
-          forM_ us $ \(Entity uid _) -> do
-            insert_ $ Ticket cid creater uid uid OPEN now now
-        "each" -> do
-          forM_ us $ \(Entity uid _) -> do
-            cid <- insert $ Channel logic key
-            insert_ $ Ticket cid creater uid uid OPEN now now
-        "self" -> do
-          cid <- insert $ Channel logic key
-          insert_ $ Ticket cid creater creater creater OPEN now now
-
 postNewSelfChanR :: IssueId -> Handler ()
 postNewSelfChanR key = do
   uid <- requireAuthId
@@ -247,7 +293,7 @@ getChannelR key cid = do
     ts <- selectList [TicketChannel ==. cid] []
     us <- selectList [UserId <-. map (ticketCodomain.entityVal) ts] []
     return (issue, us)
-  ((_, w), enc) <- runForm $ searchForm render $ Just (Search Nothing us)
+  ((_, w), enc) <- runForm $ searchForm render $ Just (Search Nothing $ Just us)
   defaultLayout $ do
     setTitleI MsgUpdateChannel
     $(widgetFile "channel")
@@ -260,7 +306,7 @@ postChannelR key cid = do
   ((r, _), _) <- runForm $ searchForm render Nothing
   case r of
     FormSuccess s -> do
-      let news = map entityKey $ users s
+      let news = map entityKey $ maybe [] id $ users s
       runDB $ do
         ts <- selectList [TicketChannel ==. cid] []
         let olds = map (ticketCodomain.entityVal) ts
