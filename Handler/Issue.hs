@@ -10,7 +10,6 @@ import Data.Time.LocalTime
 
 import Model.Fields
 
-runFormInline = runFormPost . renderBootstrap3 BootstrapInlineForm
 runForm = runFormPost . renderBootstrap3 Import.hGrid
 genForm = generateFormPost . renderBootstrap3 Import.hGrid
 bfs' = withPlaceholder <*> bfs
@@ -18,23 +17,25 @@ bfs'focus = withAutofocus <$> bfs'
 
 issueForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
              UserId -> (AppMessage -> Text) -> Maybe Issue -> AForm m Issue
-issueForm uid render mv = Issue
-                          <$> areq textField (bfs'focus $ render MsgIssueSubject) (issueSubject <$> mv)
-                          <*> aopt textareaField (bfs' $ render MsgIssueDescription) (issueDescription <$> mv)
-                          <*> aopt dayField (bfs' $ render MsgIssueLimitDay) (issueLimitdate <$> mv)
-                          <*> aopt timeFieldTypeTime (bfs' $ render MsgIssueLimitTime) (issueLimittime <$> mv)
-                          <*> pure uid
-                          <*> lift (liftIO getCurrentTime)
-                          <*> lift (liftIO getCurrentTime)
+issueForm uid render mv
+  = Issue
+    <$> areq textField (bfs'focus $ render MsgIssueSubject) (issueSubject <$> mv)
+    <*> aopt textareaField (bfs' $ render MsgIssueDescription) (issueDescription <$> mv)
+    <*> aopt dayField (bfs' $ render MsgIssueLimitDay) (issueLimitdate <$> mv)
+    <*> aopt timeFieldTypeTime (bfs' $ render MsgIssueLimitTime) (issueLimittime <$> mv)
+    <*> pure uid
+    <*> lift (liftIO getCurrentTime)
+    <*> lift (liftIO getCurrentTime)
 
-hiddenIssueForm uid mv = Issue
-                         <$> areq hiddenField "" (issueSubject <$> mv)
-                         <*> aopt hiddenField "" (issueDescription <$> mv)
-                         <*> aopt hiddenField "" (issueLimitdate <$> mv)
-                         <*> aopt hiddenField "" (issueLimittime <$> mv)
-                         <*> pure uid
-                         <*> lift (liftIO getCurrentTime)
-                         <*> lift (liftIO getCurrentTime)
+hiddenIssueForm uid mv
+  = Issue
+    <$> areq hiddenField "" (issueSubject <$> mv)
+    <*> aopt hiddenField "" (issueDescription <$> mv)
+    <*> aopt hiddenField "" (issueLimitdate <$> mv)
+    <*> aopt hiddenField "" (issueLimittime <$> mv)
+    <*> pure uid
+    <*> lift (liftIO getCurrentTime)
+    <*> lift (liftIO getCurrentTime)
 
 getNewIssueR :: Handler Html
 getNewIssueR = do
