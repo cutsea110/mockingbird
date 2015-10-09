@@ -66,8 +66,6 @@ postNewIssueChanR = do
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
   where
-    fromText :: Text -> Logic
-    fromText = read . unpack
     dispatch "ALL" = (ALL, "one")
     dispatch "ANY" = (ANY, "one")
     dispatch "EACH" = (ALL, "each")
@@ -118,11 +116,6 @@ postCloneIssueR key = do
     _ -> invalidArgs ["error occured"]
   where
     snd3 (x, y, z) = y
-
-type Opener = User
-type Codomain = User
-type IssueTree = (Issue, Opener, [ChannelTree])
-type ChannelTree = (ChannelId, Channel, [(TicketId, Ticket, Codomain)])
 
 progress :: (Channel, [(TicketId, Ticket, Codomain)]) -> Int
 progress (ch, ts) = case channelType ch of
@@ -228,8 +221,6 @@ postNewChannelR key = do
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
   where
-    fromText :: Text -> Logic
-    fromText = read . unpack
     dispatch "ALL" = (ALL, "one")
     dispatch "ANY" = (ANY, "one")
     dispatch "EACH" = (ALL, "each")

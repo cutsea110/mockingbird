@@ -16,6 +16,14 @@ share [mkPersist sqlSettings, mkMigrate "migrateAll"]
     $(persistFileWith lowerCaseSettings "config/models")
 
 -- |
+-- type aliases
+--
+type Opener = User
+type Codomain = User
+type IssueTree = (Issue, Opener, [ChannelTree])
+type ChannelTree = (ChannelId, Channel, [(TicketId, Ticket, Codomain)])
+
+-- |
 -- Extensions for User
 --
 userName :: User -> Text
