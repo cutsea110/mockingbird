@@ -10,6 +10,11 @@ import Data.Time.LocalTime
 
 import Model.Fields
 
+data Mode = ONE
+          | SELF
+          | EACH
+          deriving (Show, Read, Eq, Ord)
+
 issueForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
              UserId -> (AppMessage -> Text) -> Maybe Issue -> AForm m Issue
 issueForm uid render mv
@@ -66,9 +71,9 @@ postNewIssueChanR = do
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
   where
-    dispatch "ALL" = (ALL, "one")
-    dispatch "ANY" = (ANY, "one")
-    dispatch "EACH" = (ALL, "each")
+    dispatch "ALL" = (ALL, ONE)
+    dispatch "ANY" = (ANY, ONE)
+    dispatch "EACH" = (ALL, EACH)
 
 postNewSelfIssueR :: Handler Html
 postNewSelfIssueR = do
@@ -126,19 +131,19 @@ progress (ch, ts) = case channelType ch of
    pred (_, t, _) = close t
 
 create :: MonadIO m =>
-          IssueId -> Logic -> Text -> Maybe [Entity User] -> UTCTime -> UserId
+          IssueId -> Logic -> Mode -> Maybe [Entity User] -> UTCTime -> UserId
           -> ReaderT SqlBackend m ()
 create key logic mode mus now creater = do
   case mode of
-    "one" -> do
+    ONE -> do
       cid <- insert $ Channel logic key
       forM_ us $ \(Entity uid _) -> do
         insert_ $ Ticket cid creater uid uid OPEN now now
-    "each" -> do
+    EACH -> do
       forM_ us $ \(Entity uid _) -> do
         cid <- insert $ Channel logic key
         insert_ $ Ticket cid creater uid uid OPEN now now
-    "self" -> do
+    SELF -> do
       cid <- insert $ Channel logic key
       insert_ $ Ticket cid creater creater creater OPEN now now
   where
@@ -221,9 +226,9 @@ postNewChannelR key = do
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
   where
-    dispatch "ALL" = (ALL, "one")
-    dispatch "ANY" = (ANY, "one")
-    dispatch "EACH" = (ALL, "each")
+    dispatch "ALL" = (ALL, ONE)
+    dispatch "ANY" = (ANY, ONE)
+    dispatch "EACH" = (ALL, EACH)
     
 postNewSelfChanR :: IssueId -> Handler Html
 postNewSelfChanR key = do
