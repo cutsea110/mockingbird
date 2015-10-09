@@ -210,9 +210,7 @@ getIssueR key = do
     setTitleI $ MsgSubject issue
     $(widgetFile "issue")
 
-data Search = Search { query :: Maybe Text
-                     , users :: Maybe [Entity User]
-                     }
+data Search = Search { users :: Maybe [Entity User] }
 
 searchAndHiddenIssueForm :: UserId -> (AppMessage -> Text) -> Maybe Issue -> Maybe Search
                          -> AForm (HandlerT App IO) (Issue, Search)
@@ -222,10 +220,7 @@ searchAndHiddenIssueForm uid render mi ms
     <*> searchForm render ms
 
 searchForm :: (AppMessage -> Text) -> Maybe Search -> AForm (HandlerT App IO) Search
-searchForm render mv = Search
-                       <$> aopt (searchField True) (bfs' $ render MsgUserNameOrIdent) (query <$> mv)
-                       <*  bootstrapSubmit (BootstrapSubmit (render MsgCreateGroup) "btn-primary" [])
-                       <*> aopt (checkboxesField collect) (bfs' $ render MsgUsers) (users <$> mv)
+searchForm render mv = Search <$> aopt (checkboxesField collect) (bfs' $ render MsgUsers) (users <$> mv)
   where
     collect :: Handler (OptionList (Entity User))
     collect = do
@@ -294,7 +289,7 @@ getChannelR key cid = do
     ts <- selectList [TicketChannel ==. cid] []
     us <- selectList [UserId <-. map (ticketCodomain.entityVal) ts] []
     return (issue, us)
-  ((_, w), enc) <- runForm $ searchForm render $ Just (Search Nothing $ Just us)
+  ((_, w), enc) <- runForm $ searchForm render $ Just (Search $ Just us)
   defaultLayout $ do
     setTitleI MsgUpdateChannel
     $(widgetFile "channel")
