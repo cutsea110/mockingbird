@@ -4,3 +4,8 @@
 
 <form .form-horizontal role=form method=post action=@{ISSUE NewIssueR} enctype=#{enc}>
   ^{w}
+  <div class="form-group">
+    <div class="col-sm-4">
+    <div class="col-sm-6">
+      <button class="btn btn-default" type=submit name=mode value=NORMAL>_{MsgCreateNewIssue}
+      <button class="btn btn-info" type=submit name=mode value=SELF>_{MsgCreateNewSelfIssue}

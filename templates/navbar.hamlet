@@ -10,6 +10,9 @@
 
       <a class="navbar-brand hidden-xs" href=@{TopR}>_{MsgSystemName}
       <a class="navbar-brand visible-xs" href=@{TopR}>_{MsgSystemInitialName}
+      <form class="navbar-form navbar-left" role=search>
+        <div class="form-group">
+          <input type=search class="form-control" placeholder=_{MsgSearch}>
 
     <div class="collapse navbar-collapse" id=#{globalNavMenuId}>
       $maybe Entity uid u <- mu
@@ -17,11 +20,7 @@
           $maybe cr <- mcr
             <li :cr == HOME (TimelineR uid):.active><a href=@{HOME $ TimelineR uid}>_{MsgTimeline}</a></li>
             <li :cr == HOME (TaskR uid):.active><a href=@{HOME $ TaskR uid}>_{MsgMyTasks}</a></li>
-            <li class="dropdown" :cr == ISSUE NewIssueR:.active>
-               <a href="#" class="dropdown-toggle" data-toggle="dropdown">_{MsgCreate} <b class="caret"></b></a>
-               <ul class="dropdown-menu">
-                 <li><a href=@?{(ISSUE NewIssueR, [("mode", "self")])}>_{MsgCreateNewSelfIssue}</a></li>
-                 <li><a href=@{ISSUE NewIssueR}>_{MsgCreateNewIssue}</a></li>
+            <li :cr == ISSUE NewIssueR:.active><a href=@{ISSUE NewIssueR}>_{MsgCreate}</a></li>
 
 
           <li class="dropdown">

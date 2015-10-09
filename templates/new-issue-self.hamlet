@@ -1,6 +1,0 @@
-<!-- New issue simple page -->
-<div .page-header>
-  <h1>_{MsgCreateNewSelfIssue}
-
-<form .form-inline role=form method=post action=@{ISSUE NewSelfIssueR} enctype=#{enc}>
-  ^{w}

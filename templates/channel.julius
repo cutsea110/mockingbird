@@ -5,9 +5,13 @@ $(function(){
   // hook event
   $('input[type=search]').keyup(function(){
     var q = $(this).val();
-    $("input[type=checkbox]").parent("label:not(:contains('" + q + "'))").hide();
-    $("input[type=checkbox]").parent("label:contains('" + q + "')").show();
-    $("input[type=checkbox]:checked").parent("label").show();
+    if (q == '') {
+      $("input[type=checkbox]").parent("label").hide();
+    } else {
+      $("input[type=checkbox]").parent("label:not(:contains('" + q + "'))").hide();
+      $("input[type=checkbox]").parent("label:contains('" + q + "')").show();
+      $("input[type=checkbox]:checked").parent("label").show();
+    }
   });
 });
 

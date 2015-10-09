@@ -49,6 +49,7 @@ SucceedToCreateIssue: 起票に成功しました
 FailureToCreateIssue: 起票に失敗しました
 
 UpdateChannel: チャネル更新
+AddChannel: チャンネルをつくる
 AddAllChannel: 「みんな」でやる
 AddAnyChannel: 「だれか」がやる
 AddEachChannel: 「それぞれ」がやる
