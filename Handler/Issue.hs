@@ -198,7 +198,7 @@ postNewChannelR = do
       ((_, w), enc) <- runForm $ searchAndHiddenIssueForm uid render (Just issue) Nothing
       defaultLayout $ do
         setTitleI MsgCreateIssue
-        $(widgetFile "new-channel-on-the-fly")
+        $(widgetFile "new-channel")
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
 
@@ -209,7 +209,7 @@ getAddChannelR key = do
   (w, enc) <- genForm $ searchForm render Nothing
   defaultLayout $ do
     setTitleI $ MsgSubject issue
-    $(widgetFile "new-channel")
+    $(widgetFile "add-channel")
 
 postAddChannelR :: IssueId -> Handler Html
 postAddChannelR key = do
