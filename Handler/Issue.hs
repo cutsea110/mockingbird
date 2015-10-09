@@ -214,6 +214,8 @@ data Search = Search { query :: Maybe Text
                      , users :: Maybe [Entity User]
                      }
 
+searchAndHiddenIssueForm :: UserId -> (AppMessage -> Text) -> Maybe Issue -> Maybe Search
+                         -> AForm (HandlerT App IO) (Issue, Search)
 searchAndHiddenIssueForm uid render mi ms
   = (,)
     <$> hiddenIssueForm uid mi
