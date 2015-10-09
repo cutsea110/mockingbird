@@ -6,13 +6,18 @@ issueForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
              UserId -> (AppMessage -> Text) -> Maybe Issue -> AForm m Issue
 issueForm uid render mv
   = Issue
-    <$> areq textField (bfs'focus $ render MsgIssueSubject) (issueSubject <$> mv)
-    <*> aopt textareaField (bfs' $ render MsgIssueDescription) (issueDescription <$> mv)
-    <*> aopt dayField (bfs' $ render MsgIssueLimitDay) (issueLimitdate <$> mv)
-    <*> aopt timeFieldTypeTime (bfs' $ render MsgIssueLimitTime) (issueLimittime <$> mv)
+    <$> areq textField bfs'subj (issueSubject <$> mv)
+    <*> aopt textareaField bfs'desc (issueDescription <$> mv)
+    <*> aopt dayField bfs'day (issueLimitdate <$> mv)
+    <*> aopt timeFieldTypeTime bfs'time (issueLimittime <$> mv)
     <*> pure uid
     <*> lift (liftIO getCurrentTime)
     <*> lift (liftIO getCurrentTime)
+    where
+      bfs'subj = bfs'focus (render MsgIssueSubject) (render MsgSimpleAndClarity)
+      bfs'desc = bfs' (render MsgIssueDescription) (render MsgInDetail)
+      bfs'day = bfs'  (render MsgIssueLimitDay) (render MsgIssueLimitDay)
+      bfs'time = bfs'  (render MsgIssueLimitTime) (render MsgIssueLimitTime)
 
 hiddenIssueForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
                    UserId -> Maybe Issue -> AForm m Issue
@@ -36,7 +41,8 @@ searchAndHiddenIssueForm uid render mi ms
     <*> searchForm render ms
 
 searchForm :: (AppMessage -> Text) -> Maybe Search -> AForm (HandlerT App IO) Search
-searchForm render mv = Search <$> aopt (checkboxesField collect) (bfs' $ render MsgUsers) (users <$> mv)
+searchForm render mv = Search <$> aopt (checkboxesField collect) bfs'users (users <$> mv)
   where
     collect :: Handler (OptionList (Entity User))
     collect = optionsPersist [] [Asc UserIdent] userNameId
+    bfs'users = bfs' (render MsgUsers) (render MsgUsers)

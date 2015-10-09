@@ -34,7 +34,7 @@ postNewChannelR = do
   ((r, _), _) <- runForm $ issueForm uid render Nothing
   case r of
     FormSuccess issue -> do
-      ((_, w), enc) <- runForm $ searchAndHiddenIssueForm uid render (Just issue) Nothing
+      ((_, w), enc) <- runFormInline $ searchAndHiddenIssueForm uid render (Just issue) Nothing
       defaultLayout $ do
         setTitleI MsgCreateIssue
         $(widgetFile "new-channel")
@@ -48,7 +48,7 @@ postNewIssueChannelR = do
   now <- liftIO getCurrentTime
   Just md <- lookupPostParam "mode"
   let (logic, mode) = dispatch md
-  ((r, _), _) <- runForm $ searchAndHiddenIssueForm uid render Nothing Nothing
+  ((r, _), _) <- runFormInline $ searchAndHiddenIssueForm uid render Nothing Nothing
   case r of
     FormSuccess (issue, s) -> do
       iid <- runDB $ do
