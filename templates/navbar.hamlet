@@ -20,11 +20,7 @@
           $maybe cr <- mcr
             <li :cr == HOME (TimelineR uid):.active><a href=@{HOME $ TimelineR uid}>_{MsgTimeline}</a></li>
             <li :cr == HOME (TaskR uid):.active><a href=@{HOME $ TaskR uid}>_{MsgMyTasks}</a></li>
-            <li class="dropdown" :cr == ISSUE NewIssueR:.active>
-               <a href="#" class="dropdown-toggle" data-toggle="dropdown">_{MsgCreate} <b class="caret"></b></a>
-               <ul class="dropdown-menu">
-                 <li><a href=@?{(ISSUE NewIssueR, [("mode", "self")])}>_{MsgCreateNewSelfIssue}</a></li>
-                 <li><a href=@{ISSUE NewIssueR}>_{MsgCreateNewIssue}</a></li>
+            <li :cr == ISSUE NewIssueR:.active><a href=@{ISSUE NewIssueR}>_{MsgCreate}</a></li>
 
 
           <li class="dropdown">

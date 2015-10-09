@@ -49,6 +49,7 @@ SucceedToCreateIssue: Succeed to create a issue
 FailureToCreateIssue: Failure to create a issue
 
 UpdateChannel: Update channel
+AddChannel: Add channel
 AddAllChannel: Add `ALL' channel
 AddAnyChannel: Add `ANY' channel
 AddEachChannel: Add `EACH' channel

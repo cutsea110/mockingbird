@@ -26,7 +26,6 @@ issueForm uid render mv = Issue
                           <*> pure uid
                           <*> lift (liftIO getCurrentTime)
                           <*> lift (liftIO getCurrentTime)
-                          <*  bootstrapSubmit (BootstrapSubmit (render MsgCreateIssue) "btn-primary" [])
 
 hiddenIssueForm uid mv = Issue
                          <$> areq hiddenField "" (issueSubject <$> mv)
@@ -37,64 +36,29 @@ hiddenIssueForm uid mv = Issue
                          <*> lift (liftIO getCurrentTime)
                          <*> lift (liftIO getCurrentTime)
 
-selfForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
-            UserId -> (AppMessage -> Text) -> Maybe Issue -> AForm m Issue
-selfForm uid render mv = Issue
-                          <$> areq textField (bfs'focus $ render MsgIssueSubject) (issueSubject <$> mv)
-                          <*> pure Nothing
-                          <*> pure Nothing
-                          <*> pure Nothing
-                          <*> pure uid
-                          <*> lift (liftIO getCurrentTime)
-                          <*> lift (liftIO getCurrentTime)
-                          <*  bootstrapSubmit (BootstrapSubmit (render MsgCreateIssue) "btn-primary" [])
-
 getNewIssueR :: Handler Html
 getNewIssueR = do
   uid <- requireAuthId
   render <- getMessageRender
-  mode <- lookupGetParam "mode"
-  case mode of
-    Just "self" -> selfView render uid
-    Just _ -> defaultView render uid
-    Nothing -> defaultView render uid
-  where
-    -- default
-    defaultView render uid = do
-      (w, enc) <- genForm $ issueForm uid render Nothing
-      defaultLayout $ do
-        setTitleI MsgCreateNewIssue
-        $(widgetFile "new-issue")
-    -- self
-    selfView render uid = do
-      (w, enc) <- genForm $ selfForm uid render Nothing
-      defaultLayout $ do
-        setTitleI MsgCreateNewIssue
-        $(widgetFile "new-issue-self")
+  (w, enc) <- genForm $ issueForm uid render Nothing
+  defaultLayout $ do
+    setTitleI MsgCreateNewIssue
+    $(widgetFile "new-issue")
 
 postNewIssueR :: Handler Html
 postNewIssueR = do
-  uid <- requireAuthId
-  render <- getMessageRender
-  ((r, _), _) <- runForm $ issueForm uid render Nothing
-  case r of
-    FormSuccess issue -> do
-      ((_, w), enc) <- runFormInline $ hiddenIssueForm uid (Just issue)
-      opener <- runDB $ get404 uid
-      let chans = []
-      defaultLayout $ do
-        setTitleI MsgCreateIssue
-        $(widgetFile "issue-on-the-fly")
-    FormFailure (x:_) -> invalidArgs [x]
-    _ -> invalidArgs ["error occured"]
+  Just mode <- lookupPostParam "mode"
+  case mode of
+    "SELF" -> postNewSelfIssueR
+    _ -> postNewChanR
 
 postNewIssueChanR :: Handler Html
 postNewIssueChanR = do
   uid <- requireAuthId
   render <- getMessageRender
   now <- liftIO getCurrentTime
-  Just logic <- fmap (fmap fromText) $ lookupPostParam "logic"
-  Just mode <- lookupPostParam "mode"
+  Just md <- lookupPostParam "mode"
+  let (logic, mode) = dispatch md
   ((r, _), _) <- runForm $ searchAndHiddenIssueForm uid render Nothing Nothing
   case r of
     FormSuccess (issue, s) -> do
@@ -108,13 +72,16 @@ postNewIssueChanR = do
   where
     fromText :: Text -> Logic
     fromText = read . unpack
+    dispatch "ALL" = (ALL, "one")
+    dispatch "ANY" = (ANY, "one")
+    dispatch "EACH" = (ALL, "each")
 
-postNewSelfIssueR :: Handler ()
+postNewSelfIssueR :: Handler Html
 postNewSelfIssueR = do
   uid <- requireAuthId
   render <- getMessageRender
   now <- liftIO getCurrentTime
-  ((r, _), _) <- runForm $ selfForm uid render Nothing
+  ((r, _), _) <- runForm $ issueForm uid render Nothing
   case r of
     FormSuccess issue -> do
       key <- runDB $ insert issue { issueDescription = Just $ Textarea $ issueSubject issue }
@@ -231,9 +198,7 @@ postNewChanR :: Handler Html
 postNewChanR = do
   uid <- requireAuthId
   render <- getMessageRender
-  Just logic <- lookupPostParam "logic"
-  Just mode <- lookupPostParam "mode"
-  ((r, _), _) <- runForm $ hiddenIssueForm uid Nothing
+  ((r, _), _) <- runForm $ issueForm uid render Nothing
   case r of
     FormSuccess issue -> do
       ((_, w), enc) <- runForm $ searchAndHiddenIssueForm uid render (Just issue) Nothing
@@ -246,8 +211,6 @@ postNewChanR = do
 getNewChannelR :: IssueId -> Handler Html
 getNewChannelR key = do
   render <- getMessageRender
-  Just logic <- lookupGetParam "logic"
-  Just mode <- lookupGetParam "mode"
   issue <- runDB $ get404 key
   (w, enc) <- genForm $ searchForm render Nothing
   defaultLayout $ do
@@ -258,8 +221,8 @@ postNewChannelR :: IssueId -> Handler Html
 postNewChannelR key = do
   creater <- requireAuthId
   render <- getMessageRender
-  Just logic <- fmap (fmap fromText) $ lookupPostParam "logic"
-  Just mode <- lookupPostParam "mode"
+  Just md <- lookupPostParam "mode"
+  let (logic, mode) = dispatch md
   now <- liftIO getCurrentTime
   ((r, _), _) <- runForm $ searchForm render Nothing
   case r of
@@ -271,8 +234,11 @@ postNewChannelR key = do
   where
     fromText :: Text -> Logic
     fromText = read . unpack
+    dispatch "ALL" = (ALL, "one")
+    dispatch "ANY" = (ANY, "one")
+    dispatch "EACH" = (ALL, "each")
     
-postNewSelfChanR :: IssueId -> Handler ()
+postNewSelfChanR :: IssueId -> Handler Html
 postNewSelfChanR key = do
   uid <- requireAuthId
   now <- liftIO getCurrentTime
@@ -284,11 +250,12 @@ postNewSelfChanR key = do
 getChannelR :: IssueId -> ChannelId -> Handler Html
 getChannelR key cid = do
   render <- getMessageRender
-  (issue, us) <- runDB $ do
+  (issue, chan, us) <- runDB $ do
     issue <- get404 key
+    ch <- get404 cid
     ts <- selectList [TicketChannel ==. cid] []
     us <- selectList [UserId <-. map (ticketCodomain.entityVal) ts] []
-    return (issue, us)
+    return (issue, ch, us)
   ((_, w), enc) <- runForm $ searchForm render $ Just (Search $ Just us)
   defaultLayout $ do
     setTitleI MsgUpdateChannel
