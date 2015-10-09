@@ -26,6 +26,7 @@ library
                      Handler.Top
                      Handler.Home
                      Handler.Issue
+                     Handler.Issue.Form
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT

@@ -8,34 +8,13 @@ import Yesod.Goodies.PNotify
 import Data.List ((\\))
 import Data.Time.LocalTime
 
+import Handler.Issue.Form
 import Model.Fields
 
 data Mode = ONE
           | SELF
           | EACH
           deriving (Show, Read, Eq, Ord)
-
-issueForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
-             UserId -> (AppMessage -> Text) -> Maybe Issue -> AForm m Issue
-issueForm uid render mv
-  = Issue
-    <$> areq textField (bfs'focus $ render MsgIssueSubject) (issueSubject <$> mv)
-    <*> aopt textareaField (bfs' $ render MsgIssueDescription) (issueDescription <$> mv)
-    <*> aopt dayField (bfs' $ render MsgIssueLimitDay) (issueLimitdate <$> mv)
-    <*> aopt timeFieldTypeTime (bfs' $ render MsgIssueLimitTime) (issueLimittime <$> mv)
-    <*> pure uid
-    <*> lift (liftIO getCurrentTime)
-    <*> lift (liftIO getCurrentTime)
-
-hiddenIssueForm uid mv
-  = Issue
-    <$> areq hiddenField "" (issueSubject <$> mv)
-    <*> aopt hiddenField "" (issueDescription <$> mv)
-    <*> aopt hiddenField "" (issueLimitdate <$> mv)
-    <*> aopt hiddenField "" (issueLimittime <$> mv)
-    <*> pure uid
-    <*> lift (liftIO getCurrentTime)
-    <*> lift (liftIO getCurrentTime)
 
 getNewIssueR :: Handler Html
 getNewIssueR = do
@@ -52,6 +31,20 @@ postNewIssueR = do
   case mode of
     "SELF" -> postNewSelfIssueR
     _ -> postNewChannelR
+
+postNewChannelR :: Handler Html
+postNewChannelR = do
+  uid <- requireAuthId
+  render <- getMessageRender
+  ((r, _), _) <- runForm $ issueForm uid render Nothing
+  case r of
+    FormSuccess issue -> do
+      ((_, w), enc) <- runForm $ searchAndHiddenIssueForm uid render (Just issue) Nothing
+      defaultLayout $ do
+        setTitleI MsgCreateIssue
+        $(widgetFile "new-channel")
+    FormFailure (x:_) -> invalidArgs [x]
+    _ -> invalidArgs ["error occured"]
 
 postNewIssueChannelR :: Handler Html
 postNewIssueChannelR = do
@@ -85,6 +78,84 @@ postNewSelfIssueR = do
     FormSuccess issue -> do
       key <- runDB $ insert issue { issueDescription = Just $ Textarea $ issueSubject issue }
       postNewSelfChannelR key
+    FormFailure (x:_) -> invalidArgs [x]
+    _ -> invalidArgs ["error occured"]
+    
+postNewSelfChannelR :: IssueId -> Handler Html
+postNewSelfChannelR key = do
+  uid <- requireAuthId
+  now <- liftIO getCurrentTime
+  runDB $ do
+    cid <- insert $ Channel ALL key
+    insert_ $ Ticket cid uid uid uid OPEN now now
+  redirect $ ISSUE $ IssueR key
+
+getIssueR :: IssueId -> Handler Html
+getIssueR key = do
+  (issue, opener, chans) <- runDB $ getIssueTree key
+  now <- liftIO getCurrentTime
+  let createdBefore = (issueCreated issue) `beforeFrom` now
+  defaultLayout $ do
+    setTitleI $ MsgSubject issue
+    $(widgetFile "issue")
+
+getAddChannelR :: IssueId -> Handler Html
+getAddChannelR key = do
+  render <- getMessageRender
+  issue <- runDB $ get404 key
+  (w, enc) <- genForm $ searchForm render Nothing
+  defaultLayout $ do
+    setTitleI $ MsgSubject issue
+    $(widgetFile "add-channel")
+
+postAddChannelR :: IssueId -> Handler Html
+postAddChannelR key = do
+  creater <- requireAuthId
+  render <- getMessageRender
+  Just md <- lookupPostParam "mode"
+  let (logic, mode) = dispatch md
+  now <- liftIO getCurrentTime
+  ((r, _), _) <- runForm $ searchForm render Nothing
+  case r of
+    FormSuccess s -> do
+      runDB $ create key logic mode (users s) now creater
+      redirect $ ISSUE $ IssueR key
+    FormFailure (x:_) -> invalidArgs [x]
+    _ -> invalidArgs ["error occured"]
+  where
+    dispatch "ALL" = (ALL, ONE)
+    dispatch "ANY" = (ANY, ONE)
+    dispatch "EACH" = (ALL, EACH)
+
+getChannelR :: IssueId -> ChannelId -> Handler Html
+getChannelR key cid = do
+  render <- getMessageRender
+  (issue, chan, us) <- runDB $ do
+    issue <- get404 key
+    ch <- get404 cid
+    ts <- selectList [TicketChannel ==. cid] []
+    us <- selectList [UserId <-. map (ticketCodomain.entityVal) ts] []
+    return (issue, ch, us)
+  ((_, w), enc) <- runForm $ searchForm render $ Just (Search $ Just us)
+  defaultLayout $ do
+    setTitleI MsgUpdateChannel
+    $(widgetFile "channel")
+
+postChannelR :: IssueId -> ChannelId -> Handler Html
+postChannelR key cid = do
+  uid <- requireAuthId
+  render <- getMessageRender
+  now <- liftIO getCurrentTime
+  ((r, _), _) <- runForm $ searchForm render Nothing
+  case r of
+    FormSuccess s -> do
+      let news = map entityKey $ maybe [] id $ users s
+      runDB $ do
+        ts <- selectList [TicketChannel ==. cid] []
+        let olds = map (ticketCodomain.entityVal) ts
+        deleteWhere [TicketChannel ==. cid, TicketCodomain /<-. news]
+        insertMany_ $ map (\nid -> Ticket cid uid nid nid OPEN now now) $ news \\ olds
+      redirect $ ISSUE $ IssueR key
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
 
@@ -161,113 +232,3 @@ getIssueTree key = do
       return (tid, t, u)
     return (cid, c, tu)
   return (issue, opener, chans)
-
-getIssueR :: IssueId -> Handler Html
-getIssueR key = do
-  (issue, opener, chans) <- runDB $ getIssueTree key
-  now <- liftIO getCurrentTime
-  let createdBefore = (issueCreated issue) `beforeFrom` now
-  defaultLayout $ do
-    setTitleI $ MsgSubject issue
-    $(widgetFile "issue")
-
-data Search = Search { users :: Maybe [Entity User] }
-
-searchAndHiddenIssueForm :: UserId -> (AppMessage -> Text) -> Maybe Issue -> Maybe Search
-                         -> AForm (HandlerT App IO) (Issue, Search)
-searchAndHiddenIssueForm uid render mi ms
-  = (,)
-    <$> hiddenIssueForm uid mi
-    <*> searchForm render ms
-
-searchForm :: (AppMessage -> Text) -> Maybe Search -> AForm (HandlerT App IO) Search
-searchForm render mv = Search <$> aopt (checkboxesField collect) (bfs' $ render MsgUsers) (users <$> mv)
-  where
-    collect :: Handler (OptionList (Entity User))
-    collect = do
-      entities <- runDB $ selectList [] [Asc UserIdent]
-      optionsPersist [] [Asc UserIdent] userNameId
-
-postNewChannelR :: Handler Html
-postNewChannelR = do
-  uid <- requireAuthId
-  render <- getMessageRender
-  ((r, _), _) <- runForm $ issueForm uid render Nothing
-  case r of
-    FormSuccess issue -> do
-      ((_, w), enc) <- runForm $ searchAndHiddenIssueForm uid render (Just issue) Nothing
-      defaultLayout $ do
-        setTitleI MsgCreateIssue
-        $(widgetFile "new-channel")
-    FormFailure (x:_) -> invalidArgs [x]
-    _ -> invalidArgs ["error occured"]
-
-getAddChannelR :: IssueId -> Handler Html
-getAddChannelR key = do
-  render <- getMessageRender
-  issue <- runDB $ get404 key
-  (w, enc) <- genForm $ searchForm render Nothing
-  defaultLayout $ do
-    setTitleI $ MsgSubject issue
-    $(widgetFile "add-channel")
-
-postAddChannelR :: IssueId -> Handler Html
-postAddChannelR key = do
-  creater <- requireAuthId
-  render <- getMessageRender
-  Just md <- lookupPostParam "mode"
-  let (logic, mode) = dispatch md
-  now <- liftIO getCurrentTime
-  ((r, _), _) <- runForm $ searchForm render Nothing
-  case r of
-    FormSuccess s -> do
-      runDB $ create key logic mode (users s) now creater
-      redirect $ ISSUE $ IssueR key
-    FormFailure (x:_) -> invalidArgs [x]
-    _ -> invalidArgs ["error occured"]
-  where
-    dispatch "ALL" = (ALL, ONE)
-    dispatch "ANY" = (ANY, ONE)
-    dispatch "EACH" = (ALL, EACH)
-    
-postNewSelfChannelR :: IssueId -> Handler Html
-postNewSelfChannelR key = do
-  uid <- requireAuthId
-  now <- liftIO getCurrentTime
-  runDB $ do
-    cid <- insert $ Channel ALL key
-    insert_ $ Ticket cid uid uid uid OPEN now now
-  redirect $ ISSUE $ IssueR key
-
-getChannelR :: IssueId -> ChannelId -> Handler Html
-getChannelR key cid = do
-  render <- getMessageRender
-  (issue, chan, us) <- runDB $ do
-    issue <- get404 key
-    ch <- get404 cid
-    ts <- selectList [TicketChannel ==. cid] []
-    us <- selectList [UserId <-. map (ticketCodomain.entityVal) ts] []
-    return (issue, ch, us)
-  ((_, w), enc) <- runForm $ searchForm render $ Just (Search $ Just us)
-  defaultLayout $ do
-    setTitleI MsgUpdateChannel
-    $(widgetFile "channel")
-
-postChannelR :: IssueId -> ChannelId -> Handler Html
-postChannelR key cid = do
-  uid <- requireAuthId
-  render <- getMessageRender
-  now <- liftIO getCurrentTime
-  ((r, _), _) <- runForm $ searchForm render Nothing
-  case r of
-    FormSuccess s -> do
-      let news = map entityKey $ maybe [] id $ users s
-      runDB $ do
-        ts <- selectList [TicketChannel ==. cid] []
-        let olds = map (ticketCodomain.entityVal) ts
-        deleteWhere [TicketChannel ==. cid, TicketCodomain /<-. news]
-        insertMany_ $ map (\nid -> Ticket cid uid nid nid OPEN now now) $ news \\ olds
-      redirect $ ISSUE $ IssueR key
-    FormFailure (x:_) -> invalidArgs [x]
-    _ -> invalidArgs ["error occured"]
-

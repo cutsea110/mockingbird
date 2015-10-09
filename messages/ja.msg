@@ -50,9 +50,9 @@ FailureToCreateIssue: 起票に失敗しました
 
 UpdateChannel: チャネル更新
 AddChannel: チャンネルをつくる
-AddAllChannel: 「みんな」でやる
+AddAllChannel: 「みんな」がやる
 AddAnyChannel: 「だれか」がやる
-AddEachChannel: 「それぞれ」がやる
+AddEachChannel: 「それぞれ」でやる
 AddMyChannel: 「じぶん」でやる
 ALL: みんな
 ANY: だれか
