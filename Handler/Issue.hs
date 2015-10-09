@@ -51,10 +51,10 @@ postNewIssueR = do
   Just mode <- lookupPostParam "mode"
   case mode of
     "SELF" -> postNewSelfIssueR
-    _ -> postNewChanR
+    _ -> postNewChannelR
 
-postNewIssueChanR :: Handler Html
-postNewIssueChanR = do
+postNewIssueChannelR :: Handler Html
+postNewIssueChannelR = do
   uid <- requireAuthId
   render <- getMessageRender
   now <- liftIO getCurrentTime
@@ -84,7 +84,7 @@ postNewSelfIssueR = do
   case r of
     FormSuccess issue -> do
       key <- runDB $ insert issue { issueDescription = Just $ Textarea $ issueSubject issue }
-      postNewSelfChanR key
+      postNewSelfChannelR key
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
 
@@ -188,8 +188,8 @@ searchForm render mv = Search <$> aopt (checkboxesField collect) (bfs' $ render 
       entities <- runDB $ selectList [] [Asc UserIdent]
       optionsPersist [] [Asc UserIdent] userNameId
 
-postNewChanR :: Handler Html
-postNewChanR = do
+postNewChannelR :: Handler Html
+postNewChannelR = do
   uid <- requireAuthId
   render <- getMessageRender
   ((r, _), _) <- runForm $ issueForm uid render Nothing
@@ -202,8 +202,8 @@ postNewChanR = do
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
 
-getNewChannelR :: IssueId -> Handler Html
-getNewChannelR key = do
+getAddChannelR :: IssueId -> Handler Html
+getAddChannelR key = do
   render <- getMessageRender
   issue <- runDB $ get404 key
   (w, enc) <- genForm $ searchForm render Nothing
@@ -211,8 +211,8 @@ getNewChannelR key = do
     setTitleI $ MsgSubject issue
     $(widgetFile "new-channel")
 
-postNewChannelR :: IssueId -> Handler Html
-postNewChannelR key = do
+postAddChannelR :: IssueId -> Handler Html
+postAddChannelR key = do
   creater <- requireAuthId
   render <- getMessageRender
   Just md <- lookupPostParam "mode"
@@ -230,8 +230,8 @@ postNewChannelR key = do
     dispatch "ANY" = (ANY, ONE)
     dispatch "EACH" = (ALL, EACH)
     
-postNewSelfChanR :: IssueId -> Handler Html
-postNewSelfChanR key = do
+postNewSelfChannelR :: IssueId -> Handler Html
+postNewSelfChannelR key = do
   uid <- requireAuthId
   now <- liftIO getCurrentTime
   runDB $ do
