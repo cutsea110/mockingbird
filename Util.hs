@@ -5,6 +5,7 @@ import ClassyPrelude.Yesod
 
 import Data.Text as T
 import Data.Time
+import Yesod.Form.Bootstrap3
 
 import Settings as Settings
 
@@ -46,3 +47,11 @@ t `beforeFrom` now =
           else if d < 365
                then Months $ fromIntegral d `div` 30
                else Years $ fromIntegral d `div` 365
+
+hGrid :: BootstrapFormLayout
+hGrid = BootstrapHorizontalForm (ColSm 0) (ColSm 4) (ColSm 0) (ColSm 6)
+
+runForm = runFormPost . renderBootstrap3 hGrid
+genForm = generateFormPost . renderBootstrap3 hGrid
+bfs' = withPlaceholder <*> bfs
+bfs'focus = withAutofocus <$> bfs'

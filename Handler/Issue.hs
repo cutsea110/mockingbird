@@ -10,11 +10,6 @@ import Data.Time.LocalTime
 
 import Model.Fields
 
-runForm = runFormPost . renderBootstrap3 Import.hGrid
-genForm = generateFormPost . renderBootstrap3 Import.hGrid
-bfs' = withPlaceholder <*> bfs
-bfs'focus = withAutofocus <$> bfs'
-
 issueForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
              UserId -> (AppMessage -> Text) -> Maybe Issue -> AForm m Issue
 issueForm uid render mv
