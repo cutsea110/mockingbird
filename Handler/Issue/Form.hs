@@ -1,14 +1,6 @@
 module Handler.Issue.Form where
 
-import Prelude (read)
-
-import Import as Import hiding ((\\))
-import Yesod.Form.Bootstrap3
-import Data.List ((\\))
-import Data.Time.LocalTime
-
-import Model.Fields
-
+import Import as Import
 
 issueForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
              UserId -> (AppMessage -> Text) -> Maybe Issue -> AForm m Issue
@@ -22,6 +14,8 @@ issueForm uid render mv
     <*> lift (liftIO getCurrentTime)
     <*> lift (liftIO getCurrentTime)
 
+hiddenIssueForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
+                   UserId -> Maybe Issue -> AForm m Issue
 hiddenIssueForm uid mv
   = Issue
     <$> areq hiddenField "" (issueSubject <$> mv)
@@ -45,6 +39,4 @@ searchForm :: (AppMessage -> Text) -> Maybe Search -> AForm (HandlerT App IO) Se
 searchForm render mv = Search <$> aopt (checkboxesField collect) (bfs' $ render MsgUsers) (users <$> mv)
   where
     collect :: Handler (OptionList (Entity User))
-    collect = do
-      entities <- runDB $ selectList [] [Asc UserIdent]
-      optionsPersist [] [Asc UserIdent] userNameId
+    collect = optionsPersist [] [Asc UserIdent] userNameId

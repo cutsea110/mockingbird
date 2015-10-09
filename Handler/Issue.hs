@@ -1,12 +1,7 @@
 module Handler.Issue where
 
-import Prelude (read)
-
 import Import as Import hiding ((\\))
-import Yesod.Form.Bootstrap3
-import Yesod.Goodies.PNotify
 import Data.List ((\\))
-import Data.Time.LocalTime
 
 import Handler.Issue.Form
 import Model.Fields
@@ -67,12 +62,12 @@ postNewIssueChannelR = do
     dispatch "ALL" = (ALL, ONE)
     dispatch "ANY" = (ANY, ONE)
     dispatch "EACH" = (ALL, EACH)
+    dispatch _ = (ALL, ONE)
 
 postNewSelfIssueR :: Handler Html
 postNewSelfIssueR = do
   uid <- requireAuthId
   render <- getMessageRender
-  now <- liftIO getCurrentTime
   ((r, _), _) <- runForm $ issueForm uid render Nothing
   case r of
     FormSuccess issue -> do
@@ -80,7 +75,7 @@ postNewSelfIssueR = do
       postNewSelfChannelR key
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
-    
+
 postNewSelfChannelR :: IssueId -> Handler Html
 postNewSelfChannelR key = do
   uid <- requireAuthId
@@ -126,16 +121,16 @@ postAddChannelR key = do
     dispatch "ALL" = (ALL, ONE)
     dispatch "ANY" = (ANY, ONE)
     dispatch "EACH" = (ALL, EACH)
+    dispatch _ = (ALL, ONE)
 
 getChannelR :: IssueId -> ChannelId -> Handler Html
 getChannelR key cid = do
   render <- getMessageRender
-  (issue, chan, us) <- runDB $ do
-    issue <- get404 key
+  (chan, us) <- runDB $ do
     ch <- get404 cid
     ts <- selectList [TicketChannel ==. cid] []
     us <- selectList [UserId <-. map (ticketCodomain.entityVal) ts] []
-    return (issue, ch, us)
+    return (ch, us)
   ((_, w), enc) <- runForm $ searchForm render $ Just (Search $ Just us)
   defaultLayout $ do
     setTitleI MsgUpdateChannel
@@ -191,15 +186,15 @@ postCloneIssueR key = do
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
   where
-    snd3 (x, y, z) = y
+    snd3 (_, y, _) = y
 
 progress :: (Channel, [(TicketId, Ticket, Codomain)]) -> Int
 progress (ch, ts) = case channelType ch of
-                      ALL -> round $ 100 * num / den
-                      ANY -> if any pred ts then 100 else 0
+                      ALL -> 100 * num `div` den
+                      ANY -> if any closep ts then 100 else 0
   where
    (den, num) = foldr (\(_, t, _) (ttl, cls) -> (ttl+1, if close t then cls+1 else cls)) (0, 0) ts
-   pred (_, t, _) = close t
+   closep (_, t, _) = close t
 
 create :: MonadIO m =>
           IssueId -> Logic -> Mode -> Maybe [Entity User] -> UTCTime -> UserId

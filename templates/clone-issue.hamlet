@@ -30,7 +30,7 @@
   $if null chans
   $else
     <ul class="list-group">
-      $forall (cid, ch, ts) <- chans
+      $forall (_, ch, ts) <- chans
         <li class="list-group-item">
           $case channelType ch
             $of ALL

@@ -51,7 +51,16 @@ t `beforeFrom` now =
 hGrid :: BootstrapFormLayout
 hGrid = BootstrapHorizontalForm (ColSm 0) (ColSm 4) (ColSm 0) (ColSm 6)
 
+runForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
+           AForm m a -> m ((FormResult a, WidgetT (HandlerSite m) IO ()), Enctype)
 runForm = runFormPost . renderBootstrap3 hGrid
+
+genForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
+           AForm m a -> m (WidgetT (HandlerSite m) IO (), Enctype)
 genForm = generateFormPost . renderBootstrap3 hGrid
+
+bfs' :: Text -> FieldSettings site
 bfs' = withPlaceholder <*> bfs
+
+bfs'focus :: Text -> FieldSettings site
 bfs'focus = withAutofocus <$> bfs'
