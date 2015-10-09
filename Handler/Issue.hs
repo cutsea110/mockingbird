@@ -224,7 +224,6 @@ searchForm render mv = Search
                        <$> aopt (searchField True) (bfs' $ render MsgUserNameOrIdent) (query <$> mv)
                        <*  bootstrapSubmit (BootstrapSubmit (render MsgCreateGroup) "btn-primary" [])
                        <*> aopt (checkboxesField collect) (bfs' $ render MsgUsers) (users <$> mv)
-                       <*  bootstrapSubmit (BootstrapSubmit (render MsgCreateGroup) "btn-primary" [])
   where
     collect :: Handler (OptionList (Entity User))
     collect = do
