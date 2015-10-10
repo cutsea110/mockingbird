@@ -5,7 +5,7 @@ User
     givenName Text
 
     UniqueUser ident
-    deriving Eq Typeable
+    deriving Show Eq Typeable
 
 Issue
     subject Text
@@ -18,9 +18,13 @@ Issue
     created UTCTime default=now()
     updated UTCTime default=now()
 
+    deriving Show Eq
+
 Channel
     type     Logic
     issue    IssueId
+
+    deriving Show Eq
 
 Ticket
     channel  ChannelId
@@ -32,6 +36,8 @@ Ticket
     created UTCTime default=now()
     updated UTCTime default=now()
 
+    deriving Show Eq
+
 Comment
     channel ChannelId
     comment Text
@@ -39,5 +45,7 @@ Comment
 
     created UTCTime default=now()
     updated UTCTime default=now()
+
+    deriving Show Eq
 
  -- By default this file is used in Model.hs (which is imported by Foundation.hs)
