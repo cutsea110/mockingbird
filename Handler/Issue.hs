@@ -136,8 +136,8 @@ getChannelR key cid = do
     setTitleI MsgUpdateChannel
     $(widgetFile "channel")
 
-postChannelR :: IssueId -> ChannelId -> Handler Html
-postChannelR key cid = do
+putChannelR :: IssueId -> ChannelId -> Handler Html
+putChannelR key cid = do
   uid <- requireAuthId
   render <- getMessageRender
   now <- liftIO getCurrentTime

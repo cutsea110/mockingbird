@@ -18,5 +18,5 @@
 
   /item/#IssueId                    IssueR             GET
   /item/#IssueId/chan               AddChannelR        GET POST
-  /item/#IssueId/chan/#ChannelId    ChannelR           GET POST
+  /item/#IssueId/chan/#ChannelId    ChannelR           GET PUT
   /item/#IssueId/clone              CloneIssueR        GET POST
