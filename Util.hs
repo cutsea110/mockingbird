@@ -59,6 +59,10 @@ runForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
            AForm m a -> m ((FormResult a, WidgetT (HandlerSite m) IO ()), Enctype)
 runForm = runFormPost . renderBootstrap3 hGrid
 
+genFormInline :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
+                 AForm m a -> m (WidgetT (HandlerSite m) IO (), Enctype)
+genFormInline = generateFormPost . renderBootstrap3 BootstrapInlineForm
+
 genForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
            AForm m a -> m (WidgetT (HandlerSite m) IO (), Enctype)
 genForm = generateFormPost . renderBootstrap3 hGrid

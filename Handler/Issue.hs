@@ -98,7 +98,7 @@ getAddChannelR :: IssueId -> Handler Html
 getAddChannelR key = do
   render <- getMessageRender
   issue <- runDB $ get404 key
-  (w, enc) <- genForm $ searchForm render Nothing
+  (w, enc) <- genFormInline $ searchForm render Nothing
   defaultLayout $ do
     setTitleI $ MsgSubject issue
     $(widgetFile "add-channel")
@@ -110,7 +110,7 @@ postAddChannelR key = do
   Just md <- lookupPostParam "mode"
   let (logic, mode) = dispatch md
   now <- liftIO getCurrentTime
-  ((r, _), _) <- runForm $ searchForm render Nothing
+  ((r, _), _) <- runFormInline $ searchForm render Nothing
   case r of
     FormSuccess s -> do
       runDB $ create key logic mode (users s) now creater
@@ -131,7 +131,7 @@ getChannelR key cid = do
     ts <- selectList [TicketChannel ==. cid] []
     us <- selectList [UserId <-. map (ticketCodomain.entityVal) ts] []
     return (ch, us)
-  ((_, w), enc) <- runForm $ searchForm render $ Just (Search $ Just us)
+  ((_, w), enc) <- runFormInline $ searchForm render $ Just (Search $ Just us)
   defaultLayout $ do
     setTitleI MsgUpdateChannel
     $(widgetFile "channel")
@@ -141,7 +141,7 @@ putChannelR key cid = do
   uid <- requireAuthId
   render <- getMessageRender
   now <- liftIO getCurrentTime
-  ((r, _), _) <- runForm $ searchForm render Nothing
+  ((r, _), _) <- runFormInline $ searchForm render Nothing
   case r of
     FormSuccess s -> do
       let news = map entityKey $ maybe [] id $ users s
