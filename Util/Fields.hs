@@ -4,7 +4,6 @@ import Prelude
 import Yesod.Core
 import Yesod.Form.Types
 import Yesod.Form.Fields
-import Yesod.Form.Functions
 
 usersFields :: (Eq a, RenderMessage site FormMessage) =>
               HandlerT site IO (OptionList a) -> Field (HandlerT site IO) [a]
