@@ -1,6 +1,7 @@
 module Handler.Issue.Form where
 
 import Import as Import
+import Util.Fields
 
 issueForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
              UserId -> (AppMessage -> Text) -> Maybe Issue -> AForm m Issue
@@ -41,7 +42,7 @@ searchAndHiddenIssueForm uid render mi ms
     <*> searchForm render ms
 
 searchForm :: (AppMessage -> Text) -> Maybe Search -> AForm (HandlerT App IO) Search
-searchForm render mv = Search <$> aopt (checkboxesField collect) bfs'users (users <$> mv)
+searchForm render mv = Search <$> aopt (usersFields collect) bfs'users (users <$> mv)
   where
     collect :: Handler (OptionList (Entity User))
     collect = optionsPersist [] [Asc UserIdent] userNameId
