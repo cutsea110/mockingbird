@@ -1,10 +1,11 @@
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 module Model.Fields where
 
 import Prelude
 import Yesod
+import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Time
-import Data.Time.LocalTime
 
 data Logic = ALL | ANY
            deriving (Show, Read, Eq, Ord, Enum, Bounded)
@@ -30,3 +31,12 @@ instance PathPiece TimeOfDay where
 instance PathPiece UTCTime where
   fromPathPiece = Just . read . T.unpack
   toPathPiece = T.pack . show
+
+class FromText a where
+  fromText :: Text -> a
+
+class ToText a where
+  toText :: a -> Text
+
+instance FromText Logic where
+  fromText = read . T.unpack

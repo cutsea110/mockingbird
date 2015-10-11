@@ -1,12 +1,29 @@
-module Util where
+module Util
+       ( showText
+       , readText
+       , showDate
+       , localDayToUTC
+       , day'timeToUTC
+       , Diff(..)
+       , beforeFrom
+       , runForm
+       , runFormInline
+       , genForm
+       , genFormInline
+       , bfs'
+       , bfs'focus
+       , module Util.Fields
+       )where
 
 import Prelude (read)
 import ClassyPrelude.Yesod
 
 import Data.Text as T
 import Data.Time
+import Yesod.Form.Bootstrap3
 
 import Settings as Settings
+import Util.Fields
 
 showText :: (Show a) => a -> Text
 showText = T.pack . show
@@ -46,3 +63,28 @@ t `beforeFrom` now =
           else if d < 365
                then Months $ fromIntegral d `div` 30
                else Years $ fromIntegral d `div` 365
+
+hGrid :: BootstrapFormLayout
+hGrid = BootstrapHorizontalForm (ColSm 0) (ColSm 4) (ColSm 0) (ColSm 6)
+
+runFormInline :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
+                 AForm m a -> m ((FormResult a, WidgetT (HandlerSite m) IO ()), Enctype)
+runFormInline = runFormPost . renderBootstrap3 BootstrapInlineForm
+
+runForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
+           AForm m a -> m ((FormResult a, WidgetT (HandlerSite m) IO ()), Enctype)
+runForm = runFormPost . renderBootstrap3 hGrid
+
+genFormInline :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
+                 AForm m a -> m (WidgetT (HandlerSite m) IO (), Enctype)
+genFormInline = generateFormPost . renderBootstrap3 BootstrapInlineForm
+
+genForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
+           AForm m a -> m (WidgetT (HandlerSite m) IO (), Enctype)
+genForm = generateFormPost . renderBootstrap3 hGrid
+
+bfs' :: Text -> Text -> FieldSettings site
+bfs' lbl ph = withPlaceholder ph $ bfs lbl
+
+bfs'focus :: Text -> Text -> FieldSettings site
+bfs'focus lbl ph = withAutofocus $ bfs' lbl ph

@@ -16,11 +16,12 @@ ChangePassword: パスワード変更
 Top: トップ
 Timeline: タイムライン
 TimelineOf u@User: #{userName u}のタイムライン
-MyTasks: マイタスク
+MyTasks: タスク
 TasksOf u@User: #{userName u}のタスク
 Create: つくる
-CreateNewIssue: ふつうのタスク
-CreateNewSelfIssue: じぶんタスク
+CreateNewIssue: タスクをきめよう
+ChoiceMembers: やってもらう
+CreateNewSelfIssue: じぶんでやる
 Dropdown u@User: #{userName u}
 
 Search: 検索
@@ -35,7 +36,9 @@ Error: エラー
 HomeOf u@User: #{userName u}のホーム
 
 IssueSubject: 課題
+SimpleAndClarity: 簡潔に分かりやすく
 IssueDescription: 内容
+InDetail: くわしく
 IssueLimitDay: 期限日
 IssueLimitTime: 期限時間
 IssueOpener: 起票者
@@ -50,9 +53,9 @@ FailureToCreateIssue: 起票に失敗しました
 
 UpdateChannel: チャネル更新
 AddChannel: チャンネルをつくる
-AddAllChannel: 「みんな」でやる
+AddAllChannel: 「みんな」がやる
 AddAnyChannel: 「だれか」がやる
-AddEachChannel: 「それぞれ」がやる
+AddEachChannel: 「それぞれ」でやる
 AddMyChannel: 「じぶん」でやる
 ALL: みんな
 ANY: だれか
@@ -67,6 +70,6 @@ DaysAgo n@Integer: #{show n}日
 MonthsAgo n@Integer: #{show n}ヶ月
 YearsAgo n@Integer: #{show n}年
 
-SearchUser: ユーザを探す
+SearchUser: やってもらう人をえらぼう
 UserNameOrIdent: ユーザ名またはID
 CreateGroup: グループをつくる

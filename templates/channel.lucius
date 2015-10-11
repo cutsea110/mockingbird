@@ -1,0 +1,25 @@
+body{
+  /* Navbarを固定しているのでその分空ける */
+  padding-bottom: 70px;
+}
+div.checkbox {
+  font-size: 20px;
+  input[type=checkbox] + label {
+    color: #666;
+  }
+  input[type=checkbox]:checked + label {
+    color: #337ab7
+  }
+  label::before {
+    width: 24px;
+    height: 24px;
+  }
+  label::after {
+    width: 22px;
+    height: 22px;
+    font-size: 22px;
+    transform: translateX(-2px) translateY(-5px);
+    -moz-transform: translateX(-2px) translateY(-5px);
+    -webkit-transform: translateX(-2px) translateY(-5px);
+  }
+}

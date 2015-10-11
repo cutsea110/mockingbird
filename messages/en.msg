@@ -20,7 +20,8 @@ MyTasks: My tasks
 TasksOf u@User: #{userName u}'s Tasks
 Create: Create
 CreateNewIssue: Create new issue
-CreateNewSelfIssue: Create self issue
+ChoiceMembers: Choice members
+CreateNewSelfIssue: I do
 Dropdown u@User: #{userName u}
 
 Search: Search
@@ -35,7 +36,9 @@ Error: Error
 HomeOf u@User: #{userName u}'s Home
 
 IssueSubject: Subject
+SimpleAndClarity: Simple & Clarity
 IssueDescription: Description
+InDetail: In datail
 IssueLimitDay: Limit day
 IssueLimitTime: Limit time
 IssueOpener: Opener
@@ -67,7 +70,7 @@ DaysAgo n@Integer: #{show n}days
 MonthsAgo n@Integer: #{show n}months
 YearsAgo n@Integer: #{show n}years
 
-SearchUser: Search user
+SearchUser: Search User
 UserNameOrIdent: User name or id
 CreateGroup: Create group
 

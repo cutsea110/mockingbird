@@ -18,6 +18,8 @@ import Yesod.Form.Jquery
 import Yesod.Form.Bootstrap3
 import Yesod.Goodies.PNotify hiding (urlJqueryJs)
 
+import Util
+
 -- | The foundation datatype for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
 -- starts running, such as database connections. Every handler will have
@@ -84,6 +86,7 @@ instance Yesod App where
             addScriptEither $ urlJqueryJs master
             addScriptEither $ urlBootstrap3Js master
             addStylesheetEither $ urlBootstrap3Css master
+            addStylesheetEither $ urlFontAwesomeCss master
             globalNavMenuId <- newIdent
             let navbar = $(widgetFile "navbar")
             $(widgetFile "default-layout")
@@ -174,9 +177,6 @@ changePasswordForm render = ChangePassword
     bfs'new2 = (bfs $ render MsgNewPassword2) { fsName = Just "new_pass2" }
     bs'submit =  BootstrapSubmit (render MsgChangePassword) "btn-primary" []
 
-hGrid :: BootstrapFormLayout
-hGrid = BootstrapHorizontalForm (ColSm 0) (ColSm 4) (ColSm 0) (ColSm 6)
-
 defNotify :: PNotify
 defNotify = defaultPNotify { _styling = Just BrightTheme }
 
@@ -217,11 +217,11 @@ instance YesodAuthOwl App where
   endpoint_pass _ = owl_pass_service_url
   mkLoginWidget _ toParent = do
     render <- getMessageRender
-    (widget, enc) <- generateFormPost $ renderBootstrap3 hGrid $ accountForm render
+    (widget, enc) <- genForm $ accountForm render
     $(widgetFile "login")
   mkChangePasswordWidget _ toParent = do
     render <- getMessageRender
-    (widget, enc) <- generateFormPost $ renderBootstrap3 hGrid $ changePasswordForm render
+    (widget, enc) <- genForm $ changePasswordForm render
     $(widgetFile "change-password")
 
 instance YesodJquery App where

@@ -1,17 +1,13 @@
 $(function(){
   // initialize
-  $("input[type=checkbox]:not(:checked)").parent("label").hide();
+  $("input[type=checkbox]:not(:checked)").parent("div.checkbox").hide();
 
   // hook event
   $('input[type=search]').keyup(function(){
     var q = $(this).val();
-    if (q == '') {
-      $("input[type=checkbox]").parent("label").hide();
-    } else {
-      $("input[type=checkbox]").parent("label:not(:contains('" + q + "'))").hide();
-      $("input[type=checkbox]").parent("label:contains('" + q + "')").show();
-      $("input[type=checkbox]:checked").parent("label").show();
-    }
+    $("input[type=checkbox]").parent("div.checkbox").hide();
+    $("input[type=checkbox]").parent("div.checkbox:contains('" + q + "')").show();
+    $("input[type=checkbox]:checked").parent("div.checkbox").show();
   });
 });
 

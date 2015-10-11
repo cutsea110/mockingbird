@@ -22,10 +22,12 @@ library
                      Settings
                      Settings.StaticFiles
                      Util
+                     Util.Fields
                      Handler.Common
                      Handler.Top
                      Handler.Home
                      Handler.Issue
+                     Handler.Issue.Form
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT
