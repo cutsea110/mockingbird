@@ -14,10 +14,10 @@ usersFields ioptlist = (multiSelectField ioptlist)
            let optselected (Left _) _ = False
                optselected (Right vals) opt = (optionInternalValue opt) `elem` vals
            [whamlet|
-            <ul ##{theId} class="list-group">
+            <div ##{theId}>
               $forall opt <- opts
-                <li class="list-group-item" :optselected val opt:style="display:block;" :not (optselected val opt):style="display:none;">
-                  <input type=checkbox name=#{name} value=#{optionExternalValue opt} *{attrs} :optselected val opt:checked>
-                    #{optionDisplay opt}
+                <div class="checkbox checkbox-primary" :optselected val opt:style="display:block;" :not (optselected val opt):style="display:none;">
+                  <input id=cb#{optionExternalValue opt} type=checkbox name=#{name} value=#{optionExternalValue opt} *{attrs} :optselected val opt:checked>
+                  <label for=cb#{optionExternalValue opt}>#{optionDisplay opt}
             |]
   }
