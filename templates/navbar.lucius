@@ -2,7 +2,14 @@ body{
   /* Navbarを固定しているのでその分空ける */
   padding-top: 70px;
 }
-
 hr{
   margin: 60px 0;
+}
+input[type=search] {
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
