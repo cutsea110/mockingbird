@@ -1,3 +1,9 @@
+.form-group.required .control-label:after {
+  content:"*";
+  color:red;
+}
+
+/*** awesome-bootstrap-checkbox ***/
 .checkbox {
   padding-left: 20px;
 }

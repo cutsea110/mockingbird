@@ -36,4 +36,4 @@
               <li class="divider">
               <li><a href=@{AuthR setPassR}><i class="fa fa-lock fa-fw"></i> _{MsgChangePassword}</a></li>
               <li class="divider">
-              <li><a href=@{AuthR LogoutR}><i class="fa fa-power-off fa-fw"></i> _{MsgLogout}</a></li>
+              <li><a href=@{AuthR LogoutR}><i class="fa fa-sign-out fa-fw"></i> _{MsgLogout}</a></li>

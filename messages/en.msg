@@ -60,6 +60,7 @@ AddMyChannel: Add `MY' channel
 ALL: All
 ANY: Any
 EditChannel: Edit channel
+DeleteChannel: Delete channel
 
 Subject v@Issue: #{issueSubject v}
 
