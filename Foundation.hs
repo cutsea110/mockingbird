@@ -86,7 +86,7 @@ instance Yesod App where
             addScriptEither $ urlJqueryJs master
             addScriptEither $ urlBootstrap3Js master
             addStylesheetEither $ urlBootstrap3Css master
-            addStylesheetRemote "//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
+            addStylesheetEither $ urlFontAwesomeCss master
             globalNavMenuId <- newIdent
             let navbar = $(widgetFile "navbar")
             $(widgetFile "default-layout")
