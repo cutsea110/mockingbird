@@ -17,7 +17,7 @@ Top: トップ
 Timeline: はなす
 TimelineOf u@User: #{userName u}のタイムライン
 MyTasks: やる
-TasksOf u@User: #{userName u}のタスク
+TasksOf u@User: #{userName u}のやること
 Create: つくる
 CreateNewIssue: タスクをきめよう
 ChoiceMembers: やってもらう

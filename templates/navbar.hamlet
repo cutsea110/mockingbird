@@ -34,6 +34,6 @@
               <li><a href="#">Another action</a></li>
               <li><a href="#">Something else here</a></li>
               <li class="divider">
-              <li><a href=@{AuthR setPassR}><i class="fa fa-lock fa-fw"></i> _{MsgChangePassword}</a></li>
+              <li><a href=@{AuthR setPassR}><i class="fa fa-lock fa-fw text-info"></i> _{MsgChangePassword}</a></li>
               <li class="divider">
-              <li><a href=@{AuthR LogoutR}><i class="fa fa-sign-out fa-fw"></i> _{MsgLogout}</a></li>
+              <li><a href=@{AuthR LogoutR}><i class="fa fa-sign-out fa-fw text-info"></i> _{MsgLogout}</a></li>
