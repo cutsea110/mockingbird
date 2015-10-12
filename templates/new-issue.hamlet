@@ -7,5 +7,7 @@
   <div class="form-group">
     <div class="col-sm-4">
     <div class="col-sm-6">
-      <button class="btn btn-success" type=submit name=mode value=NORMAL>_{MsgChoiceMembers}
-      <button class="btn btn-warning" type=submit name=mode value=SELF>_{MsgCreateNewSelfIssue}
+      <button class="btn btn-success" type=submit name=mode value=NORMAL>
+        <i class="fa fa-cubes"></i> _{MsgChoiceMembers}
+      <button class="btn btn-warning" type=submit name=mode value=SELF>
+        <i class="fa fa-cube"></i> _{MsgCreateNewSelfIssue}

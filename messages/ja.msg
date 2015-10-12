@@ -14,9 +14,9 @@ NewPassword2: 新しいパスワード(確認)
 ChangePassword: パスワード変更
 
 Top: トップ
-Timeline: タイムライン
+Timeline: はなす
 TimelineOf u@User: #{userName u}のタイムライン
-MyTasks: タスク
+MyTasks: やる
 TasksOf u@User: #{userName u}のタスク
 Create: つくる
 CreateNewIssue: タスクをきめよう
@@ -24,7 +24,7 @@ ChoiceMembers: やってもらう
 CreateNewSelfIssue: じぶんでやる
 Dropdown u@User: #{userName u}
 
-Search: 検索
+Search: さがす
 Users: ユーザ
 
 Update: 更新する
@@ -40,7 +40,7 @@ SimpleAndClarity: 簡潔に分かりやすく
 IssueDescription: 内容
 InDetail: くわしく
 IssueLimitDay: 期限日
-IssueLimitTime: 期限時間
+IssueLimitTime: 期限時刻
 IssueOpener: 起票者
 IssueCreated: 作成日
 IssueUpdated: 更新日
