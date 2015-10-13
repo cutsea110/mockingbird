@@ -46,3 +46,6 @@
 
 <form .form-horizontal role=form method=post action=@{ISSUE $ CloneIssueR key} enctype=#{enc}>
   ^{w}
+  <div class="col-sm-4">
+  <div class="col-sm-6">
+    <button type=submit class="btn btn-primary">_{MsgCreate}
