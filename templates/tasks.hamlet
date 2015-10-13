@@ -2,3 +2,51 @@
 <div .page-header>
   <h1>_{MsgTasksOf u}
 
+<ul class="list-group">
+  $forall (Entity tid t, (issue, chan, ts)) <- tickets
+    <li class="list-group-item">
+      <a href="#" class="btn btn-link">#{issueSubject issue}
+      $case channelType chan
+        $of ALL
+          <span class="label label-info">_{MsgALL}
+        $of ANY
+          <span class="label label-warining">_{MsgANY}
+      $forall (t, u) <- ts
+        $case ticketStatus t
+          $of OPEN
+            <a class="bg-danger" href="#"> #{userName u}
+          $of CLOSE
+            <a class="bg-success" href="#"> #{userName u}
+
+      $maybe limit <- issueLimitDatetime issue
+        $case limitedBy now limit
+          $of InTime diff
+            <span class="label label-warning pull-right">
+              $case diff
+                $of Seconds n
+                    _{MsgSecondsLeft n}
+                $of Minutes n
+                    _{MsgMinutesLeft n}
+                $of Hours n
+                    _{MsgHoursLeft n}
+                $of Days n
+                    _{MsgDaysLeft n}
+                $of Months n
+                    _{MsgMonthsLeft n}
+                $of Years n
+                    _{MsgYearsLeft n}
+          $of TimeOut diff
+            <span class="label label-danger pull-right">
+              $case diff
+                $of Seconds n
+                    _{MsgSecondsOver n}
+                $of Minutes n
+                    _{MsgMinutesOver n}
+                $of Hours n
+                    _{MsgHoursOver n}
+                $of Days n
+                    _{MsgDaysOver n}
+                $of Months n
+                    _{MsgMonthsOver n}
+                $of Years n
+                    _{MsgYearsOver n}

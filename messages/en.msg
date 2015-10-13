@@ -71,6 +71,20 @@ DaysAgo n@Integer: #{show n}days
 MonthsAgo n@Integer: #{show n}months
 YearsAgo n@Integer: #{show n}years
 
+SecondsLeft n@Integer: by #{show n}secs
+MinutesLeft n@Integer: by #{show n}mins
+HoursLeft n@Integer: by #{show n}hrs
+DaysLeft n@Integer: by #{show n}days
+MonthsLeft n@Integer: by #{show n}months
+YearsLeft n@Integer: by #{show n}years
+
+SecondsOver n@Integer: #{show n}secs over
+MinutesOver n@Integer: #{show n}mins over
+HoursOver n@Integer: #{show n}hrs over
+DaysOver n@Integer: #{show n}days over
+MonthsOver n@Integer: #{show n}months over
+YearsOver n@Integer: #{show n}years over
+
 SearchUser: Search User
 UserNameOrIdent: User name or id
 CreateGroup: Create group

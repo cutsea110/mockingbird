@@ -71,6 +71,20 @@ DaysAgo n@Integer: #{show n}日
 MonthsAgo n@Integer: #{show n}ヶ月
 YearsAgo n@Integer: #{show n}年
 
+SecondsLeft n@Integer: あと#{show n}秒
+MinutesLeft n@Integer: あと#{show n}分
+HoursLeft n@Integer: あと#{show n}時間
+DaysLeft n@Integer: あと#{show n}日
+MonthsLeft n@Integer: あと#{show n}ヶ月
+YearsLeft n@Integer: あと#{show n}年
+
+SecondsOver n@Integer: #{show n}秒過ぎ
+MinutesOver n@Integer: #{show n}分過ぎ
+HoursOver n@Integer: #{show n}時間過ぎ
+DaysOver n@Integer: #{show n}日過ぎ
+MonthsOver n@Integer: #{show n}ヶ月過ぎ
+YearsOver n@Integer: #{show n}年過ぎ
+
 SearchUser: やってもらう人をえらぼう
 UserNameOrIdent: ユーザ名またはID
 CreateGroup: グループをつくる
