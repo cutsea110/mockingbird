@@ -75,3 +75,4 @@ SearchUser: Search User
 UserNameOrIdent: User name or id
 CreateGroup: Create group
 
+BacktoIssue: Back to the issue

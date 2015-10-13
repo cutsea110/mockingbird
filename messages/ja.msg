@@ -74,3 +74,5 @@ YearsAgo n@Integer: #{show n}年
 SearchUser: やってもらう人をえらぼう
 UserNameOrIdent: ユーザ名またはID
 CreateGroup: グループをつくる
+
+BacktoIssue: 戻る

@@ -46,7 +46,6 @@
                 <a class="bg-danger" href="#"> #{userName u}
               $of CLOSE
                 <a class="bg-success" href="#"> #{userName u}
-          <a href="#" class="pull-right text-danger"><i class="fa fa-trash"></i> _{MsgDeleteChannel}
           <a href=@{ISSUE $ ChannelR key cid} class="pull-right"><i class="fa fa-user-plus"></i> _{MsgEditChannel}
 
 <div class="btn-group" role="group">
