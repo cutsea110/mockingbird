@@ -3,9 +3,9 @@
   <h1>_{MsgTasksOf u}
 
 <ul class="list-group">
-  $forall (Entity tid t, (issue, chan, ts)) <- tickets
+  $forall (Entity tid t, (Entity key issue, Entity cid chan, ts)) <- tickets
     <li class="list-group-item">
-      <a href="#" class="btn btn-link">#{issueSubject issue}
+      <a href=@{THREAD $ ThreadR key cid} class="btn btn-link">#{issueSubject issue}
       $case channelType chan
         $of ALL
           <span class="label label-info">_{MsgALL}

@@ -20,3 +20,7 @@
   /item/#IssueId/chan               AddChannelR        GET POST
   /item/#IssueId/chan/#ChannelId    ChannelR           GET PUT
   /item/#IssueId/clone              CloneIssueR        GET POST
+
+/thread               THREAD:
+  /isshe/#IssueId/chan/#ChannelId   ThreadR            GET
+
