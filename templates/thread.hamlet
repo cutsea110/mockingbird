@@ -28,6 +28,28 @@
     $maybe limit <- issueLimitDatetime issue
       <span class="text-info">_{MsgIssueLimitDatetime} #{showDate limit}
 
+$forall (comment, user) <- comments
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      #{userName user}
+      <span class="small text-muted pull-right">
+        $with before <- beforeFrom (commentCreated comment) now
+          $case before
+            $of Seconds n
+                _{MsgSecondsAgo n}
+            $of Minutes n
+                _{MsgMinutesAgo n}
+            $of Hours n
+                _{MsgHoursAgo n}
+            $of Days n
+                _{MsgDaysAgo n}
+            $of Months n
+                _{MsgMonthsAgo n}
+            $of Years n
+                _{MsgYearsAgo n}
+    <div class="panel-body">
+      #{commentComment comment}
+
 <nav class="navbar navbar-default navbar-fixed-bottom">
   <form class="form-group" method=post action=@{THREAD $ CommentR key cid} enctype=#{enc}>
     ^{w}

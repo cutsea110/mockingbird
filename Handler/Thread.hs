@@ -9,7 +9,7 @@ getComments :: MonadIO m => IssueId -> ChannelId -> ReaderT SqlBackend m (Issue,
 getComments key cid = do
   issue <- get404 key
   opener <- get404 $ issueOpener issue
-  cs <- selectList [CommentChannel ==. cid] [Desc CommentCreated]
+  cs <- selectList [CommentChannel ==. cid] [Asc CommentCreated]
   comments <- forM cs $ \(Entity _ c) -> do
     u <- get404 $ commentSpeaker c
     return (c, u)
@@ -42,4 +42,14 @@ getThreadR key cid = do
     $(widgetFile "thread")
 
 postCommentR :: IssueId -> ChannelId -> Handler ()
-postCommentR key cid = undefined
+postCommentR key cid = do
+  uid <- requireAuthId
+  render <- getMessageRender
+  now <- liftIO getCurrentTime
+  ((r, _), _) <- runForm $ commentForm uid cid render Nothing
+  case r of
+    FormSuccess comment -> do
+      runDB $ insert comment
+      redirect $ THREAD $ ThreadR key cid
+    FormFailure (x:_) -> invalidArgs [x]
+    _ -> invalidArgs ["error occured"]
