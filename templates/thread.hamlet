@@ -53,3 +53,5 @@ $forall (comment, user) <- comments
 <nav class="navbar navbar-default navbar-fixed-bottom">
   <form class="form-group" method=post action=@{THREAD $ CommentR key cid} enctype=#{enc}>
     ^{w}
+    <button type=submit class="btn btn-default" name=turn value=YOU>_{MsgYourTurn}
+    <button type=submit class="btn btn-default" name=turn value=ME>_{MsgMyTurn}

@@ -94,3 +94,5 @@ BacktoIssue: Back to the issue
 Thread: Thread
 Comment: Comment
 Commenting: Commenting
+YourTurn: Your turn
+MyTurn: My turn

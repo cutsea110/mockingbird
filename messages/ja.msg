@@ -94,3 +94,5 @@ BacktoIssue: 戻る
 Thread: そうだんしよう
 Comment: わかりやすく
 Commenting: コメントする
+YourTurn: おねがいします
+MyTurn: こちらでやります
