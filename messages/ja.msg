@@ -90,3 +90,7 @@ UserNameOrIdent: ユーザ名またはID
 CreateGroup: グループをつくる
 
 BacktoIssue: 戻る
+
+Thread: そうだんしよう
+Comment: わかりやすく
+Commenting: コメントする

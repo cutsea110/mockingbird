@@ -1,0 +1,33 @@
+<!-- Thread page -->
+<div class="panel panel-info">
+  <!-- Default panel contents -->
+  <div class="panel-heading">
+    <span>
+      #{issueSubject issue}
+    <span class="small text-muted pull-right">
+      #{userName opener}
+  <div class="panel-body">
+    <p class="small text-muted pull-right">
+        $case createdBefore
+          $of Seconds n
+              _{MsgSecondsAgo n}
+          $of Minutes n
+              _{MsgMinutesAgo n}
+          $of Hours n
+              _{MsgHoursAgo n}
+          $of Days n
+              _{MsgDaysAgo n}
+          $of Months n
+              _{MsgMonthsAgo n}
+          $of Years n
+              _{MsgYearsAgo n}
+    <p>
+      $maybe desc <- issueDescription issue
+        #{desc}
+    <hr>
+    $maybe limit <- issueLimitDatetime issue
+      <span class="text-info">_{MsgIssueLimitDatetime} #{showDate limit}
+
+<nav class="navbar navbar-default navbar-fixed-bottom">
+  <form class="form-group" method=post action=@{THREAD $ CommentR key cid} enctype=#{enc}>
+    ^{w}

@@ -90,3 +90,7 @@ UserNameOrIdent: User name or id
 CreateGroup: Create group
 
 BacktoIssue: Back to the issue
+
+Thread: Thread
+Comment: Comment
+Commenting: Commenting
