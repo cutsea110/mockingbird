@@ -185,8 +185,6 @@ postCloneIssueR key = do
       redirect $ IssueR iid
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
-  where
-    snd3 (_, y, _) = y
 
 progress :: (Channel, [(TicketId, Ticket, Codomain)]) -> Int
 progress (ch, ts) = case channelType ch of

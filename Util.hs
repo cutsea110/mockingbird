@@ -15,6 +15,9 @@ module Util
        , bfs'
        , bfs'focus
        , module Util.Fields
+       , fst3
+       , snd3
+       , thd3
        )where
 
 import Prelude (read)
@@ -99,3 +102,11 @@ bfs' lbl ph = withPlaceholder ph $ bfs lbl
 
 bfs'focus :: Text -> Text -> FieldSettings site
 bfs'focus lbl ph = withAutofocus $ bfs' lbl ph
+
+
+fst3 :: (a, b, c) -> a
+fst3 (x, _, _) = x
+snd3 :: (a, b, c) -> b
+snd3 (_, y, _) = y
+thd3 :: (a, b, c) -> c
+thd3 (_, _, z) = z

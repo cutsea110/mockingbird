@@ -46,5 +46,4 @@ getTasksR uid = do
     sorter' (Just d1) (Just d2) = d1 `compare` d2
     sorter' Nothing _ = GT
     sorter' _ Nothing = LT
-    fst3 (x, _, _) = x
     acc = entityVal . fst3 . snd
