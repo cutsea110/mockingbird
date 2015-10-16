@@ -6,8 +6,9 @@
 
 /                                           TopR               GET
 /home                 HOME:
+  /mytasks                                  MyTasksR           GET
   /tl/#UserId                               TimelineR          GET
-  /tasks/#UserId                            TaskR              GET
+  /tasks/#UserId                            TasksR             GET
 
 /issues               ISSUE:
   /new-issue                                NewIssueR          GET POST
@@ -20,7 +21,3 @@
   /item/#IssueId/chan                       AddChannelR        GET POST
   /item/#IssueId/chan/#ChannelId            ChannelR           GET PUT
   /item/#IssueId/clone                      CloneIssueR        GET POST
-
-/thread               THREAD:
-  /issue/#IssueId/chan/#ChannelId           ThreadR            GET
-  /issue/#IssueId/chan/#ChannelId/comment   CommentR               POST

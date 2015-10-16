@@ -39,7 +39,7 @@ Ticket
     deriving Show Eq
 
 Comment
-    channel ChannelId
+    ticket  TicketId
     comment Textarea
     speaker UserId
 

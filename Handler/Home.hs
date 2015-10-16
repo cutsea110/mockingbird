@@ -3,6 +3,11 @@ module Handler.Home where
 import Import
 import Model.Fields
 
+getMyTasksR :: Handler Html
+getMyTasksR = do
+  uid <- requireAuthId
+  getTasksR uid
+
 getTimelineR :: UserId -> Handler Html
 getTimelineR _ = do
   Entity _ u <- requireAuth
@@ -25,8 +30,8 @@ getAssinedTickets uid = do
     issue <- get404 key
     return (tick, (Entity key issue, Entity cid ch, tu))
 
-getTaskR :: UserId -> Handler Html
-getTaskR uid = do
+getTasksR :: UserId -> Handler Html
+getTasksR uid = do
   Entity _ u <- requireAuth
   now <- liftIO getCurrentTime
   ticks <- runDB $ getAssinedTickets uid

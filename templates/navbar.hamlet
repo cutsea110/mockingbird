@@ -20,8 +20,8 @@
           $maybe cr <- mcr
             <li :cr == HOME (TimelineR uid):.active>
               <a href=@{HOME $ TimelineR uid}><i class="fa fa-comment text-info"></i> _{MsgTimeline}</a>
-            <li :cr == HOME (TaskR uid):.active>
-              <a href=@{HOME $ TaskR uid}><i class="fa fa-check text-info"></i> _{MsgMyTasks}</a>
+            <li :cr == HOME MyTasksR:.active>
+              <a href=@{HOME MyTasksR}><i class="fa fa-check text-info"></i> _{MsgMyTasks}</a>
             <li :cr == ISSUE NewIssueR:.active>
               <a href=@{ISSUE NewIssueR}><i class="fa fa-plus text-info"></i> _{MsgCreate}</a>
 
