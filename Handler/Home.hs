@@ -16,19 +16,20 @@ getTimelineR _ = do
     $(widgetFile "timeline")
 
 getAssinedTickets :: MonadIO m => UserId ->
-                     ReaderT SqlBackend m [(Entity Ticket, (Entity Issue, Entity Channel, [(Ticket, User)]))]
+                     ReaderT SqlBackend m [(Entity Ticket, (Entity Issue, Entity Channel, [(Ticket, Maybe Comment, User)]))]
 getAssinedTickets uid = do
   ticks <- selectList [TicketAssign ==. uid, TicketStatus ==. OPEN] []
   forM ticks $ \tick@(Entity tid t) -> do
     let cid = ticketChannel t
     ch <- get404 cid
     ts <- selectList [TicketChannel ==. ticketChannel t] []
-    tu <- forM ts $ \(Entity _ t) -> do
+    tcu <- forM ts $ \(Entity _ t) -> do
       u <- get404 $ ticketCodomain t
-      return (t, u)
+      mc <- selectFirst [CommentTicket ==. tid] [Desc CommentCreated]
+      return (t, fmap entityVal mc, u)
     let key = channelIssue ch
     issue <- get404 key
-    return (tick, (Entity key issue, Entity cid ch, tu))
+    return (tick, (Entity key issue, Entity cid ch, tcu))
 
 getTasksR :: UserId -> Handler Html
 getTasksR uid = do

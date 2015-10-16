@@ -11,7 +11,7 @@
           <span class="label label-info">_{MsgALL}
         $of ANY
           <span class="label label-warining">_{MsgANY}
-      $forall (t, u) <- ts
+      $forall (t, mc, u) <- ts
         $case ticketStatus t
           $of OPEN
             <a class="bg-danger" href="#"> #{userName u}
