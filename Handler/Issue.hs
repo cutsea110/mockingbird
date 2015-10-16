@@ -55,7 +55,7 @@ postCreateIssueR = do
         iid <- insert issue
         create iid logic mode (users s) now uid
         return iid
-      redirect $ ISSUE $ IssueR iid
+      redirect $ IssueR iid
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
   where
@@ -83,7 +83,7 @@ postAddSelfChannelR key = do
   runDB $ do
     cid <- insert $ Channel ALL key
     insert_ $ Ticket cid uid uid uid OPEN now now
-  redirect $ ISSUE $ IssueR key
+  redirect $ IssueR key
 
 getIssueR :: IssueId -> Handler Html
 getIssueR key = do
@@ -114,7 +114,7 @@ postAddChannelR key = do
   case r of
     FormSuccess s -> do
       runDB $ create key logic mode (users s) now creater
-      redirect $ ISSUE $ IssueR key
+      redirect $ IssueR key
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
   where
@@ -150,7 +150,7 @@ putChannelR key cid = do
         let olds = map (ticketCodomain.entityVal) ts
         deleteWhere [TicketChannel ==. cid, TicketCodomain /<-. news]
         insertMany_ $ map (\nid -> Ticket cid uid nid nid OPEN now now) $ news \\ olds
-      redirect $ ISSUE $ IssueR key
+      redirect $ IssueR key
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
 
@@ -182,7 +182,7 @@ postCloneIssueR key = do
           let uids' = map (ticketCodomain . snd3) ts
           insertMany_ $ map (\uid' -> Ticket cid uid uid' uid' OPEN now now) uids'
         return iid
-      redirect $ ISSUE $ IssueR iid
+      redirect $ IssueR iid
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
   where

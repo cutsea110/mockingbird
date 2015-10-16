@@ -44,7 +44,7 @@
               $of CLOSE
                 <a class="bg-success" href="#"> #{userName u}
 
-<form .form-horizontal role=form method=post action=@{ISSUE $ CloneIssueR key} enctype=#{enc}>
+<form .form-horizontal role=form method=post action=@{CloneIssueR key} enctype=#{enc}>
   ^{w}
   <div class="col-sm-4">
   <div class="col-sm-6">

@@ -46,9 +46,9 @@
                 <a class="bg-danger" href="#"> #{userName u}
               $of CLOSE
                 <a class="bg-success" href="#"> #{userName u}
-          <a href=@{ISSUE $ ChannelR key cid} class="pull-right"><i class="fa fa-user-plus"></i> _{MsgEditChannel}
+          <a href=@{ChannelR key cid} class="pull-right"><i class="fa fa-user-plus"></i> _{MsgEditChannel}
 
 <div class="btn-group" role="group">
 
-  <a href=@{ISSUE $ AddChannelR key} class="btn btn-default"><i class="fa fa-plus"></i> _{MsgAddChannel}
-  <a href=@{ISSUE $ CloneIssueR key} class="btn btn-info"><i class="fa fa-clone"></i> _{MsgCloneIssue}</a>
+  <a href=@{AddChannelR key} class="btn btn-default"><i class="fa fa-plus"></i> _{MsgAddChannel}
+  <a href=@{CloneIssueR key} class="btn btn-info"><i class="fa fa-clone"></i> _{MsgCloneIssue}</a>

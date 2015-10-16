@@ -4,21 +4,19 @@
 /favicon.ico FaviconR GET
 /robots.txt RobotsR GET
 
-/                                           TopR               GET
-/home                 HOME:
-  /mytasks                                  MyTasksR           GET
-  /tl/#UserId                               TimelineR          GET
-  /tasks/#UserId                            TasksR             GET
+/                                   TopR               GET
+/mytasks                            MyTasksR           GET
+/timeline/#UserId                   TimelineR          GET
+/tasks/#UserId                      TasksR             GET
 
-/issue                ISSUE:
-  /new                                      NewIssueR          GET POST
-  /chan/new                                 NewChannelR            POST
-  /create                                   CreateIssueR           POST
-  /create-self                              CreateSelfIssueR       POST
+/new-issue                          NewIssueR          GET POST
+/new-channel                        NewChannelR            POST
+/create-issue                       CreateIssueR           POST
+/create-issue-self                  CreateSelfIssueR       POST
 
-  /item/#IssueId                            IssueR             GET
-  /item/#IssueId/chan                       AddChannelR        GET POST
-  /item/#IssueId/chan-self                  AddSelfChannelR        POST
-  /item/#IssueId/chan/#ChannelId            ChannelR           GET PUT
+/issue/#IssueId                     IssueR             GET
+/issue/#IssueId/chan                AddChannelR        GET POST
+/issue/#IssueId/chan-self           AddSelfChannelR        POST
+/issue/#IssueId/chan/#ChannelId     ChannelR           GET PUT
 
-  /item/#IssueId/clone                      CloneIssueR        GET POST
+/issue/#IssueId/clone               CloneIssueR        GET POST
