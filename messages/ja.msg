@@ -14,17 +14,17 @@ NewPassword2: 新しいパスワード(確認)
 ChangePassword: パスワード変更
 
 Top: トップ
-Timeline: タイムライン
+Timeline: はなす
 TimelineOf u@User: #{userName u}のタイムライン
-MyTasks: タスク
-TasksOf u@User: #{userName u}のタスク
+MyTasks: やる
+TasksOf u@User: #{userName u}のやること
 Create: つくる
 CreateNewIssue: タスクをきめよう
 ChoiceMembers: やってもらう
 CreateNewSelfIssue: じぶんでやる
 Dropdown u@User: #{userName u}
 
-Search: 検索
+Search: さがす
 Users: ユーザ
 
 Update: 更新する
@@ -40,7 +40,7 @@ SimpleAndClarity: 簡潔に分かりやすく
 IssueDescription: 内容
 InDetail: くわしく
 IssueLimitDay: 期限日
-IssueLimitTime: 期限時間
+IssueLimitTime: 期限時刻
 IssueOpener: 起票者
 IssueCreated: 作成日
 IssueUpdated: 更新日
@@ -60,6 +60,7 @@ AddMyChannel: 「じぶん」でやる
 ALL: みんな
 ANY: だれか
 EditChannel: 編集
+DeleteChannel: 削除
 
 Subject v@Issue: #{issueSubject v}
 
@@ -70,6 +71,28 @@ DaysAgo n@Integer: #{show n}日
 MonthsAgo n@Integer: #{show n}ヶ月
 YearsAgo n@Integer: #{show n}年
 
+SecondsLeft n@Integer: あと#{show n}秒
+MinutesLeft n@Integer: あと#{show n}分
+HoursLeft n@Integer: あと#{show n}時間
+DaysLeft n@Integer: あと#{show n}日
+MonthsLeft n@Integer: あと#{show n}ヶ月
+YearsLeft n@Integer: あと#{show n}年
+
+SecondsOver n@Integer: #{show n}秒過ぎ
+MinutesOver n@Integer: #{show n}分過ぎ
+HoursOver n@Integer: #{show n}時間過ぎ
+DaysOver n@Integer: #{show n}日過ぎ
+MonthsOver n@Integer: #{show n}ヶ月過ぎ
+YearsOver n@Integer: #{show n}年過ぎ
+
 SearchUser: やってもらう人をえらぼう
 UserNameOrIdent: ユーザ名またはID
 CreateGroup: グループをつくる
+
+BacktoIssue: 戻る
+
+Thread: そうだんしよう
+Comment: わかりやすく
+Commenting: コメントする
+YourTurn: おねがいします
+MyTurn: こちらでやります

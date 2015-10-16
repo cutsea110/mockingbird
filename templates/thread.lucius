@@ -1,0 +1,4 @@
+body{
+  /* Navbarを固定しているのでその分空ける */
+  padding-bottom: 150px;
+}

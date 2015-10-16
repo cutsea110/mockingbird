@@ -12,24 +12,28 @@
       <a class="navbar-brand visible-xs" href=@{TopR}>_{MsgSystemInitialName}
       <form class="navbar-form navbar-left" role=search>
         <div class="form-group">
-          <input type=search class="form-control" placeholder=_{MsgSearch}>
+          <input type=search class="form-control" placeholder="&#xF002; _{MsgSearch}">
 
     <div class="collapse navbar-collapse" id=#{globalNavMenuId}>
       $maybe Entity uid u <- mu
         <ul class="nav navbar-nav">
           $maybe cr <- mcr
-            <li :cr == HOME (TimelineR uid):.active><a href=@{HOME $ TimelineR uid}>_{MsgTimeline}</a></li>
-            <li :cr == HOME (TaskR uid):.active><a href=@{HOME $ TaskR uid}>_{MsgMyTasks}</a></li>
-            <li :cr == ISSUE NewIssueR:.active><a href=@{ISSUE NewIssueR}>_{MsgCreate}</a></li>
+            <li :cr == HOME (TimelineR uid):.active>
+              <a href=@{HOME $ TimelineR uid}><i class="fa fa-comment text-info"></i> _{MsgTimeline}</a>
+            <li :cr == HOME (TaskR uid):.active>
+              <a href=@{HOME $ TaskR uid}><i class="fa fa-check text-info"></i> _{MsgMyTasks}</a>
+            <li :cr == ISSUE NewIssueR:.active>
+              <a href=@{ISSUE NewIssueR}><i class="fa fa-plus text-info"></i> _{MsgCreate}</a>
 
 
           <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">_{MsgDropdown u} <b class="caret"></b></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <i class="fa fa-user text-info"></i> _{MsgDropdown u} <b class="caret"></b>
             <ul class="dropdown-menu">
               <li><a href="#">Action</a></li>
               <li><a href="#">Another action</a></li>
               <li><a href="#">Something else here</a></li>
               <li class="divider">
-              <li><a href=@{AuthR setPassR}>_{MsgChangePassword}</a></li>
+              <li><a href=@{AuthR setPassR}><i class="fa fa-lock fa-fw text-info"></i> _{MsgChangePassword}</a></li>
               <li class="divider">
-              <li><a href=@{AuthR LogoutR}>_{MsgLogout}</a></li>
+              <li><a href=@{AuthR LogoutR}><i class="fa fa-sign-out fa-fw text-info"></i> _{MsgLogout}</a></li>

@@ -1,6 +1,7 @@
 module Handler.Issue.Form where
 
 import Import as Import
+import qualified Data.Text as T
 
 issueForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
              UserId -> (AppMessage -> Text) -> Maybe Issue -> AForm m Issue

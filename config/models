@@ -40,7 +40,7 @@ Ticket
 
 Comment
     channel ChannelId
-    comment Text
+    comment Textarea
     speaker UserId
 
     created UTCTime default=now()

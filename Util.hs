@@ -5,7 +5,9 @@ module Util
        , localDayToUTC
        , day'timeToUTC
        , Diff(..)
+       , Limited(..)
        , beforeFrom
+       , limitedBy
        , runForm
        , runFormInline
        , genForm
@@ -63,6 +65,15 @@ t `beforeFrom` now =
           else if d < 365
                then Months $ fromIntegral d `div` 30
                else Years $ fromIntegral d `div` 365
+
+data Limited = TimeOut Diff
+             | InTime Diff
+             deriving (Show, Read, Eq, Ord)
+
+limitedBy :: UTCTime -> UTCTime -> Limited
+now `limitedBy` limit = if now < limit
+                        then InTime (now `beforeFrom` limit)
+                        else TimeOut (limit `beforeFrom` now)
 
 hGrid :: BootstrapFormLayout
 hGrid = BootstrapHorizontalForm (ColSm 0) (ColSm 4) (ColSm 0) (ColSm 6)
