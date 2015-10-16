@@ -50,6 +50,5 @@
 
 <div class="btn-group" role="group">
 
-  <form method=post action=@{ISSUE $ NewSelfChannelR key}>
-    <a href=@{ISSUE $ AddChannelR key} class="btn btn-default"><i class="fa fa-plus"></i> _{MsgAddChannel}
-    <a href=@{ISSUE $ CloneIssueR key} class="btn btn-info"><i class="fa fa-clone"></i> _{MsgCloneIssue}</a>
+  <a href=@{ISSUE $ AddChannelR key} class="btn btn-default"><i class="fa fa-plus"></i> _{MsgAddChannel}
+  <a href=@{ISSUE $ CloneIssueR key} class="btn btn-info"><i class="fa fa-clone"></i> _{MsgCloneIssue}</a>

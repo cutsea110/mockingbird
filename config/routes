@@ -14,8 +14,8 @@
   /new                                      NewIssueR          GET POST
   /chan/new                                 NewChannelR            POST
   /create                                   CreateIssueR           POST
-  /create-self                              NewSelfIssueR          POST
-  /chan/#IssueId/add-self                   NewSelfChannelR        POST
+  /create-self                              CreateSelfIssueR       POST
+  /chan/#IssueId/add-self                   AddSelfChannelR        POST
 
   /item/#IssueId                            IssueR             GET
   /item/#IssueId/chan                       AddChannelR        GET POST
