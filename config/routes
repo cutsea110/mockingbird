@@ -10,12 +10,12 @@
   /tl/#UserId                               TimelineR          GET
   /tasks/#UserId                            TasksR             GET
 
-/issues               ISSUE:
-  /new-issue                                NewIssueR          GET POST
-  /new-chan                                 NewChannelR            POST
-  /new-issue-chan                           NewIssueChannelR       POST
-  /new-self-issue                           NewSelfIssueR          POST
-  /item/#IssueId/self                       NewSelfChannelR        POST
+/issue                ISSUE:
+  /new                                      NewIssueR          GET POST
+  /chan/new                                 NewChannelR            POST
+  /create                                   CreateIssueR           POST
+  /create-self                              NewSelfIssueR          POST
+  /chan/#IssueId/add-self                   NewSelfChannelR        POST
 
   /item/#IssueId                            IssueR             GET
   /item/#IssueId/chan                       AddChannelR        GET POST

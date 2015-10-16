@@ -41,8 +41,8 @@ postNewChannelR = do
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
 
-postNewIssueChannelR :: Handler Html
-postNewIssueChannelR = do
+postCreateIssueR :: Handler Html
+postCreateIssueR = do
   uid <- requireAuthId
   render <- getMessageRender
   now <- liftIO getCurrentTime
