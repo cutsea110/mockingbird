@@ -15,9 +15,10 @@
   /chan/new                                 NewChannelR            POST
   /create                                   CreateIssueR           POST
   /create-self                              CreateSelfIssueR       POST
-  /chan/#IssueId/add-self                   AddSelfChannelR        POST
 
   /item/#IssueId                            IssueR             GET
   /item/#IssueId/chan                       AddChannelR        GET POST
+  /item/#IssueId/chan-self                  AddSelfChannelR        POST
   /item/#IssueId/chan/#ChannelId            ChannelR           GET PUT
+
   /item/#IssueId/clone                      CloneIssueR        GET POST
