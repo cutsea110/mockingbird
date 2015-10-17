@@ -35,6 +35,12 @@ userName u = userFamilyName u <> " " <> userGivenName u
 userNameId :: User -> Text
 userNameId u = userName u <> "(" <> userIdent u <> ")"
 
+userGravatarSmall :: User -> Text
+userGravatarSmall = gravatarUrl 36 . toGravatarHash . userEmail
+
+userGravatar :: User -> Text
+userGravatar = gravatarUrl 80 . toGravatarHash . userEmail
+
 toGravatarHash :: Text -> Text
 toGravatarHash = pack . show . md5 . BL.fromString . unpack . toLower . strip
 
