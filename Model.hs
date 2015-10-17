@@ -1,11 +1,11 @@
 module Model where
 
-import ClassyPrelude.Yesod hiding (Status, toLower)
+import ClassyPrelude.Yesod hiding (Status)
 import Database.Persist.Quasi
 
 import qualified Data.ByteString.Lazy.UTF8 as BL
-import Data.Char (toLower, isSpace)
 import Data.Digest.Pure.MD5 (md5)
+import Data.Text (strip)
 import Data.Time
 
 import Model.Fields
@@ -36,9 +36,7 @@ userNameId :: User -> Text
 userNameId u = userName u <> "(" <> userIdent u <> ")"
 
 toGravatarHash :: Text -> Text
-toGravatarHash = pack . show . md5 . BL.fromString . map toLower . trim . unpack
-  where
-    trim = reverse . dropWhile isSpace . reverse . dropWhile isSpace
+toGravatarHash = pack . show . md5 . BL.fromString . unpack . toLower . strip
 
 gravatarUrl :: Int -> Text -> Text
 gravatarUrl s h = concat [ "https://secure.gravatar.com/avatar/"
