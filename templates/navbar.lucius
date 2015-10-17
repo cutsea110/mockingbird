@@ -13,3 +13,6 @@ input[type=search] {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+img.gravatar {
+  margin: 5px 0 5px 5px;
+}
