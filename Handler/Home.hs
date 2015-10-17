@@ -15,7 +15,7 @@ getTimelineR _ = do
     setTitleI $ MsgTimelineOf u
     $(widgetFile "timeline")
 
-type AssignedTicket = (Entity Ticket, (Entity Issue, Entity Channel, [(Ticket, Maybe Comment, User)]))
+type AssignedTicket = (Entity Ticket, Issue, Maybe (Entity Comment, User))
 
 getAssignedTickets :: MonadIO m => UserId -> ReaderT SqlBackend m [AssignedTicket]
 getAssignedTickets uid = do
@@ -23,14 +23,15 @@ getAssignedTickets uid = do
   forM ticks $ \tick@(Entity tid t) -> do
     let cid = ticketChannel t
     ch <- get404 cid
-    ts <- selectList [TicketChannel ==. ticketChannel t] []
-    tcu <- forM ts $ \(Entity _ t) -> do
-      u <- get404 $ ticketCodomain t
-      mc <- selectFirst [CommentTicket ==. tid] [Desc CommentCreated]
-      return (t, fmap entityVal mc, u)
     let key = channelIssue ch
     issue <- get404 key
-    return (tick, (Entity key issue, Entity cid ch, tcu))
+    mcom <- selectFirst [CommentTicket ==. tid] [Desc CommentCreated]
+    msp <- maybe (return Nothing) (get . commentSpeaker . entityVal) mcom
+    return (tick, issue, mcom >< msp)
+  where
+    (><) :: Maybe x -> Maybe y -> Maybe (x, y)
+    Just x >< Just y = Just (x, y)
+    _ >< _ = Nothing
 
 getTasksR :: UserId -> Handler Html
 getTasksR uid = do
@@ -42,9 +43,8 @@ getTasksR uid = do
     setTitleI $ MsgTasksOf u
     $(widgetFile "tasks")
   where
-    sorter = sorter' `on` issueLimitDatetime . acc
-    sorter2 = compare `on` issueUpdated . acc
+    sorter = sorter' `on` issueLimitDatetime . snd3
+    sorter2 = compare `on` issueUpdated . snd3
     sorter' (Just d1) (Just d2) = d1 `compare` d2
     sorter' Nothing _ = GT
     sorter' _ Nothing = LT
-    acc = entityVal . fst3 . snd
