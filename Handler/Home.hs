@@ -15,9 +15,10 @@ getTimelineR _ = do
     setTitleI $ MsgTimelineOf u
     $(widgetFile "timeline")
 
-getAssinedTickets :: MonadIO m => UserId ->
-                     ReaderT SqlBackend m [(Entity Ticket, (Entity Issue, Entity Channel, [(Ticket, Maybe Comment, User)]))]
-getAssinedTickets uid = do
+type AssignedTicket = (Entity Ticket, (Entity Issue, Entity Channel, [(Ticket, Maybe Comment, User)]))
+
+getAssignedTickets :: MonadIO m => UserId -> ReaderT SqlBackend m [AssignedTicket]
+getAssignedTickets uid = do
   ticks <- selectList [TicketAssign ==. uid, TicketStatus ==. OPEN] []
   forM ticks $ \tick@(Entity tid t) -> do
     let cid = ticketChannel t
@@ -35,7 +36,7 @@ getTasksR :: UserId -> Handler Html
 getTasksR uid = do
   Entity _ u <- requireAuth
   now <- liftIO getCurrentTime
-  ticks <- runDB $ getAssinedTickets uid
+  ticks <- runDB $ getAssignedTickets uid
   let tickets = sortBy (\x y -> sorter x y <> sorter2 x y) ticks
   defaultLayout $ do
     setTitleI $ MsgTasksOf u
