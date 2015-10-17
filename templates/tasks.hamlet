@@ -3,12 +3,21 @@
   <h1>_{MsgTasksOf u}
 
 <ul class="media-list">
-  $forall (Entity tid t, issue, mcu) <- tickets
+  $forall (Entity tid t, (issue, op, cod), mcu) <- tickets
     <li class="media">
       <a href="#" class="media-left">
-        <img src="#{userGravatar u}">
+        $maybe (_, spkr) <- mcu
+          <img src="#{userGravatar spkr}">
+        $nothing
+          <img src="#{userGravatar op}">
       <div class="media-body">
-        <h4 class="media-heading">#{issueSubject issue}
+        <h4 class="media-heading">
+          <a href="#" class="btn btn-link">#{issueSubject issue}
+        $maybe (Entity cid com, _) <- mcu
+          #{commentComment com}
+        $nothing
+          $maybe desc <- issueDescription issue
+            #{desc}
 
         $maybe limit <- issueLimitDatetime issue
           $case limitedBy now limit

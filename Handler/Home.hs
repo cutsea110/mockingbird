@@ -15,7 +15,7 @@ getTimelineR _ = do
     setTitleI $ MsgTimelineOf u
     $(widgetFile "timeline")
 
-type AssignedTicket = (Entity Ticket, Issue, Maybe (Entity Comment, User))
+type AssignedTicket = (Entity Ticket, (Issue, Opener, Codomain), Maybe (Entity Comment, User))
 
 getAssignedTickets :: MonadIO m => UserId -> ReaderT SqlBackend m [AssignedTicket]
 getAssignedTickets uid = do
@@ -25,9 +25,11 @@ getAssignedTickets uid = do
     ch <- get404 cid
     let key = channelIssue ch
     issue <- get404 key
+    op <- get404 $ issueOpener issue
+    cod <- get404 $ ticketCodomain t
     mcom <- selectFirst [CommentTicket ==. tid] [Desc CommentCreated]
     msp <- maybe (return Nothing) (get . commentSpeaker . entityVal) mcom
-    return (tick, issue, mcom >< msp)
+    return (tick, (issue, op, cod), mcom >< msp)
   where
     (><) :: Maybe x -> Maybe y -> Maybe (x, y)
     Just x >< Just y = Just (x, y)
@@ -43,8 +45,9 @@ getTasksR uid = do
     setTitleI $ MsgTasksOf u
     $(widgetFile "tasks")
   where
-    sorter = sorter' `on` issueLimitDatetime . snd3
-    sorter2 = compare `on` issueUpdated . snd3
+    sorter = sorter' `on` issueLimitDatetime . acc
+    sorter2 = compare `on` issueUpdated . acc
     sorter' (Just d1) (Just d2) = d1 `compare` d2
     sorter' Nothing _ = GT
     sorter' _ Nothing = LT
+    acc = fst3 . snd3
