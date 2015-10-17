@@ -5,7 +5,7 @@
 <ul class="media-list">
   $forall (Entity tid t, (issue, op, cod), mcu) <- tickets
     <li class="media">
-      <a href="#" class="media-left">
+      <a href="https://gravatar.com" class="media-left">
         $maybe (_, spkr) <- mcu
           <img src="#{userGravatar spkr}">
         $nothing
