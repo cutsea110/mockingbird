@@ -23,6 +23,7 @@ share [mkPersist sqlSettings, mkMigrate "migrateAll"]
 --
 type Opener = User
 type Codomain = User
+type Speaker = User
 type IssueTree = (Issue, Opener, [ChannelTree])
 type ChannelTree = (ChannelId, Channel, [(TicketId, Ticket, Codomain)])
 

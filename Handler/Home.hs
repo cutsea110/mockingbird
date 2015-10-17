@@ -15,7 +15,7 @@ getTimelineR _ = do
     setTitleI $ MsgTimelineOf u
     $(widgetFile "timeline")
 
-type AssignedTicket = (Entity Ticket, (Issue, Opener, Codomain), Maybe (Entity Comment, User))
+type AssignedTicket = (Entity Ticket, (Issue, Opener, Codomain), Maybe (Entity Comment, Speaker))
 
 getAssignedTickets :: MonadIO m => UserId -> ReaderT SqlBackend m [AssignedTicket]
 getAssignedTickets uid = do
