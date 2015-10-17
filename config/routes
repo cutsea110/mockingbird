@@ -20,3 +20,5 @@
 /issue/#IssueId/chan/#ChannelId     ChannelR           GET PUT
 
 /issue/#IssueId/clone               CloneIssueR        GET POST
+
+/thread/#TicketId                   ThreadR            GET POST

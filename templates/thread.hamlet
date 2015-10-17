@@ -1,14 +1,16 @@
 <!-- Thread page -->
-<div class="panel panel-info">
-  <!-- Default panel contents -->
-  <div class="panel-heading">
-    <span>
-      #{issueSubject issue}
-    <span class="small text-muted pull-right">
-      #{userName opener}
-  <div class="panel-body">
-    <p class="small text-muted pull-right">
-        $case createdBefore
+<div .page-header>
+  <h1>_{MsgThread}
+
+<ul class="media-list">
+  <li class="media">
+    <a href="https://gravatar.com" class="media-left">
+      <img src="#{userGravatar opener}">
+    <div class="media-body">
+      <h4 class="media-heading">
+        <a href="#" class="btn btn-link">#{issueSubject issue}
+      <span class="small text-muted pull-right">
+        $case beforeFrom (issueCreated issue) now
           $of Seconds n
               _{MsgSecondsAgo n}
           $of Minutes n
@@ -21,20 +23,20 @@
               _{MsgMonthsAgo n}
           $of Years n
               _{MsgYearsAgo n}
-    <p>
+
       $maybe desc <- issueDescription issue
         #{desc}
-    <hr>
-    $maybe limit <- issueLimitDatetime issue
-      <span class="text-info">_{MsgIssueLimitDatetime} #{showDate limit}
 
-$forall (comment, user) <- comments
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      #{userName user}
-      <span class="small text-muted pull-right">
-        $with before <- beforeFrom (commentCreated comment) now
-          $case before
+      $maybe limit <- issueLimitDatetime issue
+        <span class="text-info">_{MsgIssueLimitDatetime} #{showDate limit}
+
+  $forall (Entity cid c, spkr) <- comments
+    <li class="media">
+      <a href="https://gravatar.com" class="media-left">
+        <img src="#{userGravatar spkr}">
+      <div class="media-body">
+        <span class="small text-muted pull-right">
+          $case beforeFrom (commentCreated c) now
             $of Seconds n
                 _{MsgSecondsAgo n}
             $of Minutes n
@@ -47,11 +49,11 @@ $forall (comment, user) <- comments
                 _{MsgMonthsAgo n}
             $of Years n
                 _{MsgYearsAgo n}
-    <div class="panel-body">
-      #{commentComment comment}
+        <p>#{commentComment c}
 
 <nav class="navbar navbar-default navbar-fixed-bottom">
-  <form class="form-group" method=post action=@{THREAD $ CommentR key cid} enctype=#{enc}>
+  <form class="form-group" method=post action="#" enctype=#{enc}>
     ^{w}
     <button type=submit class="btn btn-default" name=turn value=YOU>_{MsgYourTurn}
     <button type=submit class="btn btn-default" name=turn value=ME>_{MsgMyTurn}
+    <button type=submit class="btn btn-default" name=turn value=NOBODY>_{MsgClosing}
