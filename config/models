@@ -3,6 +3,7 @@ User
     password Text Maybe
     familyName Text
     givenName Text
+    email Text
 
     UniqueUser ident
     deriving Show Eq Typeable
