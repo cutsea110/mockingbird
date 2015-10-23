@@ -13,9 +13,15 @@ getMyTimelineR = do
   uid <- requireAuthId
   getTimelineR uid
 
+getComments :: MonadIO m => Key User -> ReaderT SqlBackend m [Entity Comment]
+getComments uid = do
+  ts <- selectList ([TicketDomain ==. uid] ||. [TicketCodomain ==. uid] ||. [TicketAssign ==. uid]) []
+  selectList [CommentTicket <-. map entityKey ts] [Desc CommentCreated]
+
 getTimelineR :: UserId -> Handler Html
 getTimelineR uid = do
   Entity _ u <- requireAuth
+  comments <- runDB $ getComments uid
   defaultLayout $ do
     setTitleI $ MsgTimelineOf u
     $(widgetFile "timeline")
