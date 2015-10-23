@@ -18,17 +18,17 @@
       $maybe Entity uid u <- mu
         <ul class="nav navbar-nav">
           $maybe cr <- mcr
-            <li :cr == HOME (TimelineR uid):.active>
-              <a href=@{HOME $ TimelineR uid}><i class="fa fa-comment text-info"></i> _{MsgTimeline}</a>
-            <li :cr == HOME (TaskR uid):.active>
-              <a href=@{HOME $ TaskR uid}><i class="fa fa-check text-info"></i> _{MsgMyTasks}</a>
-            <li :cr == ISSUE NewIssueR:.active>
-              <a href=@{ISSUE NewIssueR}><i class="fa fa-plus text-info"></i> _{MsgCreate}</a>
+            <li :cr == TimelineR uid:.active>
+              <a href=@{TimelineR uid}><i class="fa fa-comment text-info"></i> _{MsgTimeline}</a>
+            <li :cr == MyTasksR:.active>
+              <a href=@{MyTasksR}><i class="fa fa-check text-info"></i> _{MsgMyTasks}</a>
+            <li :cr == NewIssueR:.active>
+              <a href=@{NewIssueR}><i class="fa fa-plus text-info"></i> _{MsgCreate}</a>
 
 
-          <li class="dropdown">
+          <li class="dropdown pull-right">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <i class="fa fa-user text-info"></i> _{MsgDropdown u} <b class="caret"></b>
+              _{MsgDropdown u} <b class="caret"></b>
             <ul class="dropdown-menu">
               <li><a href="#">Action</a></li>
               <li><a href="#">Another action</a></li>
@@ -37,3 +37,5 @@
               <li><a href=@{AuthR setPassR}><i class="fa fa-lock fa-fw text-info"></i> _{MsgChangePassword}</a></li>
               <li class="divider">
               <li><a href=@{AuthR LogoutR}><i class="fa fa-sign-out fa-fw text-info"></i> _{MsgLogout}</a></li>
+          <li class="pull-right hidden-xs">
+            <img class="gravatar" src="#{userGravatarSmall u}" alt=Gravatar>

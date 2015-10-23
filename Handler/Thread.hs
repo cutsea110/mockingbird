@@ -1,60 +1,57 @@
 module Handler.Thread where
 
-import Import as Import
-import Yesod.Form.Bootstrap3
+import Import as Import hiding (Status)
 
-import Model.Fields
+import Model.Fields (Status(..))
 
-getComments :: MonadIO m => IssueId -> ChannelId -> ReaderT SqlBackend m (Issue, User, [(Comment, User)])
-getComments key cid = do
-  issue <- get404 key
-  opener <- get404 $ issueOpener issue
-  cs <- selectList [CommentChannel ==. cid] [Asc CommentCreated]
-  comments <- forM cs $ \(Entity _ c) -> do
-    u <- get404 $ commentSpeaker c
-    return (c, u)
-  return (issue, opener, comments)
-
-commentForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
-               UserId -> ChannelId -> (AppMessage -> Text) -> Maybe Comment -> AForm m Comment
-commentForm uid cid render mv
-  = Comment
-    <$> pure cid
-    <*> areq textareaField bfs'comment (commentComment <$> mv)
-    <*> pure uid
-    <*> lift (liftIO getCurrentTime)
-    <*> lift (liftIO getCurrentTime)
+commentForm uid tid render mv = Comment
+                                <$> pure tid
+                                <*> areq textareaField bfs'comment (commentComment <$> mv)
+                                <*> pure uid
+                                <*> lift (liftIO getCurrentTime)
+                                <*> lift (liftIO getCurrentTime)
   where
-    bfs'comment = bfs'focus (render MsgComment) (render MsgSimpleAndClarity)
+    bfs'comment = bfs'focus (render MsgComment) (render MsgCommenting)
 
-getThreadR :: IssueId -> ChannelId -> Handler Html
-getThreadR key cid = do
+getThreadR :: TicketId -> Handler Html
+getThreadR tid = do
   uid <- requireAuthId
   render <- getMessageRender
   now <- liftIO getCurrentTime
-  (issue, opener, comments) <- runDB $ getComments key cid
+  ((_, w), enc) <- runFormInline $ commentForm uid tid render Nothing
+  (issue, opener, comments) <- runDB $ do
+    t <- get404 tid
+    ch <- get404 $ ticketChannel t
+    issue <- get404 $ channelIssue ch
+    op <- get404 $ issueOpener issue
+    cs <- selectList [CommentTicket ==. tid] [Asc CommentCreated]
+    cs' <- forM cs $ \comment@(Entity cid c) -> do
+      u <- get404 $ commentSpeaker c
+      return (comment, u)
+    return (issue, op, cs')
   let createdBefore = (issueCreated issue) `beforeFrom` now
-  ((_, w), enc) <- runFormInline $ commentForm uid cid render Nothing
   defaultLayout $ do
     setTitleI MsgThread
     $(widgetFile "thread")
 
-postCommentR :: IssueId -> ChannelId -> Handler ()
-postCommentR key cid = do
+postThreadR :: TicketId -> Handler ()
+postThreadR tid = do
   uid <- requireAuthId
   render <- getMessageRender
   now <- liftIO getCurrentTime
   Just turn <- lookupPostParam "turn"
-  ((r, _), _) <- runForm $ commentForm uid cid render Nothing
+  ((r, _), _) <- runFormInline $ commentForm uid tid render Nothing
   case r of
     FormSuccess comment -> do
       runDB $ do
+        t <- get404 tid
+        let (you, me) = (if ticketDomain t == uid then ticketCodomain t else ticketDomain t, uid)
+            (assign, status) = case turn of
+              "YOU" -> (you, ticketStatus t)
+              "ME"  -> (me, ticketStatus t)
+              "NOBODY" -> (ticketAssign t, CLOSE)
         insert comment
-        Just (Entity tid t)
-            <- selectFirst ([TicketChannel ==. cid] ++ [TicketDomain ==. uid] ||. [TicketCodomain ==. uid]) []
-        when (ticketDomain t /= ticketCodomain t) $ do
-          let (you, me) = (if ticketDomain t == uid then ticketCodomain t else ticketDomain t, uid)
-          update tid [TicketAssign =. if turn == "YOU" then you else me]
-      redirect $ THREAD $ ThreadR key cid
+        update tid [TicketAssign =. assign, TicketStatus =. status]
+      redirect $ ThreadR tid
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]

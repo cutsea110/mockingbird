@@ -96,3 +96,4 @@ Comment: わかりやすく
 Commenting: コメントする
 YourTurn: おねがいします
 MyTurn: こちらでやります
+Closing: おしまいにする
