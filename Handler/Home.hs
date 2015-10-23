@@ -8,8 +8,13 @@ getMyTasksR = do
   uid <- requireAuthId
   getTasksR uid
 
+getMyTimelineR :: Handler Html
+getMyTimelineR = do
+  uid <- requireAuthId
+  getTimelineR uid
+
 getTimelineR :: UserId -> Handler Html
-getTimelineR _ = do
+getTimelineR uid = do
   Entity _ u <- requireAuth
   defaultLayout $ do
     setTitleI $ MsgTimelineOf u
