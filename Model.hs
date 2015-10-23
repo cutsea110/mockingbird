@@ -65,3 +65,17 @@ close :: Ticket -> Bool
 close Ticket { ticketStatus = CLOSE } = True
 close Ticket { ticketStatus = OPEN }  = False
 
+-- |
+-- Extensions of Channel
+--
+channelStatus :: MonadIO m => Key Channel -> ReaderT SqlBackend m Status
+channelStatus cid = do
+  ch <- get404 cid
+  case channelType ch of
+    ALL -> do
+      open <- count [TicketChannel ==. cid, TicketStatus ==. OPEN]
+      return $ if open > 0 then OPEN else CLOSE
+    ANY -> do
+      close <- count [TicketChannel ==. cid, TicketStatus ==. CLOSE]
+      return $ if close > 0 then CLOSE else OPEN
+

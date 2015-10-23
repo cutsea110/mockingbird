@@ -17,9 +17,22 @@ getTimelineR _ = do
 
 type AssignedTicket = (Entity Ticket, (Issue, Opener, Codomain), Maybe (Entity Comment, Speaker))
 
+getAssignedActiveChannelIds :: MonadIO m => UserId -> ReaderT SqlBackend m [ChannelId]
+getAssignedActiveChannelIds uid = do
+  ticks <- selectList [TicketAssign ==. uid, TicketStatus ==. OPEN] []
+  chans <- selectList [ChannelId <-. map (ticketChannel.entityVal) ticks] []
+  cids <- forM chans $ \(Entity cid c) -> do
+    case channelType c of
+      ALL -> return [cid]
+      ANY -> do
+        closed <- count [TicketChannel ==. cid, TicketStatus ==. CLOSE]
+        return $ if closed > 0 then [] else [cid]
+  return $ concat cids
+
 getAssignedTickets :: MonadIO m => UserId -> ReaderT SqlBackend m [AssignedTicket]
 getAssignedTickets uid = do
-  ticks <- selectList [TicketAssign ==. uid, TicketStatus ==. OPEN] []
+  cids <- getAssignedActiveChannelIds uid
+  ticks <- selectList [TicketAssign ==. uid, TicketStatus ==. OPEN, TicketChannel <-. cids] []
   forM ticks $ \tick@(Entity tid t) -> do
     let cid = ticketChannel t
     ch <- get404 cid
