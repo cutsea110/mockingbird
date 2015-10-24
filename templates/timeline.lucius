@@ -1,0 +1,6 @@
+ul.media-list li.media.closed {
+  background-color: #efefef;
+  a img {
+    opacity: 0.5;
+  }
+}

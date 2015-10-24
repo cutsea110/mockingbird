@@ -1,6 +1,6 @@
 module Handler.Home where
 
-import Import
+import Import hiding (Status)
 import Model.Fields
 
 getMyTasksR :: Handler Html
@@ -13,15 +13,22 @@ getMyTimelineR = do
   uid <- requireAuthId
   getTimelineR uid
 
-getComments :: MonadIO m => Key User -> ReaderT SqlBackend m [Entity Comment]
+getComments :: MonadIO m => Key User -> ReaderT SqlBackend m [(Entity Comment, Speaker, Status)]
 getComments uid = do
   ts <- selectList ([TicketDomain ==. uid] ||. [TicketCodomain ==. uid] ||. [TicketAssign ==. uid]) []
-  selectList [CommentTicket <-. map entityKey ts] [Desc CommentCreated]
+  cs <- selectList [CommentTicket <-. map entityKey ts] [Desc CommentCreated]
+  forM cs $ \comment@(Entity cid c) -> do
+    u <- get404 $ commentSpeaker c
+    t <- get404 $ commentTicket c
+    status <- channelStatus $ ticketChannel t
+    return (comment, u, status)
 
 getTimelineR :: UserId -> Handler Html
 getTimelineR uid = do
   Entity _ u <- requireAuth
+  now <- liftIO getCurrentTime
   comments <- runDB $ getComments uid
+  let createdBefore c = (commentCreated c) `beforeFrom` now
   defaultLayout $ do
     setTitleI $ MsgTimelineOf u
     $(widgetFile "timeline")

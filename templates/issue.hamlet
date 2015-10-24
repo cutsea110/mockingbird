@@ -40,12 +40,12 @@
               <span class="label label-info">_{MsgALL}
             $of ANY
               <span class="label label-warning">_{MsgANY}
-          $forall (_, t, u) <- ts
+          $forall (tid, t, u) <- ts
             $case ticketStatus t
               $of OPEN
-                <a class="bg-danger" href="#"> #{userName u}
+                <a class="bg-danger" href=@{ThreadR tid}> #{userName u}
               $of CLOSE
-                <a class="bg-success" href="#"> #{userName u}
+                <a class="bg-success" href=@{ThreadR tid}> #{userName u}
           <a href=@{ChannelR key cid} class="pull-right"><i class="fa fa-user-plus"></i> _{MsgEditChannel}
 
 <div class="btn-group" role="group">

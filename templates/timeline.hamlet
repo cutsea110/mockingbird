@@ -1,3 +1,28 @@
 <!-- Timeline page -->
 <div .page-header>
   <h1>_{MsgTimelineOf u}
+
+<ul class="media-list">
+  $forall (Entity cid c, spkr, status) <- comments
+    <li class="media" :status == CLOSE:.closed>
+      <a href="https://gravatar.com" class="media-left">
+        <img src="#{userGravatar spkr}">
+      <div class="media-body">
+        <p class="small text-muted pull-right">
+          $case createdBefore c
+            $of Seconds n
+                _{MsgSecondsAgo n}
+            $of Minutes n
+                _{MsgMinutesAgo n}
+            $of Hours n
+                _{MsgHoursAgo n}
+            $of Days n
+                _{MsgDaysAgo n}
+            $of Months n
+                _{MsgMonthsAgo n}
+            $of Years n
+                _{MsgYearsAgo n}
+
+        <p :status == CLOSE:.text-muted>
+          <a href=@{ThreadR $ commentTicket c}>
+            #{commentComment c}

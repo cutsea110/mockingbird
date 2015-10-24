@@ -8,7 +8,7 @@
       <img src="#{userGravatar opener}">
     <div class="media-body">
       <h4 class="media-heading">
-        <a href="#" class="btn btn-link">#{issueSubject issue}
+        <a href=@{IssueR key} class="btn btn-link">#{issueSubject issue}
       <span class="small text-muted pull-right">
         $case beforeFrom (issueCreated issue) now
           $of Seconds n

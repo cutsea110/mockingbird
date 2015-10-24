@@ -19,16 +19,17 @@ getThreadR tid = do
   render <- getMessageRender
   now <- liftIO getCurrentTime
   ((_, w), enc) <- runFormInline $ commentForm uid tid render Nothing
-  (issue, opener, comments) <- runDB $ do
+  (Entity key issue, opener, comments) <- runDB $ do
     t <- get404 tid
     ch <- get404 $ ticketChannel t
-    issue <- get404 $ channelIssue ch
+    let key = channelIssue ch
+    issue <- get404 key
     op <- get404 $ issueOpener issue
     cs <- selectList [CommentTicket ==. tid] [Asc CommentCreated]
     cs' <- forM cs $ \comment@(Entity cid c) -> do
       u <- get404 $ commentSpeaker c
       return (comment, u)
-    return (issue, op, cs')
+    return (Entity key issue, op, cs')
   let createdBefore = (issueCreated issue) `beforeFrom` now
   defaultLayout $ do
     setTitleI MsgThread
