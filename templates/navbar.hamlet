@@ -18,8 +18,8 @@
       $maybe Entity uid u <- mu
         <ul class="nav navbar-nav">
           $maybe cr <- mcr
-            <li :cr == TimelineR uid:.active>
-              <a href=@{TimelineR uid}><i class="fa fa-comment text-info"></i> _{MsgTimeline}</a>
+            <li :cr == MyTimelineR:.active>
+              <a href=@{MyTimelineR}><i class="fa fa-comment text-info"></i> _{MsgTimeline}</a>
             <li :cr == MyTasksR:.active>
               <a href=@{MyTasksR}><i class="fa fa-check text-info"></i> _{MsgMyTasks}</a>
             <li :cr == NewIssueR:.active>

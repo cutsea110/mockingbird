@@ -97,3 +97,6 @@ Commenting: コメントする
 YourTurn: おねがいします
 MyTurn: こちらでやります
 Closing: おしまいにする
+
+GotoThread: そうだんする
+

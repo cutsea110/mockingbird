@@ -68,7 +68,7 @@ close Ticket { ticketStatus = OPEN }  = False
 -- |
 -- Extensions of Channel
 --
-channelStatus :: MonadIO m => Key Channel -> ReaderT SqlBackend m Status
+channelStatus :: MonadIO m => ChannelId -> ReaderT SqlBackend m Status
 channelStatus cid = do
   ch <- get404 cid
   case channelType ch of

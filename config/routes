@@ -5,6 +5,7 @@
 /robots.txt RobotsR GET
 
 /                                   TopR               GET
+/mytimeline                         MyTimelineR        GET
 /mytasks                            MyTasksR           GET
 /timeline/#UserId                   TimelineR          GET
 /tasks/#UserId                      TasksR             GET

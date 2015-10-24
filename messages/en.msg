@@ -97,3 +97,6 @@ Commenting: Commenting
 YourTurn: Your turn
 MyTurn: My turn
 Closing: Closing
+
+GotoThread: Go to thread
+
