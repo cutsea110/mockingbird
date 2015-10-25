@@ -23,3 +23,5 @@
 /issue/#IssueId/clone               CloneIssueR        GET POST
 
 /thread/#TicketId                   ThreadR            GET POST
+/thread/#TicketId/close             CloseTicketR       PUT
+

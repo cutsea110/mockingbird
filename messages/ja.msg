@@ -99,4 +99,6 @@ MyTurn: こちらでやります
 Closing: おしまいにする
 
 GotoThread: そうだんする
+CloseTicket: おしまいにする
+YouCouldnotTouchTheTicket: あなたがおしまいにすることはできません.
 

@@ -99,4 +99,6 @@ MyTurn: My turn
 Closing: Closing
 
 GotoThread: Go to thread
+CloseTicket: close
+YouCouldnotTouchTheTicket: You couldn't touch this ticket.
 
