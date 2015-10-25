@@ -82,3 +82,17 @@ getTasksR uid = do
     sorter' Nothing _ = GT
     sorter' _ Nothing = LT
     acc = fst3 . snd3
+
+putCloseTicketR :: TicketId -> Handler ()
+putCloseTicketR tid = do
+  uid <- requireAuthId
+  render <- getMessageRender
+  now <- liftIO getCurrentTime
+  runDB $ do
+    tick <- get404 tid
+    if uid `elem` [ticketAssign tick, ticketDomain tick, ticketCodomain tick]
+      then do
+        insert $ Comment tid (Textarea $ render MsgCloseTicket) uid now now
+        update tid [TicketStatus =. CLOSE, TicketUpdated =. now]
+      else invalidArgs [render MsgYouCouldnotTouchTheTicket]
+  redirect MyTasksR
