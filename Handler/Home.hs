@@ -2,6 +2,7 @@ module Handler.Home where
 
 import Import hiding (Status)
 import Model.Fields
+import Handler.Issue.Form (selfIssueForm)
 
 getMyTasksR :: Handler Html
 getMyTasksR = do
@@ -68,10 +69,15 @@ getAssignedTickets uid = do
 
 getTasksR :: UserId -> Handler Html
 getTasksR uid = do
-  Entity _ u <- requireAuth
+  Entity myuid myself <- requireAuth
+  render <- getMessageRender
   now <- liftIO getCurrentTime
-  ticks <- runDB $ getAssignedTickets uid
+  (u, ticks) <- runDB $ do
+    u <- get404 uid
+    ticks <- getAssignedTickets uid
+    return (u, ticks)
   let tickets = sortBy (\x y -> sorter x y <> sorter2 x y) ticks
+  ((_, w), enc) <- runFormInline $ selfIssueForm myuid render Nothing
   defaultLayout $ do
     setTitleI $ MsgTasksOf u
     $(widgetFile "tasks")

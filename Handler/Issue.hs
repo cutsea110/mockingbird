@@ -24,7 +24,8 @@ postNewIssueR :: Handler Html
 postNewIssueR = do
   Just mode <- lookupPostParam "mode"
   case mode of
-    "SELF" -> postCreateSelfIssueR
+    "SELF" -> postCreateSelfIssueR >>= \key -> redirect $ IssueR key
+    "QUICK" -> postCreateSelfIssueR >> redirect MyTasksR
     _ -> postNewChannelR
 
 postNewChannelR :: Handler Html
@@ -64,7 +65,7 @@ postCreateIssueR = do
     dispatch "EACH" = (ALL, EACH)
     dispatch _ = (ALL, ONE)
 
-postCreateSelfIssueR :: Handler Html
+postCreateSelfIssueR :: Handler IssueId
 postCreateSelfIssueR = do
   uid <- requireAuthId
   render <- getMessageRender
@@ -73,17 +74,18 @@ postCreateSelfIssueR = do
     FormSuccess issue -> do
       key <- runDB $ insert issue { issueDescription = Just $ Textarea $ issueSubject issue }
       postAddSelfChannelR key
+      return key
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
 
-postAddSelfChannelR :: IssueId -> Handler Html
+postAddSelfChannelR :: IssueId -> Handler ()
 postAddSelfChannelR key = do
   uid <- requireAuthId
   now <- liftIO getCurrentTime
   runDB $ do
     cid <- insert $ Channel ALL key
     insert_ $ Ticket cid uid uid uid OPEN now now
-  redirect $ IssueR key
+--  redirect $ IssueR key
 
 getIssueR :: IssueId -> Handler Html
 getIssueR key = do

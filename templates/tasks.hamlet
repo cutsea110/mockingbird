@@ -53,3 +53,11 @@
                       _{MsgMonthsOver n}
                   $of Years n
                       _{MsgYearsOver n}
+  $if uid == myuid
+    <li class="media">
+      <a href="https://gravatar.com" class="media-left">
+        <img src="#{userGravatar u}">
+      <div class="media-body">
+        <form .form-horizontal role=form method=post action=@{NewIssueR} enctype=#{enc}>
+          <input type=hidden name=mode value=QUICK>
+          ^{w}

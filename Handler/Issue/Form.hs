@@ -1,7 +1,23 @@
 module Handler.Issue.Form where
 
 import Import as Import
+
 import qualified Data.Text as T
+import Yesod.Form.Bootstrap3
+
+selfIssueForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
+                 UserId -> (AppMessage -> Text) -> Maybe Issue -> AForm m Issue
+selfIssueForm uid render mv
+  = Issue
+    <$> areq textField bfs'subj (issueSubject <$> mv)
+    <*> pure Nothing
+    <*> pure Nothing
+    <*> pure Nothing
+    <*> pure uid
+    <*> lift (liftIO getCurrentTime)
+    <*> lift (liftIO getCurrentTime)
+  where
+    bfs'subj = bfs'focus (render MsgIssueSubject) (render MsgSimpleAndClarity)
 
 issueForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
              UserId -> (AppMessage -> Text) -> Maybe Issue -> AForm m Issue

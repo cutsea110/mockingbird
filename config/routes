@@ -13,7 +13,6 @@
 /new-issue                          NewIssueR          GET POST
 /new-channel                        NewChannelR            POST
 /create-issue                       CreateIssueR           POST
-/create-issue-self                  CreateSelfIssueR       POST
 
 /issue/#IssueId                     IssueR             GET
 /issue/#IssueId/chan                AddChannelR        GET POST
