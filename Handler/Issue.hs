@@ -24,8 +24,8 @@ postNewIssueR :: Handler Html
 postNewIssueR = do
   Just mode <- lookupPostParam "mode"
   case mode of
-    "SELF" -> postCreateSelfIssueR >>= \key -> redirect $ IssueR key
-    "QUICK" -> postCreateSelfIssueR >> redirect MyTasksR
+    "SELF" -> createSelfIssue >>= \key -> redirect $ IssueR key
+    "QUICK" -> createSelfIssue >> redirect MyTasksR
     _ -> postNewChannelR
 
 postNewChannelR :: Handler Html
@@ -65,8 +65,8 @@ postCreateIssueR = do
     dispatch "EACH" = (ALL, EACH)
     dispatch _ = (ALL, ONE)
 
-postCreateSelfIssueR :: Handler IssueId
-postCreateSelfIssueR = do
+createSelfIssue :: Handler IssueId
+createSelfIssue = do
   uid <- requireAuthId
   render <- getMessageRender
   ((r, _), _) <- runForm $ issueForm uid render Nothing
