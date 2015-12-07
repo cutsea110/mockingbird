@@ -72,7 +72,8 @@ createSelfIssue = do
   ((r, _), _) <- runForm $ issueForm uid render Nothing
   case r of
     FormSuccess issue -> do
-      key <- runDB $ insert issue { issueDescription = Just $ Textarea $ issueSubject issue }
+      let mdesc = maybe (Just $ Textarea $ issueSubject issue) Just (issueDescription issue)
+      key <- runDB $ insert issue { issueDescription = mdesc }
       postAddSelfChannelR key
       return key
     FormFailure (x:_) -> invalidArgs [x]
