@@ -1,12 +1,13 @@
 module Handler.Thread where
 
-import Import as Import hiding (Status, last)
+import Import as Import hiding (Status, last, urlEncode, urlDecode)
 import Control.Arrow ((***))
 import qualified Data.ByteString.Lazy as L
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
 import Data.List (last)
 import Data.Conduit.List (consume)
+import Network.HTTP.Base (urlEncode, urlDecode)
 import System.Directory
 import System.FilePath
 
@@ -88,7 +89,7 @@ toStoredFile uid cid now fi = do
     lbs <- fileContent fi
     return (StoredFile { storedFileComment = cid
                        , storedFileFullname = T.pack filename
-                       , storedFileEncodedName = T.pack $ encodeUrl filename
+                       , storedFileEncodedName = T.pack $ urlEncode filename
                        , storedFileName = T.pack name
                        , storedFileExtension = T.pack ext
                        , storedFileContentType = fileContentType fi
@@ -110,5 +111,5 @@ getFileR fid = do
   let dir = s3dir </> T.unpack (toPathPiece uid) </> T.unpack (toPathPiece $ storedFileComment sf)
       fp = dir </> T.unpack (toPathPiece fid)
   addHeader "Content-Type" $ storedFileContentType sf
-  addHeader "Content-Disposition" $ "attachment; filename=" `T.append` (storedFileEncodedName sf)
+  addHeader "Content-Disposition" $ "attachment; filename*=UTF-8''" `T.append` (storedFileEncodedName sf)
   sendFile (TE.encodeUtf8 (storedFileContentType sf)) fp

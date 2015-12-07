@@ -20,19 +20,13 @@ module Util
        , thd3
 
        , filesField
-       , encodeUrl
-       , decodeUrl
-
        , whenJust_
        )where
 
 import Prelude (read)
-import ClassyPrelude.Yesod hiding (urlEncode, urlDecode)
-
-import Codec.Binary.UTF8.String (encodeString, decodeString)
+import ClassyPrelude.Yesod
 import Data.Text as T
 import Data.Time
-import Network.HTTP.Base (urlEncode, urlDecode)
 import Yesod.Form.Bootstrap3
 
 import Settings as Settings
@@ -145,12 +139,6 @@ filesField = Field
                |]
   , fieldEnctype = Multipart
   }
-
-encodeUrl :: String -> String
-encodeUrl = urlEncode . encodeString
-
-decodeUrl :: String -> String
-decodeUrl = decodeString . urlDecode
 
 whenJust_ :: Monad m => Maybe a -> (a -> m ()) -> m ()
 whenJust_ mx f = maybe (return ()) f mx
