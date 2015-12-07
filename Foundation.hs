@@ -103,6 +103,9 @@ instance Yesod App where
     -- Default to Authorized for now.
     isAuthorized _ _ = loggedInAuth
 
+    -- Maximum allowed length of the request body, in bytes.
+    maximumContentLength _ _ = Just (20 * 1024 * 1024) -- 20 megabytes for default
+
     -- This function creates static content files in the static folder
     -- and names them based on a hash of their content. This allows
     -- expiration dates to be set far in the future without worry of

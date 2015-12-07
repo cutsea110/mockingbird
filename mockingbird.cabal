@@ -94,6 +94,8 @@ library
 
                  , owl-auth                      >= 0.5 && < 0.6
                  , yesod-pnotify                 >= 1.1 && < 1.2
+                 , filepath                      >= 1.4 && < 1.5
+                 , HTTP                          >= 4000.2 && < 4000.3
 
 executable         mockingbird
     if flag(library-only)

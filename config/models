@@ -43,7 +43,7 @@ Comment
     ticket  TicketId
     comment Textarea
     speaker UserId
-    attached Bool default=false
+    attached Int default=0
 
     created UTCTime default=now()
     updated UTCTime default=now()

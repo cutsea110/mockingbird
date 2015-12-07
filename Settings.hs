@@ -142,6 +142,10 @@ combineScripts = combineScripts'
 tz :: Int
 tz = 9
 
+-- | S3 directory path
+s3dir :: FilePath
+s3dir = "s3"
+
 -- |
 -- Owl service URL
 --
