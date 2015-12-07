@@ -30,6 +30,7 @@ getThreadR tid = do
   uid <- requireAuthId
   render <- getMessageRender
   now <- liftIO getCurrentTime
+  attachBtnId <- newIdent
   ((_, w), enc) <- runFormInline $ commentForm uid tid render Nothing
   (Entity key issue, opener, comments) <- runDB $ do
     t <- get404 tid
