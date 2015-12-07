@@ -41,7 +41,12 @@ getThreadR tid = do
     cs <- selectList [CommentTicket ==. tid] [Asc CommentCreated]
     cs' <- forM cs $ \comment@(Entity cid c) -> do
       u <- get404 $ commentSpeaker c
-      return (comment, u)
+      mf <- if commentAttached c > 0
+            then do
+              fs <- selectList [StoredFileComment ==. cid] []
+              return (Just fs)
+            else return Nothing
+      return (comment, u, mf)
     return (Entity key issue, op, cs')
   let createdBefore = (issueCreated issue) `beforeFrom` now
   defaultLayout $ do
@@ -96,3 +101,6 @@ toStoredFile uid cid now fi = do
       name = takeBaseName $ T.unpack $ fileName fi
       ext = takeExtension $ T.unpack $ fileName fi
       fileContent f = L.fromChunks <$> (fileSource f $$ consume)
+
+getFileR :: StoredFileId -> Handler ()
+getFileR fid = undefined

@@ -24,3 +24,5 @@
 /thread/#TicketId                   ThreadR            GET POST
 /thread/#TicketId/close             CloseTicketR       PUT
 
+/attached/#StoredFileId             FileR              GET
+

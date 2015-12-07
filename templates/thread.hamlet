@@ -30,7 +30,7 @@
       $maybe limit <- issueLimitDatetime issue
         <span class="text-info">_{MsgIssueLimitDatetime} #{showDate limit}
 
-  $forall (Entity cid c, spkr) <- comments
+  $forall (Entity cid c, spkr, mfs) <- comments
     <li class="media">
       <a href="https://gravatar.com" class="media-left">
         <img src="#{userGravatar spkr}">
@@ -50,6 +50,10 @@
             $of Years n
                 _{MsgYearsAgo n}
         <p>#{commentComment c}
+          $maybe fs <- mfs
+            <br><br>
+            $forall (Entity fid sf) <- fs
+              <a href=@{FileR fid}><span class="fa fa-paperclip"></span>#{storedFileFullname sf}</a>
 
 <nav class="navbar navbar-default navbar-fixed-bottom">
   <form class="form-group" method=post action="#" enctype=#{enc}>
