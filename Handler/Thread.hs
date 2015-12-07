@@ -4,6 +4,7 @@ import Import as Import hiding (Status, last)
 import Control.Arrow ((***))
 import qualified Data.ByteString.Lazy as L
 import qualified Data.Text as T
+import qualified Data.Text.Encoding as TE
 import Data.List (last)
 import Data.Conduit.List (consume)
 import System.Directory
@@ -103,4 +104,11 @@ toStoredFile uid cid now fi = do
       fileContent f = L.fromChunks <$> (fileSource f $$ consume)
 
 getFileR :: StoredFileId -> Handler ()
-getFileR fid = undefined
+getFileR fid = do
+  uid <- requireAuthId
+  sf <- runDB $ get404 fid
+  let dir = s3dir </> T.unpack (toPathPiece uid) </> T.unpack (toPathPiece $ storedFileComment sf)
+      fp = dir </> T.unpack (toPathPiece fid)
+  addHeader "Content-Type" $ storedFileContentType sf
+  addHeader "Content-Disposition" $ "attachment; filename=" `T.append` (storedFileEncodedName sf)
+  sendFile (TE.encodeUtf8 (storedFileContentType sf)) fp
