@@ -97,6 +97,7 @@ Commenting: Commenting
 YourTurn: Your turn
 MyTurn: My turn
 Closing: Closing
+AttachFile: Attach file
 
 GotoThread: Go to thread
 CloseTicket: close

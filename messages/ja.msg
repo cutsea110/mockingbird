@@ -97,6 +97,7 @@ Commenting: コメントする
 YourTurn: おねがいします
 MyTurn: こちらでやります
 Closing: おしまいにする
+AttachFile: ファイルを添付する
 
 GotoThread: そうだんする
 CloseTicket: おしまいにする

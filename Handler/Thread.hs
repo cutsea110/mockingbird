@@ -3,6 +3,7 @@ module Handler.Thread where
 import Import as Import hiding (Status)
 
 import Model.Fields (Status(..))
+import Util
 
 commentForm uid tid render mv = Comment
                                 <$> pure tid
@@ -11,8 +12,10 @@ commentForm uid tid render mv = Comment
                                 <*> pure False
                                 <*> lift (liftIO getCurrentTime)
                                 <*> lift (liftIO getCurrentTime)
+                                <*  aopt filesField bfs'file Nothing
   where
     bfs'comment = bfs'focus (render MsgComment) (render MsgCommenting)
+    bfs'file = bfs' (render MsgAttachFile) (render MsgAttachFile)
 
 getThreadR :: TicketId -> Handler Html
 getThreadR tid = do

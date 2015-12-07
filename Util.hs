@@ -18,6 +18,8 @@ module Util
        , fst3
        , snd3
        , thd3
+
+       , filesField
        )where
 
 import Prelude (read)
@@ -110,3 +112,28 @@ snd3 :: (a, b, c) -> b
 snd3 (_, y, _) = y
 thd3 :: (a, b, c) -> c
 thd3 (_, _, z) = z
+
+
+filesField :: (Monad m, RenderMessage (HandlerSite m) FormMessage) => Field m [FileInfo]
+filesField = Field
+  { fieldParse = \_ files -> return $
+      case files of
+        [] -> Right Nothing
+        fs@(_:_) -> Right $ Just fs
+  , fieldView = \id' name attrs _ isReq -> do
+     toWidget [hamlet|
+                 <input name=#{name} *{attrs} type=file multiple :isReq:required>
+               |]
+     toWidget [julius|
+               $(function(){
+                    $("input[name="+#{toJSON name}+"]")
+                    .on("change", function() {
+                       var file = this.files[0];
+                       if (file != null) {
+                         $(this).clone(true).insertAfter(this);
+                       }
+                    });
+               })
+               |]
+  , fieldEnctype = Multipart
+  }
