@@ -134,8 +134,10 @@ filesField = Field
                $(function(){
                     $("input[name="+#{toJSON name}+"]")
                     .on("change", function() {
-                       var file = this.files[0];
-                       if (file != null) {
+                       var fileInputs = $("input[name="+#{toJSON name}+"]").length,
+                           fileSelects = $("input[name="+#{toJSON name}+"]")
+                                         .map(function(){return this.files[0]}).length;
+                       if (fileInputs <= fileSelects) {
                          $(this).clone(true).insertAfter(this);
                        }
                     });

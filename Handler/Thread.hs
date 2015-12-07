@@ -82,8 +82,8 @@ toStoredFile uid cid now fi = do
     return (StoredFile { storedFileComment = cid
                        , storedFileFullname = T.pack filename
                        , storedFileEncodedName = T.pack $ encodeUrl filename
-                       , storedFileName = name
-                       , storedFileExtension = ext
+                       , storedFileName = T.pack name
+                       , storedFileExtension = T.pack ext
                        , storedFileContentType = fileContentType fi
                        , storedFileBytes = L.length lbs
                        , storedFileCreator = uid
@@ -91,6 +91,7 @@ toStoredFile uid cid now fi = do
                        }
            , lbs)
     where
-      filename = takeBaseName $ T.unpack $ fileName fi
-      (name, ext) = T.pack *** T.pack $ splitExtension filename
+      filename = name ++ ext
+      name = takeBaseName $ T.unpack $ fileName fi
+      ext = takeExtension $ T.unpack $ fileName fi
       fileContent f = L.fromChunks <$> (fileSource f $$ consume)
