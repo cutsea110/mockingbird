@@ -43,10 +43,24 @@ Comment
     ticket  TicketId
     comment Textarea
     speaker UserId
+    attached Bool default=false
 
     created UTCTime default=now()
     updated UTCTime default=now()
 
     deriving Show Eq
+
+
+StoredFile
+    comment CommentId
+    fullname Text
+    encodedName Text
+    name Text
+    extension Text
+    contentType Text
+    bytes Int64
+    creator UserId
+    created UTCTime default=now()
+
 
  -- By default this file is used in Model.hs (which is imported by Foundation.hs)

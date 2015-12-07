@@ -8,6 +8,7 @@ commentForm uid tid render mv = Comment
                                 <$> pure tid
                                 <*> areq textareaField bfs'comment (commentComment <$> mv)
                                 <*> pure uid
+                                <*> pure False
                                 <*> lift (liftIO getCurrentTime)
                                 <*> lift (liftIO getCurrentTime)
   where
