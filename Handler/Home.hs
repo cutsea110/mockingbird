@@ -14,15 +14,21 @@ getMyTimelineR = do
   uid <- requireAuthId
   getTimelineR uid
 
-getComments :: MonadIO m => Key User -> ReaderT SqlBackend m [(Entity Comment, Speaker, Status)]
+getComments :: MonadIO m =>
+               UserId -> ReaderT SqlBackend m [(Entity Comment, Speaker, Maybe [Entity StoredFile], Status)]
 getComments uid = do
   ts <- selectList ([TicketDomain ==. uid] ||. [TicketCodomain ==. uid] ||. [TicketAssign ==. uid]) []
   cs <- selectList [CommentTicket <-. map entityKey ts] [Desc CommentCreated]
   forM cs $ \comment@(Entity cid c) -> do
     u <- get404 $ commentSpeaker c
+    mf <- if commentAttached c > 0
+          then do
+            fs <- selectList [StoredFileComment ==. cid] []
+            return (Just fs)
+          else return Nothing
     t <- get404 $ commentTicket c
     status <- channelStatus $ ticketChannel t
-    return (comment, u, status)
+    return (comment, u, mf, status)
 
 getTimelineR :: UserId -> Handler Html
 getTimelineR uid = do

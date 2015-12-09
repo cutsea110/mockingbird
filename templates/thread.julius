@@ -1,6 +1,6 @@
 $(function(){
-  $("input[type=file]").hide();
+  $("input[type=file]").parent("div.input-group").hide();
   $("#"+#{toJSON attachBtnId}).click(function() {
-    $("input[type=file]").show();
+    $("input[type=file]").parent("div.input-group").show();
   });
 });

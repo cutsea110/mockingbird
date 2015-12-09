@@ -114,26 +114,37 @@ thd3 :: (a, b, c) -> c
 thd3 (_, _, z) = z
 
 
-filesField :: (Monad m, RenderMessage (HandlerSite m) FormMessage) => Field m [FileInfo]
-filesField = Field
+filesField :: (Monad m, RenderMessage (HandlerSite m) FormMessage) =>
+              Either (Route (HandlerSite m)) Text -> Either (Route (HandlerSite m)) Text -> Field m [FileInfo]
+filesField jqueryJs faCss = Field
   { fieldParse = \_ files -> return $
       case files of
         [] -> Right Nothing
         fs@(_:_) -> Right $ Just fs
   , fieldView = \id' name attrs _ isReq -> do
+     addScriptEither jqueryJs
+     addStylesheetEither faCss
      toWidget [hamlet|
-                 <input name=#{name} *{attrs} type=file multiple :isReq:required>
+                 <div class="input-group">
+                   <input name=#{name} *{attrs} type=file multiple style="display: none;" :isReq:required>
+                   <span class="input-group-btn">
+                     <button class="btn btn-default" type=button onclick="$(this).parent().prev().click();$(this).blur()">
+                       <i class="fa fa-folder-open">
+                   <div class="input-prepend">
+                     <input type="text" class="form-control" *{attrs} disabled>
                |]
      toWidget [julius|
                $(function(){
                     $("input[name="+#{toJSON name}+"]")
-                    .on("change", function() {
+                    .on("change", function(e) {
                        var fileInputs = $("input[name="+#{toJSON name}+"]").length,
                            fileSelects = $("input[name="+#{toJSON name}+"]")
                                          .map(function(){return this.files[0]}).length;
                        if (fileInputs <= fileSelects) {
-                         $(this).clone(true).insertAfter(this);
+                         var group = $(this).parent('div.input-group');
+                         group.clone(true).insertAfter(group);
                        }
+                       $(this).next().next().children('input[type=text]').val($(this).val());
                     });
                })
                |]

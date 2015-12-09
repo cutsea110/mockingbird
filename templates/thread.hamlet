@@ -6,6 +6,7 @@
   <li class="media">
     <a href="https://gravatar.com" class="media-left">
       <img src="#{userGravatar opener}">
+      <span class="small text-muted">#{userName opener}
     <div class="media-body">
       <h4 class="media-heading">
         <a href=@{IssueR key} class="btn btn-link">#{issueSubject issue}
@@ -34,6 +35,7 @@
     <li class="media">
       <a href="https://gravatar.com" class="media-left">
         <img src="#{userGravatar spkr}">
+        <span class="small text-muted">#{userName spkr}
       <div class="media-body">
         <span class="small text-muted pull-right">
           $case beforeFrom (commentCreated c) now
@@ -52,8 +54,8 @@
         <p>#{commentComment c}
           $maybe fs <- mfs
             <br><br>
-            $forall (Entity fid sf) <- fs
-              <a href=@{FileR fid}><span class="fa fa-paperclip"></span>#{storedFileFullname sf}</a>
+            $forall Entity fid sf <- fs
+              <a href=@{FileR fid}><span class="fa fa-#{storedFileFAClass sf}"></span> #{storedFileFullname sf}</a>
 
 <nav class="navbar navbar-default navbar-fixed-bottom">
   <form class="form-group" method=post action="#" enctype=#{enc}>
@@ -61,4 +63,6 @@
     <button type=submit class="btn btn-default" name=turn value=YOU>_{MsgYourTurn}
     <button type=submit class="btn btn-default" name=turn value=ME>_{MsgMyTurn}
     <button type=submit class="btn btn-default" name=turn value=NOBODY>_{MsgClosing}
-    <button id=#{attachBtnId} type=button class="btn btn-default">_{MsgAttachFile}
+    <button id=#{attachBtnId} type=button class="btn btn-default">
+      <span class="fa fa-paperclip">
+      _{MsgAttachFile}
