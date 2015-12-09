@@ -17,7 +17,7 @@ selfIssueForm uid render mv
     <*> lift (liftIO getCurrentTime)
     <*> lift (liftIO getCurrentTime)
   where
-    bfs'subj = bfs'focus (render MsgIssueSubject) (render MsgSimpleAndClarity)
+    bfs'subj = bfs'focus (render MsgIssueSubject) (render MsgCreateTaskForYourself)
 
 issueForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
              UserId -> (AppMessage -> Text) -> Maybe Issue -> AForm m Issue

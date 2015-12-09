@@ -37,6 +37,7 @@ HomeOf u@User: #{userName u}のホーム
 
 IssueSubject: 課題
 SimpleAndClarity: 簡潔に分かりやすく
+CreateTaskForYourself: 自分でやること
 IssueDescription: 内容
 InDetail: くわしく
 IssueLimitDay: 期限日
