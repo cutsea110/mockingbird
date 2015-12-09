@@ -4,7 +4,7 @@ $(function(){
     $("input[type=file]").parent("div.input-group").show();
   });
 
-  // for creating input file fields dynamically.
+  // because, dynamic creation of input fields push up window and hide some comments.
   var target = document.querySelector('form.form-group'),
       config = { attributes: true, childList: true, characterData: true, subtree: true };
   var observer = new MutationObserver(function(mutations) {
