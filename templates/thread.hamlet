@@ -6,6 +6,7 @@
   <li class="media">
     <a href="https://gravatar.com" class="media-left">
       <img src="#{userGravatar opener}">
+      <span class="small text-muted">#{userName opener}
     <div class="media-body">
       <h4 class="media-heading">
         <a href=@{IssueR key} class="btn btn-link">#{issueSubject issue}
@@ -34,6 +35,7 @@
     <li class="media">
       <a href="https://gravatar.com" class="media-left">
         <img src="#{userGravatar spkr}">
+        <span class="small text-muted">#{userName spkr}
       <div class="media-body">
         <span class="small text-muted pull-right">
           $case beforeFrom (commentCreated c) now
