@@ -184,11 +184,11 @@ instance YesodAuth App where
     type AuthId App = UserId
 
     -- Where to send a user after successful login
-    loginDest _ = TopR
+    loginDest _ = MyTasksR
     -- Where to send a user after logout
     logoutDest _ = TopR
     -- Override the above two destinations when a Referer: header is present
-    redirectToReferer _ = True
+    redirectToReferer _ = False
 
     authenticate creds = runDB $ do
       x <- getBy $ UniqueUser $ credsIdent creds
