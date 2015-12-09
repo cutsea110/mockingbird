@@ -1,0 +1,6 @@
+$(function(){
+  $("input[type=file]").hide();
+  $("#"+#{toJSON attachBtnId}).click(function() {
+    $("input[type=file]").show();
+  });
+});

@@ -98,7 +98,7 @@ putCloseTicketR tid = do
     tick <- get404 tid
     if uid `elem` [ticketAssign tick, ticketDomain tick, ticketCodomain tick]
       then do
-        insert $ Comment tid (Textarea $ render MsgCloseTicket) uid now now
+        insert $ Comment tid (Textarea $ render MsgCloseTicket) uid 0 now now
         update tid [TicketStatus =. CLOSE, TicketUpdated =. now]
       else invalidArgs [render MsgYouCouldnotTouchTheTicket]
   redirect MyTasksR

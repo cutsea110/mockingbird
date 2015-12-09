@@ -18,11 +18,13 @@ module Util
        , fst3
        , snd3
        , thd3
+
+       , filesField
+       , whenJust_
        )where
 
 import Prelude (read)
 import ClassyPrelude.Yesod
-
 import Data.Text as T
 import Data.Time
 import Yesod.Form.Bootstrap3
@@ -110,3 +112,33 @@ snd3 :: (a, b, c) -> b
 snd3 (_, y, _) = y
 thd3 :: (a, b, c) -> c
 thd3 (_, _, z) = z
+
+
+filesField :: (Monad m, RenderMessage (HandlerSite m) FormMessage) => Field m [FileInfo]
+filesField = Field
+  { fieldParse = \_ files -> return $
+      case files of
+        [] -> Right Nothing
+        fs@(_:_) -> Right $ Just fs
+  , fieldView = \id' name attrs _ isReq -> do
+     toWidget [hamlet|
+                 <input name=#{name} *{attrs} type=file multiple :isReq:required>
+               |]
+     toWidget [julius|
+               $(function(){
+                    $("input[name="+#{toJSON name}+"]")
+                    .on("change", function() {
+                       var fileInputs = $("input[name="+#{toJSON name}+"]").length,
+                           fileSelects = $("input[name="+#{toJSON name}+"]")
+                                         .map(function(){return this.files[0]}).length;
+                       if (fileInputs <= fileSelects) {
+                         $(this).clone(true).insertAfter(this);
+                       }
+                    });
+               })
+               |]
+  , fieldEnctype = Multipart
+  }
+
+whenJust_ :: Monad m => Maybe a -> (a -> m ()) -> m ()
+whenJust_ mx f = maybe (return ()) f mx
