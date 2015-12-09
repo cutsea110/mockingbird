@@ -10,19 +10,20 @@ import Data.Conduit.List (consume)
 import Network.HTTP.Base (urlEncode, urlDecode)
 import System.Directory
 import System.FilePath
+import Yesod.Form.Jquery
 
 import Model.Fields (Status(..))
 import Util
 
-commentForm uid tid render mv = (,)
-                                <$> (Comment
-                                     <$> pure tid
-                                     <*> areq textareaField bfs'comment (commentComment <$> mv)
-                                     <*> pure uid
-                                     <*> pure 0
-                                     <*> lift (liftIO getCurrentTime)
-                                     <*> lift (liftIO getCurrentTime))
-                                <*>  aopt filesField bfs'file Nothing
+commentForm jqueryJs uid tid render mv = (,)
+                                         <$> (Comment
+                                              <$> pure tid
+                                              <*> areq textareaField bfs'comment (commentComment <$> mv)
+                                              <*> pure uid
+                                              <*> pure 0
+                                              <*> lift (liftIO getCurrentTime)
+                                              <*> lift (liftIO getCurrentTime))
+                                         <*>  aopt (filesField jqueryJs) bfs'file Nothing
   where
     bfs'comment = bfs'focus (render MsgComment) (render MsgCommenting)
     bfs'file = bfs' (render MsgAttachFile) (render MsgAttachFile)
@@ -33,7 +34,8 @@ getThreadR tid = do
   render <- getMessageRender
   now <- liftIO getCurrentTime
   attachBtnId <- newIdent
-  ((_, w), enc) <- runFormInline $ commentForm uid tid render Nothing
+  master <- getYesod
+  ((_, w), enc) <- runFormInline $ commentForm (urlJqueryJs master) uid tid render Nothing
   (Entity key issue, opener, comments) <- runDB $ do
     t <- get404 tid
     ch <- get404 $ ticketChannel t
@@ -61,7 +63,8 @@ postThreadR tid = do
   render <- getMessageRender
   now <- liftIO getCurrentTime
   Just turn <- lookupPostParam "turn"
-  ((r, _), _) <- runFormInline $ commentForm uid tid render Nothing
+  master <- getYesod
+  ((r, _), _) <- runFormInline $ commentForm (urlJqueryJs master) uid tid render Nothing
   case r of
     FormSuccess (comment, mfis) -> do
       runDB $ do
