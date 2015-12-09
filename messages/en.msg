@@ -37,6 +37,7 @@ HomeOf u@User: #{userName u}'s Home
 
 IssueSubject: Subject
 SimpleAndClarity: Simple & Clarity
+CreateTaskForYourself: Create task for yourself
 IssueDescription: Description
 InDetail: In datail
 IssueLimitDay: Limit day
