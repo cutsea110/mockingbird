@@ -115,14 +115,15 @@ thd3 (_, _, z) = z
 
 
 filesField :: (Monad m, RenderMessage (HandlerSite m) FormMessage) =>
-              Either (Route (HandlerSite m)) Text -> Field m [FileInfo]
-filesField jqueryJs = Field
+              Either (Route (HandlerSite m)) Text -> Either (Route (HandlerSite m)) Text -> Field m [FileInfo]
+filesField jqueryJs faCss = Field
   { fieldParse = \_ files -> return $
       case files of
         [] -> Right Nothing
         fs@(_:_) -> Right $ Just fs
   , fieldView = \id' name attrs _ isReq -> do
      addScriptEither jqueryJs
+     addStylesheetEither faCss
      toWidget [hamlet|
                  <div class="input-group">
                    <input name=#{name} *{attrs} type=file multiple style="display: none;" :isReq:required>

@@ -11,19 +11,21 @@ import Network.HTTP.Base (urlEncode, urlDecode)
 import System.Directory
 import System.FilePath
 import Yesod.Form.Jquery
+import Yesod.Goodies.PNotify (urlFontAwesomeCss)
 
 import Model.Fields (Status(..))
 import Util
 
-commentForm jqueryJs uid tid render mv = (,)
-                                         <$> (Comment
-                                              <$> pure tid
-                                              <*> areq textareaField bfs'comment (commentComment <$> mv)
-                                              <*> pure uid
-                                              <*> pure 0
-                                              <*> lift (liftIO getCurrentTime)
-                                              <*> lift (liftIO getCurrentTime))
-                                         <*>  aopt (filesField jqueryJs) bfs'file Nothing
+commentForm (jqueryJs, faCss) uid tid render mv
+    = (,)
+      <$> (Comment
+           <$> pure tid
+           <*> areq textareaField bfs'comment (commentComment <$> mv)
+           <*> pure uid
+           <*> pure 0
+           <*> lift (liftIO getCurrentTime)
+           <*> lift (liftIO getCurrentTime))
+      <*>  aopt (filesField jqueryJs faCss) bfs'file Nothing
   where
     bfs'comment = bfs'focus (render MsgComment) (render MsgCommenting)
     bfs'file = bfs' (render MsgAttachFile) (render MsgAttachFile)
@@ -54,7 +56,7 @@ getThreadR tid = do
   now <- liftIO getCurrentTime
   attachBtnId <- newIdent
   master <- getYesod
-  ((_, w), enc) <- runFormInline $ commentForm (urlJqueryJs master) uid tid render Nothing
+  ((_, w), enc) <- runFormInline $ commentForm ((urlJqueryJs &&& urlFontAwesomeCss) master) uid tid render Nothing
   (Entity key issue, opener, comments) <- runDB $ getComments tid
   let createdBefore = (issueCreated issue) `beforeFrom` now
   defaultLayout $ do
@@ -68,7 +70,7 @@ postThreadR tid = do
   now <- liftIO getCurrentTime
   Just turn <- lookupPostParam "turn"
   master <- getYesod
-  ((r, _), _) <- runFormInline $ commentForm (urlJqueryJs master) uid tid render Nothing
+  ((r, _), _) <- runFormInline $ commentForm ((urlJqueryJs &&& urlFontAwesomeCss) master) uid tid render Nothing
   case r of
     FormSuccess (comment, mfis) -> do
       runDB $ do
