@@ -15,7 +15,7 @@ getMyTimelineR = do
   getTimelineR uid
 
 commentsPerPage :: Int
-commentsPerPage = 10
+commentsPerPage = 50
 
 getComments :: MonadIO m =>
                UserId -> ReaderT SqlBackend m [(Entity Comment, Speaker, Maybe [Entity StoredFile], Status)]
