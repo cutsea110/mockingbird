@@ -18,7 +18,7 @@ getComments :: MonadIO m =>
                UserId -> ReaderT SqlBackend m [(Entity Comment, Speaker, Maybe [Entity StoredFile], Status)]
 getComments uid = do
   ts <- selectList ([TicketDomain ==. uid] ||. [TicketCodomain ==. uid] ||. [TicketAssign ==. uid]) []
-  cs <- selectList [CommentTicket <-. map entityKey ts] [Desc CommentCreated]
+  cs <- selectList [CommentTicket <-. map entityKey ts] [Desc CommentCreated, LimitTo 10]
   forM cs $ \comment@(Entity cid c) -> do
     u <- get404 $ commentSpeaker c
     mf <- if commentAttached c > 0
