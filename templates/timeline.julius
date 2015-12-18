@@ -1,0 +1,13 @@
+$(window).scroll(function(){
+  if ($(window).scrollTop() + $(window).height() >= $(document).height() - 10) {
+    // alert('last comment is '+ $('.media-list li:last').data('comment-id'));
+    $('.media-list').fadeIn('slow', function(){
+      // alert('post: ' + $('.media-list li:last').data('next-comments-url'));
+      $.get($('.media-list li:last').data('next-comments-url'), function(ret) {
+        $('.media-list').fadeOut('slow', function() {
+          // TODO
+        });
+      });
+    });
+  }
+});
