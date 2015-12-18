@@ -59,7 +59,6 @@ getTimelineR uid = do
     setTitleI $ MsgTimelineOf u
     $(widgetFile "timeline")
 
--- (Entity Comment, Speaker, Maybe [Entity StoredFile], Status)
 getTimelineBeforeR :: UserId -> CommentId -> Handler Value
 getTimelineBeforeR uid cid = do
   (Entity _ u, uR, mR) <- (,,) <$> requireAuth <*> getUrlRender <*> getMessageRender
