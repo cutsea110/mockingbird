@@ -8,6 +8,7 @@
 /mytimeline                         MyTimelineR        GET
 /mytasks                            MyTasksR           GET
 /timeline/#UserId                   TimelineR          GET
+/timeline/#UserId/before/#CommentId TimelineBeforeR    GET
 /tasks/#UserId                      TasksR             GET
 
 /new-issue                          NewIssueR          GET POST

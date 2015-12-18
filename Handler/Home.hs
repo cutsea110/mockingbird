@@ -14,11 +14,14 @@ getMyTimelineR = do
   uid <- requireAuthId
   getTimelineR uid
 
+commentsPerPage :: Int
+commentsPerPage = 50
+
 getComments :: MonadIO m =>
-               UserId -> ReaderT SqlBackend m [(Entity Comment, Speaker, Maybe [Entity StoredFile], Status)]
-getComments uid = do
+               UserId -> Maybe CommentId -> ReaderT SqlBackend m [(Entity Comment, Speaker, Maybe [Entity StoredFile], Status)]
+getComments uid mcid = do
   ts <- selectList ([TicketDomain ==. uid] ||. [TicketCodomain ==. uid] ||. [TicketAssign ==. uid]) []
-  cs <- selectList [CommentTicket <-. map entityKey ts] [Desc CommentCreated]
+  cs <- selectList ([CommentTicket <-. map entityKey ts] ++ before) [Desc CommentCreated, LimitTo commentsPerPage]
   forM cs $ \comment@(Entity cid c) -> do
     u <- get404 $ commentSpeaker c
     mf <- if commentAttached c > 0
@@ -29,17 +32,48 @@ getComments uid = do
     t <- get404 $ commentTicket c
     status <- channelStatus $ ticketChannel t
     return (comment, u, mf, status)
+  where
+    before = maybe [] (\x -> [CommentId <. x]) mcid
 
 getTimelineR :: UserId -> Handler Html
 getTimelineR uid = do
   Entity _ u <- requireAuth
   now <- liftIO getCurrentTime
-  comments <- runDB $ getComments uid
+  comments <- runDB $ getComments uid Nothing
   let createdBefore c = (commentCreated c) `beforeFrom` now
   defaultLayout $ do
     setTitleI $ MsgTimelineOf u
     $(widgetFile "timeline")
 
+getTimelineBeforeR :: UserId -> CommentId -> Handler Value
+getTimelineBeforeR uid cid = do
+  (Entity _ u, uR, mR) <- (,,) <$> requireAuth <*> getUrlRender <*> getMessageRender
+  now <- liftIO getCurrentTime
+  comments <- runDB $ getComments uid (Just cid)
+  let createdBefore c = (commentCreated c) `beforeFrom` now
+  returnJson $ object [ "comments" .= array (map (go createdBefore uR mR) comments) ]
+  where
+    go cb ur mr (Entity cid' com, spkr, msf, st)
+      = object [ "userGravatar" .= userGravatar spkr
+               , "userName" .= userName spkr
+               , "createdBefore" .= case cb com of
+                                      Seconds n -> mr (MsgSecondsAgo n)
+                                      Minutes n -> mr (MsgMinutesAgo n)
+                                      Hours n -> mr (MsgHoursAgo n)
+                                      Days n -> mr (MsgDaysAgo n)
+                                      Months n -> mr (MsgMonthsAgo n)
+                                      Years n -> mr (MsgYearsAgo n)
+               , "threadUrl" .= ur (ThreadR $ commentTicket com)
+               , "status" .= show st
+               , "comment" .= toJSON (commentComment com)
+               , "nextUrl" .= ur (TimelineBeforeR uid cid')
+               , "storedFiles" .= array (maybe [] (map (go' ur)) msf)
+               ]
+    go' ur (Entity fid sf) = object [ "fileUrl" .= ur (FileR fid)
+                                    , "fileClass" .= storedFileFAClass sf
+                                    , "filename" .= storedFileFullname sf
+                                    ]
+      
 type AssignedTicket = (Entity Ticket, (Issue, Opener, Codomain), Maybe (Entity Comment, Speaker))
 
 getAssignedActiveChannelIds :: MonadIO m => UserId -> ReaderT SqlBackend m [ChannelId]
