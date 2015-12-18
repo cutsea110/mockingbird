@@ -1,12 +1,42 @@
 $(window).scroll(function(){
   if ($(window).scrollTop() + $(window).height() >= $(document).height() - 10) {
-    // alert('last comment is '+ $('.media-list li:last').data('comment-id'));
-    $('.media-list').fadeIn('slow', function(){
-      // alert('post: ' + $('.media-list li:last').data('next-comments-url'));
-      $.get($('.media-list li:last').data('next-comments-url'), function(ret) {
-        $('.media-list').fadeOut('slow', function() {
-          // TODO
-        });
+    // alert('last comment is '+ $('#comment-container li:last').data('comment-id'));
+    $('#comment-container').fadeIn('slow', function(){
+      $.get($('#comment-container li:last').data('next-comments-url'), function(json) {
+        var clist = json.comments;
+        if (clist.length > 0) {
+          $.each(clist, function (i, c) {
+            var avatar = $('<a class="media-left">')
+                         .attr('href', 'https://gravatar.com')
+			 .append($('<img>').attr('src', c.userGravatar))
+                         .append($('<span class="small text-muted">').text(c.userName)),
+                cdate = $('<p class="small text-muted pull-right">').text(c.createdBefore),
+                com = $('<p>')
+                      .append($('<a>').attr('href', c.threadUrl).text(c.comment)),
+                div = $('<div class="media-body">')
+                      .append(cdate)
+                      .append(com),
+                li = $('<li class="media">')
+                     .attr('data-next-comments-url', c.nextUrl)
+                     .append(avatar)
+                     .append(div);
+
+            if (c.status == 'CLOSE') li.addClass('closed');
+
+            if (c.storedFiles.length > 0) {
+              var files = $('<p>').append($('<br><br><br>'));
+              if (c.status == 'CLOSE') files.addClass('text-muted');
+              $.each(c.storedFiles, function (j, f) {
+                var a = $('<a>').attr('href', f.fileUrl),
+                    s = $('<span class="fa fa-' + f.fileClass + '">');
+                files.append(a.append(s).append(' ' + f.filename + ' '));
+              });
+              div.append(files);
+            }
+
+            $('#comment-container').append(li);
+          });
+        }
       });
     });
   }

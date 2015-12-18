@@ -78,14 +78,14 @@ getTimelineBeforeR uid cid = do
                                       Days n -> mr (MsgDaysAgo n)
                                       Months n -> mr (MsgMonthsAgo n)
                                       Years n -> mr (MsgYearsAgo n)
-               , "thread-url" .= ur (ThreadR $ commentTicket com)
+               , "threadUrl" .= ur (ThreadR $ commentTicket com)
                , "status" .= show st
                , "comment" .= toJSON (commentComment com)
-               , "next-url" .= ur (TimelineBeforeR uid cid')
-               , "stored-files" .= array (maybe [] (map (go' ur)) msf)
+               , "nextUrl" .= ur (TimelineBeforeR uid cid')
+               , "storedFiles" .= array (maybe [] (map (go' ur)) msf)
                ]
-    go' ur (Entity fid sf) = object [ "file-url" .= ur (FileR fid)
-                                    , "file-class" .= storedFileFAClass sf
+    go' ur (Entity fid sf) = object [ "fileUrl" .= ur (FileR fid)
+                                    , "fileClass" .= storedFileFAClass sf
                                     , "filename" .= storedFileFullname sf
                                     ]
       

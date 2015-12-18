@@ -2,7 +2,7 @@
 <div .page-header>
   <h1>_{MsgTimelineOf u}
 
-<ul class="media-list">
+<ul id="comment-container" class="media-list">
   $forall (Entity cid c, spkr, mfs, status) <- comments
     <li class="media" :status == CLOSE:.closed data-next-comments-url="@{TimelineBeforeR uid cid}">
       <a href="https://gravatar.com" class="media-left">
