@@ -100,6 +100,29 @@ instance Yesod App where
     isAuthorized FaviconR _ = return Authorized
     isAuthorized RobotsR _ = return Authorized
     isAuthorized TopR _ = return Authorized
+
+    isAuthorized MyTimelineR _ = loggedInAuth
+    isAuthorized MyTasksR _ = loggedInAuth
+    isAuthorized (TimelineR _) _ = loggedInAuth
+    isAuthorized (TimelineBeforeR _ _) _ = loggedInAuth
+    isAuthorized (TasksR _) _ = loggedInAuth
+
+    isAuthorized NewIssueR _ = loggedInAuth
+    isAuthorized NewChannelR _ = loggedInAuth
+    isAuthorized CreateIssueR _ = loggedInAuth
+
+    isAuthorized (IssueR issueId) _ = isMemberOf issueId Nothing
+    isAuthorized (AddChannelR issueId) _ = isOwnerOf issueId
+    isAuthorized (AddSelfChannelR issueId) _ = isOwnerOf issueId
+    isAuthorized (ChannelR issueId chanId) _ = isMemberOf issueId (Just chanId)
+
+    isAuthorized (CloneIssueR issueId) _ = isMemberOf issueId Nothing
+
+    isAuthorized (ThreadR ticketId) _ = isAssigned ticketId
+    isAuthorized (CloseTicketR ticketId) _ = isAssigned ticketId
+
+    isAuthorized (FileR _) _ = loggedInAuth
+    
     -- Default to Authorized for now.
     isAuthorized _ _ = loggedInAuth
 
@@ -136,6 +159,45 @@ instance Yesod App where
 
 loggedInAuth :: Handler AuthResult
 loggedInAuth = fmap (maybe AuthenticationRequired $ const Authorized) maybeAuthId
+
+isMemberOf :: IssueId -> Maybe ChannelId -> Handler AuthResult
+isMemberOf issueId Nothing = do
+  self <- requireAuthId
+  b <- runDB $ self `involved` issueId
+  if b
+    then return Authorized
+    else do
+      r <- getMessageRender
+      return $ Unauthorized $ r MsgYouAreNotMemberOfThisIssue
+isMemberOf _ (Just chanId) = do
+  self <- requireAuthId
+  b <- runDB $ self `engaged` chanId
+  if b
+    then return Authorized
+    else do
+      r <- getMessageRender
+      return $ Unauthorized $ r MsgYouAreNotMemberOfThisChannel
+
+isOwnerOf :: IssueId -> Handler AuthResult
+isOwnerOf issueId = do
+  self <- requireAuthId
+  b <- runDB $ self `own` issueId
+  if b
+    then return Authorized
+    else do
+      r <- getMessageRender
+      return $ Unauthorized $ r MsgYouAreNotOwnerOfThisIssue
+
+isAssigned :: TicketId -> Handler AuthResult
+isAssigned ticketId = do
+  self <- requireAuthId
+  b <- runDB $ self `has` ticketId
+  if b
+    then return Authorized
+    else do
+      r <- getMessageRender
+      return $ Unauthorized $ r MsgYouDontAssignedThisTicket
+
 
 -- How to run database actions.
 instance YesodPersist App where

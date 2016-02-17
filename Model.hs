@@ -1,6 +1,6 @@
 module Model where
 
-import ClassyPrelude.Yesod hiding (Status, fromList, lookup)
+import ClassyPrelude.Yesod as Prelude hiding (Status, fromList, lookup)
 import Database.Persist.Quasi
 
 import qualified Data.ByteString.Lazy.UTF8 as BL
@@ -59,12 +59,30 @@ gravatarUrl s h = concat [ "https://secure.gravatar.com/avatar/"
 issueLimitDatetime :: Issue -> Maybe UTCTime
 issueLimitDatetime = liftM2 day'timeToUTC <$> issueLimitdate <*> issueLimittime
 
+
+own :: MonadIO m => UserId -> IssueId -> ReaderT SqlBackend m Bool
+uid `own` key = do
+  issue <- get404 key
+  return $ issueOpener issue == uid
+
+involved :: MonadIO m => UserId -> IssueId -> ReaderT SqlBackend m Bool
+uid `involved` key = do
+  cs <- selectList [ChannelIssue ==. key] []
+  let cids = Prelude.map entityKey cs
+  c <- count ([TicketChannel <-. cids] ++ ([TicketCodomain ==. uid] ||. [TicketDomain ==. uid]))
+  return $ c > 0
+
 -- |
 -- Extensions for Ticket
 --
 close :: Ticket -> Bool
 close Ticket { ticketStatus = CLOSE } = True
 close Ticket { ticketStatus = OPEN }  = False
+
+has :: MonadIO m => UserId -> TicketId -> ReaderT SqlBackend m Bool
+uid `has` key = do
+  t <- get404 key
+  return $ ticketCodomain t == uid || ticketDomain t == uid
 
 -- |
 -- Extensions of Channel
@@ -80,6 +98,10 @@ channelStatus cid = do
       close <- count [TicketChannel ==. cid, TicketStatus ==. CLOSE]
       return $ if close > 0 then CLOSE else OPEN
 
+engaged :: MonadIO m => UserId -> ChannelId -> ReaderT SqlBackend m Bool
+uid `engaged` key = do
+  c <- count ([TicketChannel ==. key] ++ ([TicketCodomain ==. uid] ||. [TicketDomain ==. uid]))
+  return $ c > 0
 
 type FAClass = Text
 
