@@ -57,8 +57,9 @@ gravatarUrl s h = concat [ "https://secure.gravatar.com/avatar/"
 -- Extensions for Issue
 --
 issueLimitDatetime :: Issue -> Maybe UTCTime
-issueLimitDatetime = liftM2 day'timeToUTC <$> issueLimitdate <*> issueLimittime
-
+issueLimitDatetime = liftM2 day'timeToUTC <$> issueLimitdate <*> issueLimittime'
+    where
+      issueLimittime' = return . maybe midnight id . issueLimittime
 
 own :: MonadIO m => UserId -> IssueId -> ReaderT SqlBackend m Bool
 uid `own` key = do
