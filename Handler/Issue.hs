@@ -28,6 +28,34 @@ postNewIssueR = do
     "QUICK" -> createSelfIssue >> redirect MyTasksR
     _ -> postNewChannelR
 
+getEditIssueR :: IssueId -> Handler Html
+getEditIssueR key = do
+  uid <- requireAuthId
+  render <- getMessageRender
+  issue <- runDB $ get404 key
+  (w, enc) <- genForm $ issueForm uid render (Just issue)
+  defaultLayout $ do
+    setTitleI $ MsgSubject issue
+    $(widgetFile "edit-issue")
+
+postEditIssueR :: IssueId -> Handler ()
+postEditIssueR key = do
+  uid <- requireAuthId
+  render <- getMessageRender
+  ((r, _), _) <- runForm $ issueForm uid render Nothing
+  case r of
+    FormSuccess issue -> do
+      now <- liftIO getCurrentTime
+      runDB $ update key [ IssueSubject =. issueSubject issue
+                         , IssueDescription =. issueDescription issue
+                         , IssueLimitdate =. issueLimitdate issue
+                         , IssueLimittime =. issueLimittime issue
+                         , IssueUpdated =. now
+                         ]
+      redirect $ IssueR key
+    FormFailure (x:_) -> invalidArgs [x]
+    _ -> invalidArgs ["error occured"]
+
 postNewChannelR :: Handler Html
 postNewChannelR = do
   uid <- requireAuthId
