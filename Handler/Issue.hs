@@ -38,8 +38,8 @@ getEditIssueR key = do
     setTitleI $ MsgSubject issue
     $(widgetFile "edit-issue")
 
-postEditIssueR :: IssueId -> Handler ()
-postEditIssueR key = do
+putEditIssueR :: IssueId -> Handler ()
+putEditIssueR key = do
   uid <- requireAuthId
   render <- getMessageRender
   ((r, _), _) <- runForm $ issueForm uid render Nothing

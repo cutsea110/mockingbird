@@ -12,7 +12,7 @@
 /tasks/#UserId                      TasksR             GET
 
 /new-issue                          NewIssueR          GET POST
-/edit-issue/#IssueId                EditIssueR         GET POST
+/edit-issue/#IssueId                EditIssueR         GET PUT
 /new-channel                        NewChannelR            POST
 /create-issue                       CreateIssueR           POST
 
