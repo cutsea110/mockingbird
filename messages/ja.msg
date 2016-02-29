@@ -61,6 +61,7 @@ AddMyChannel: 「じぶん」でやる
 ALL: みんな
 ANY: だれか
 EditChannel: 編集
+EditIssue: 編集
 DeleteChannel: 削除
 
 Subject v@Issue: #{issueSubject v}
