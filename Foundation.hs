@@ -108,6 +108,7 @@ instance Yesod App where
     isAuthorized (TasksR _) _ = loggedInAuth
 
     isAuthorized NewIssueR _ = loggedInAuth
+    isAuthorized (EditIssueR issueId) _ = isOwnerOf issueId
     isAuthorized NewChannelR _ = loggedInAuth
     isAuthorized CreateIssueR _ = loggedInAuth
 

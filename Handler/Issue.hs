@@ -118,6 +118,7 @@ postAddSelfChannelR key = do
 
 getIssueR :: IssueId -> Handler Html
 getIssueR key = do
+  uid <- requireAuthId
   (issue, opener, chans) <- runDB $ getIssueTree key
   now <- liftIO getCurrentTime
   let createdBefore = (issueCreated issue) `beforeFrom` now
