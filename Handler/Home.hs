@@ -18,7 +18,7 @@ commentsPerPage :: Int
 commentsPerPage = 50
 
 getComments :: MonadIO m =>
-               UserId -> Maybe CommentId -> ReaderT SqlBackend m [(Entity Comment, Speaker, Maybe [Entity StoredFile], Status)]
+               UserId -> Maybe CommentId -> ReaderT SqlBackend m [(Issue, Entity Comment, Speaker, Maybe [Entity StoredFile], Status)]
 getComments uid mcid = do
   ts <- selectList ([TicketDomain ==. uid] ||. [TicketCodomain ==. uid] ||. [TicketAssign ==. uid]) []
   cs <- selectList ([CommentTicket <-. map entityKey ts] ++ before) [Desc CommentCreated, LimitTo commentsPerPage]
@@ -30,8 +30,10 @@ getComments uid mcid = do
             return (Just fs)
           else return Nothing
     t <- get404 $ commentTicket c
+    ch <- get404 $ ticketChannel t
+    i <- get404 $ channelIssue ch
     status <- channelStatus $ ticketChannel t
-    return (comment, u, mf, status)
+    return (i, comment, u, mf, status)
   where
     before = maybe [] (\x -> [CommentId <. x]) mcid
 
@@ -53,7 +55,7 @@ getTimelineBeforeR uid cid = do
   let createdBefore c = (commentCreated c) `beforeFrom` now
   returnJson $ object [ "comments" .= array (map (go createdBefore uR mR) comments) ]
   where
-    go cb ur mr (Entity cid' com, spkr, msf, st)
+    go cb ur mr (issue, Entity cid' com, spkr, msf, st)
       = object [ "userGravatar" .= userGravatar spkr
                , "userName" .= userName spkr
                , "createdBefore" .= case cb com of
