@@ -1,5 +1,11 @@
 ul.media-list li.media.closed {
   background-color: #efefef;
+  h4 {
+    color: #888;
+  }
+  a {
+    color: #a94;
+  }
   a img {
     opacity: 0.5;
   }
