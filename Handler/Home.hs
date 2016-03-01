@@ -20,11 +20,8 @@ getMyTimelineR = do
 commentsPerPage :: Int
 commentsPerPage = 50
 
-getComments :: MonadIO m =>
-               UserId -> Maybe CommentId -> ReaderT SqlBackend m [(Issue, Entity Comment, Speaker, Maybe [Entity StoredFile], Status)]
-getComments uid mcid = do
-  ts <- selectList ([TicketDomain ==. uid] ||. [TicketCodomain ==. uid] ||. [TicketAssign ==. uid]) []
-  cs <- selectList ([CommentTicket <-. map entityKey ts] ++ before) [Desc CommentCreated, LimitTo commentsPerPage]
+toFullEquipedComments :: MonadIO m => [Entity Comment] -> ReaderT SqlBackend m [(Issue, Entity Comment, Speaker, Maybe [Entity StoredFile], Status)]
+toFullEquipedComments cs = do
   forM cs $ \comment@(Entity cid c) -> do
     u <- get404 $ commentSpeaker c
     mf <- if commentAttached c > 0
@@ -37,6 +34,14 @@ getComments uid mcid = do
     i <- get404 $ channelIssue ch
     status <- channelStatus $ ticketChannel t
     return (i, comment, u, mf, status)
+  
+
+getComments :: MonadIO m =>
+               UserId -> Maybe CommentId -> ReaderT SqlBackend m [(Issue, Entity Comment, Speaker, Maybe [Entity StoredFile], Status)]
+getComments uid mcid = do
+  ts <- selectList ([TicketDomain ==. uid] ||. [TicketCodomain ==. uid] ||. [TicketAssign ==. uid]) []
+  cs <- selectList ([CommentTicket <-. map entityKey ts] ++ before) [Desc CommentCreated, LimitTo commentsPerPage]
+  toFullEquipedComments cs
   where
     before = maybe [] (\x -> [CommentId <. x]) mcid
 
