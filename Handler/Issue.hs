@@ -46,12 +46,7 @@ putEditIssueR key = do
   case r of
     FormSuccess issue -> do
       now <- liftIO getCurrentTime
-      runDB $ update key [ IssueSubject =. issueSubject issue
-                         , IssueDescription =. issueDescription issue
-                         , IssueLimitdate =. issueLimitdate issue
-                         , IssueLimittime =. issueLimittime issue
-                         , IssueUpdated =. now
-                         ]
+      runDB $ replace key issue { issueUpdated = now }
       redirect $ IssueR key
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
