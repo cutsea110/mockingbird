@@ -1,6 +1,7 @@
 module Handler.Home where
 
-import Import hiding (Status)
+import Import hiding (Status, sortBy)
+import Data.List (sortBy)
 import Data.Text as T (append)
 import Database.Persist.Sql
 
@@ -171,7 +172,18 @@ searcher uid q = do
     is <- issues uid q
     cs <- comments uid q
     cs' <- toFullEquipedComments cs
-    return (map Left is ++ map Right cs')
+    return $ sortBy cmp $ map Left is ++ map Right cs'
+  where
+    cmp :: Either (Entity Issue) FullEquipedComment -> Either (Entity Issue) FullEquipedComment -> Ordering
+    cmp (Left i1) (Left i2) = (compare `on` fromLeft) i1 i2
+    cmp (Right c1) (Right c2) = (compare `on` fromRight) c1 c2
+    cmp (Left i) (Right c) = (compare `on2` (fromLeft, fromRight)) i c
+    cmp (Right c) (Left i) = cmp (Left i) (Right c)
+    fromLeft = issueUpdated . entityVal
+    fromRight = commentUpdated . entityVal . snd5
+    snd5 (_, x, _, _, _) = x
+    on2 :: (a -> a -> b) -> (c -> a, d -> a) -> c -> d -> b
+    (op `on2` (acc1, acc2)) x y = acc1 x `op` acc2 y
     
 issues :: MonadIO m => UserId -> Text -> ReaderT SqlBackend m [Entity Issue]
 issues uid q = rawSql sql [toPersistValue uid, toPersistValue uid, toPersistValue q', toPersistValue q']
