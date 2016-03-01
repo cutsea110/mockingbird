@@ -2,10 +2,10 @@
 <div .page-header>
   <h1>_{MsgSearchResult q}
 
-<ul>
+<ul class="media-list">
   $forall r <- rs
     $case r
-      $of Left (Entity _ x)
-        <li>#{issueSubject x}
-      $of Right (_, Entity _ x, _, _, _)
-        <li>#{commentComment x}
+      $of Left (Entity iid i)
+        <li>#{issueSubject i}
+      $of Right (i, Entity cid c, spkr, msf, s)
+        <li>#{commentComment c}

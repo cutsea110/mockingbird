@@ -110,4 +110,4 @@ YouAreNotMemberOfThisIssue: あなたはこのタスクに関わっていませ�
 YouAreNotMemberOfThisChannel: あなたはこのチャンネルに関わっていません.
 YouDontAssignedThisTicket: あなたはこのチケットにアサインされていません.
 
-SearchResult q@Text: 検索結果 #{q}
+SearchResult q@Text: 検索結果 `#{q}'
