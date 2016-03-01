@@ -20,7 +20,9 @@ getMyTimelineR = do
 commentsPerPage :: Int
 commentsPerPage = 50
 
-toFullEquipedComments :: MonadIO m => [Entity Comment] -> ReaderT SqlBackend m [(Issue, Entity Comment, Speaker, Maybe [Entity StoredFile], Status)]
+type FullEquipedComment = (Issue, Entity Comment, Speaker, Maybe [Entity StoredFile], Status)
+
+toFullEquipedComments :: MonadIO m => [Entity Comment] -> ReaderT SqlBackend m [FullEquipedComment]
 toFullEquipedComments cs = do
   forM cs $ \comment@(Entity cid c) -> do
     u <- get404 $ commentSpeaker c
@@ -162,13 +164,14 @@ postSearchR = do
     setTitleI $ MsgSearchResult q
     $(widgetFile "search-result")
 
-searcher :: UserId -> Text -> Handler [Either (Entity Issue) (Entity Comment)]
+searcher :: UserId -> Text -> Handler [Either (Entity Issue) FullEquipedComment]
 searcher uid q = do
   let q' = "%" `T.append` q `T.append` "%"
   runDB $ do
     is <- issues uid q
     cs <- comments uid q
-    return (map Left is ++ map Right cs)
+    cs' <- toFullEquipedComments cs
+    return (map Left is ++ map Right cs')
     
 issues :: MonadIO m => UserId -> Text -> ReaderT SqlBackend m [Entity Issue]
 issues uid q = rawSql sql [toPersistValue uid, toPersistValue uid, toPersistValue q', toPersistValue q']
