@@ -1,0 +1,7 @@
+<!-- Search results -->
+<div .page-header>
+  <h1>_{MsgSearchResult q}
+
+<ul>
+  $forall Entity _ r <- rs
+    <li>#{issueSubject r}

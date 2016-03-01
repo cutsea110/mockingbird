@@ -1,6 +1,9 @@
 module Handler.Home where
 
 import Import hiding (Status)
+import Data.Text as T (append)
+import Database.Persist.Sql
+
 import Model.Fields
 import Handler.Issue.Form (selfIssueForm)
 
@@ -144,3 +147,29 @@ putCloseTicketR tid = do
         update tid [TicketStatus =. CLOSE, TicketUpdated =. now]
       else invalidArgs [render MsgYouCouldnotTouchTheTicket]
   redirect MyTasksR
+
+postSearchR :: Handler Html
+postSearchR = do
+  uid <- requireAuthId
+  Just q <- lookupPostParam "q"
+  rs <- searcher uid q
+  defaultLayout $ do
+    setTitleI $ MsgSearchResult q
+    $(widgetFile "search-result")
+
+searcher :: UserId -> Text -> Handler [Entity Issue]
+searcher uid q = do
+  let q' = "%" `T.append` q `T.append` "%"
+  runDB $ rawSql sql [toPersistValue uid, toPersistValue uid, PersistText q', PersistText q']
+  where
+    sql = "SELECT \
+             ?? \
+           FROM \
+               \"issue\", \
+               \"channel\", \
+               \"ticket\" \
+           WHERE \
+                 \"issue\".id=\"channel\".issue \
+             AND \"channel\".id=\"ticket\".channel \
+             AND (\"ticket\".domain = ? OR \"ticket\".codomain = ?) \
+             AND (\"issue\".subject LIKE ? OR \"issue\".description LIKE ?)"

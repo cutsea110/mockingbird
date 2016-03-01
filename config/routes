@@ -28,3 +28,4 @@
 
 /attached/#StoredFileId             FileR              GET
 
+/search                             SearchR            POST
