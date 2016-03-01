@@ -3,5 +3,9 @@
   <h1>_{MsgSearchResult q}
 
 <ul>
-  $forall Entity _ r <- rs
-    <li>#{issueSubject r}
+  $forall r <- rs
+    $case r
+      $of Left (Entity _ x)
+        <li>#{issueSubject x}
+      $of Right (Entity _ x)
+        <li>#{commentComment x}
