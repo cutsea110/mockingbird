@@ -131,8 +131,8 @@ channelStatus cid = do
       close <- count [TicketChannel ==. cid, TicketStatus ==. CLOSE]
       return $ if close > 0 then CLOSE else OPEN
 
-engaged :: MonadIO m => UserId -> ChannelId -> ReaderT SqlBackend m Bool
-uid `engaged` key = do
+joined :: MonadIO m => UserId -> ChannelId -> ReaderT SqlBackend m Bool
+uid `joined` key = do
   c <- count ([TicketChannel ==. key] ++ ([TicketCodomain ==. uid] ||. [TicketDomain ==. uid]))
   return $ c > 0
 

@@ -119,7 +119,8 @@ instance Yesod App where
     isAuthorized (ChannelR issueId chanId) _ = isMemberOf issueId (Just chanId)
     isAuthorized (CloneIssueR issueId) _ = isMemberOf issueId Nothing
     
-    isAuthorized (ThreadR ticketId) _ = isAssigned ticketId
+    isAuthorized (ThreadR ticketId) False = isJoined ticketId
+    isAuthorized (ThreadR ticketId) True = isAssigned ticketId
     isAuthorized (FileR _) _ = loggedInAuth
 
     isAuthorized TopR _ = return Authorized
@@ -161,6 +162,18 @@ instance Yesod App where
 loggedInAuth :: Handler AuthResult
 loggedInAuth = fmap (maybe AuthenticationRequired $ const Authorized) maybeAuthId
 
+isJoined :: TicketId -> Handler AuthResult
+isJoined tickId = do
+  self <- requireAuthId
+  b <- runDB $ do
+         t <- get404 tickId
+         self `joined` (ticketChannel t)
+  if b
+     then return Authorized
+     else do
+       r <- getMessageRender
+       return $ Unauthorized $ r MsgYouAreNotMemberOfThisChannel
+
 isMemberOf :: IssueId -> Maybe ChannelId -> Handler AuthResult
 isMemberOf issueId Nothing = do
   self <- requireAuthId
@@ -172,7 +185,7 @@ isMemberOf issueId Nothing = do
       return $ Unauthorized $ r MsgYouAreNotMemberOfThisIssue
 isMemberOf _ (Just chanId) = do
   self <- requireAuthId
-  b <- runDB $ self `engaged` chanId
+  b <- runDB $ self `joined` chanId
   if b
     then return Authorized
     else do
