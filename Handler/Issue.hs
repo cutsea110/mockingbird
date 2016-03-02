@@ -213,14 +213,6 @@ postCloneIssueR key = do
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
 
-progress :: (Channel, [(TicketId, Ticket, Codomain)]) -> Int
-progress (ch, ts) = case channelType ch of
-                      ALL -> 100 * num `div` den
-                      ANY -> if any closep ts then 100 else 0
-  where
-   (den, num) = foldr (\(_, t, _) (ttl, cls) -> (ttl+1, if close t then cls+1 else cls)) (0, 0) ts
-   closep (_, t, _) = close t
-
 create :: MonadIO m =>
           IssueId -> Logic -> Mode -> Maybe [Entity User] -> UTCTime -> UserId
           -> ReaderT SqlBackend m ()

@@ -34,7 +34,7 @@
               <div class="progress" style="width: 25%;">
                 $case status
                   $of CLOSE
-                    <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" style="width: #{percent}%;">#{percent}%
+                    <div class="progress-bar progress-bar-closed progress-bar-striped" role="progressbar" style="width: #{percent}%;">#{percent}%
                   $of OPEN
                     <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: #{percent}%;">#{percent}%
 

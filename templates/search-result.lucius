@@ -10,3 +10,7 @@ ul.media-list li.media.closed {
     opacity: 0.5;
   }
 }
+
+.progress-bar-closed {
+  background-color: #aaa !important;
+}
