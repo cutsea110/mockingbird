@@ -2,3 +2,9 @@ body{
   /* Navbarを固定しているのでその分空ける */
   padding-bottom: 150px;
 }
+.other-channel-members:before {
+  content: "[";
+}
+.other-channel-members:after {
+  content: "]";
+}
