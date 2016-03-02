@@ -221,7 +221,7 @@ accountForm render = Account
                      <*> areq passwordField bfs'passwd Nothing
                      <*  bootstrapSubmit bs'submit
   where
-    bfs'account = (bfs $ render MsgAccountID) { fsName = Just "ident" }
+    bfs'account = withAutofocus (bfs $ render MsgAccountID) { fsName = Just "ident" }
     bfs'passwd = (bfs $ render MsgPassword) { fsName = Just "password" }
     bs'submit =  BootstrapSubmit (render MsgLogin) "btn-primary" []
 
