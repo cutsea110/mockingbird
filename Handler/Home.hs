@@ -30,7 +30,7 @@ commentsPerPage :: Int
 commentsPerPage = 50
 
 getComments :: MonadIO m =>
-               UserId -> Maybe CommentId -> ReaderT SqlBackend m [(Issue, Entity Comment, Speaker, Maybe [Entity StoredFile], Status)]
+               UserId -> Maybe CommentId -> ReaderT SqlBackend m [FullEquipedComment]
 getComments uid mcid = do
   ts <- selectList ([TicketDomain ==. uid] ||. [TicketCodomain ==. uid] ||. [TicketAssign ==. uid]) []
   cs <- selectList ([CommentTicket <-. map entityKey ts] ++ before) [Desc CommentCreated, LimitTo commentsPerPage]
@@ -56,7 +56,7 @@ getTimelineBeforeR uid cid = do
   let createdBefore c = (commentCreated c) `beforeFrom` now
   returnJson $ object [ "comments" .= array (map (go createdBefore uR mR) comments) ]
   where
-    go cb ur mr (issue, Entity cid' com, spkr, msf, st)
+    go cb ur mr (issue, Entity cid' com, spkr, opp, msf, st)
       = object [ "userGravatar" .= userGravatar spkr
                , "userName" .= userName spkr
                , "createdBefore" .= case cb com of
@@ -169,12 +169,12 @@ searcher uid q = do
     return $ sortBy cmp $ map Left is' ++ map Right cs'
   where
     fst4 (x, _, _, _) = x
-    snd5 (_, x, _, _, _) = x
+    snd6 (_, x, _, _, _, _) = x
     rev LT = GT
     rev GT = LT
     rev EQ = EQ
     compare' = (rev .) . compare
-    cmp = compare' `on` either (issueUpdated . entityVal . fst4) (commentUpdated . entityVal . snd5)
+    cmp = compare' `on` either (issueUpdated . entityVal . fst4) (commentUpdated . entityVal . snd6)
 
     
 issues :: MonadIO m => UserId -> Text -> ReaderT SqlBackend m [Entity Issue]

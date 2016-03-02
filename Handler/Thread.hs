@@ -33,8 +33,7 @@ commentForm (jqueryJs, faCss) uid tid render mv
     bfs'comment = bfs'focus (render MsgComment) (render MsgCommenting)
     bfs'file = bfs' (render MsgAttachFile) (render MsgAttachFile)
 
-getComments :: MonadIO m =>
-     TicketId -> ReaderT SqlBackend m (Entity Issue, Opener, Codomain, ChannelMembers, [(Entity Comment, Speaker, Maybe [Entity StoredFile])])
+getComments :: MonadIO m => TicketId -> ReaderT SqlBackend m FullEquipedThread
 getComments tid = do
     t <- get404 tid
     ch <- get404 $ ticketChannel t
@@ -47,7 +46,8 @@ getComments tid = do
       forM ts $ \t@(Entity tid t') -> do
         u <- get404 $ ticketCodomain t'
         return (t, u)
-    let mems' = uniqueBy (entityKey . fst) mems
+    let mems' = let acc = entityKey . fst
+                in filter ((/=tid) . acc) $ uniqueBy acc mems
     cs <- selectList [CommentTicket ==. tid] [Asc CommentCreated]
     cs' <- forM cs $ \comment@(Entity cid c) -> do
       u <- get404 $ commentSpeaker c

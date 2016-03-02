@@ -42,9 +42,10 @@ toFullEquipedComments cs = do
             return (Just fs)
           else return Nothing
     t <- get404 $ commentTicket c
+    o <- get404 $ if commentSpeaker c == ticketDomain t then ticketCodomain t else ticketDomain t
     ch <- get404 $ ticketChannel t
     i <- get404 $ channelIssue ch
     status <- channelStatus $ ticketChannel t
-    return (i, comment, u, mf, status)
+    return (i, comment, u, o, mf, status)
   
 
