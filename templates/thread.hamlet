@@ -38,8 +38,8 @@
         <span class="small text-muted">#{userName cod}
       $if not (null mems)
         <span class="other-channel-members">
-          $forall m <- mems
-            <a href="https://gravatar.com">
+          $forall (Entity tid t, m) <- mems
+            <a href="@{ThreadR tid}">
               <img class="gravatar" src="#{userGravatarTiny m}" alt=Gravatar>
               <span class="small text-muted">#{userName m}
 

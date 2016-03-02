@@ -1,4 +1,7 @@
-module Handler.Thread where
+module Handler.Thread ( getThreadR
+                      , postThreadR
+                      , getFileR
+                      ) where
 
 import Import as Import hiding (Status, last, urlEncode, urlDecode, sortBy)
 import Control.Arrow ((***))
@@ -41,8 +44,10 @@ getComments tid = do
     cod <- get404 $ ticketCodomain t
     mems <- do
       ts <- selectList [TicketChannel ==. ticketChannel t] []
-      selectList [UserId <-. map (ticketCodomain . entityVal) ts] []
-    let mems' = filter (((/=) `on` userIdent) cod) $ map entityVal $ unique mems
+      forM ts $ \t@(Entity tid t') -> do
+        u <- get404 $ ticketCodomain t'
+        return (t, u)
+    let mems' = uniqueBy (entityKey . fst) mems
     cs <- selectList [CommentTicket ==. tid] [Asc CommentCreated]
     cs' <- forM cs $ \comment@(Entity cid c) -> do
       u <- get404 $ commentSpeaker c

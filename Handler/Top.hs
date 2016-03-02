@@ -1,4 +1,5 @@
-module Handler.Top where
+module Handler.Top ( getTopR
+                   ) where
 
 import Import
 

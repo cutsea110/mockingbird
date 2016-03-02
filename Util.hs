@@ -23,6 +23,7 @@ module Util
        , whenJust_
 
        , unique
+       , uniqueBy
        )where
 
 import Prelude (read)
@@ -158,4 +159,7 @@ whenJust_ :: Monad m => Maybe a -> (a -> m ()) -> m ()
 whenJust_ mx f = maybe (return ()) f mx
 
 unique :: Ord (Key a) => [Entity a] -> [Entity a]
-unique = nubBy ((==) `on` entityKey) . sortBy (compare `on` entityKey)
+unique = uniqueBy entityKey
+
+uniqueBy :: Ord b => (a -> b) -> [a] -> [a]
+uniqueBy acc = nubBy ((==) `on` acc) . sortBy (compare `on` acc)
