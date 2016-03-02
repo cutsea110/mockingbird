@@ -81,15 +81,22 @@ issueStatus :: [ChannelTree] -> Status
 issueStatus cs = if issueProgress cs == 100 then CLOSE else OPEN
 issueProgress :: [ChannelTree] -> Percentage
 issueProgress cs
-  = div' $ foldr (\s (c, t) -> (if chanTreeStatus s==CLOSE then c+1 else c, t+1)) (0, 0) cs
+  = div' $ foldr (\s (c, t) -> (if channelTreeStatus s==CLOSE then c+1 else c, t+1)) (0, 0) cs
     where
       div' (num, den) = 100 * num `div` den
-      chanTreeStatus :: ChannelTree -> Status
-      chanTreeStatus (cid, ch, ts) = if pred (==CLOSE) (map (ticketStatus . snd3) ts) then CLOSE else OPEN
-        where
-          pred = case channelType ch of
-            ALL -> all
-            ANY -> any
+
+channelTreeProgress :: ChannelTree -> Percentage
+channelTreeProgress (_, ch, ts)
+  = div' $ foldr (\(_, tick, _) (c, t) -> (if ticketStatus tick == CLOSE then c+1 else c, t+1)) (0, 0) ts
+    where
+      div' (num, den) = 100 * num `div` den
+
+channelTreeStatus :: ChannelTree -> Status
+channelTreeStatus (cid, ch, ts) = if pred (==CLOSE) (map (ticketStatus . snd3) ts) then CLOSE else OPEN
+  where
+    pred = case channelType ch of
+      ALL -> all
+      ANY -> any
 
 -- |
 -- Extensions for Ticket
