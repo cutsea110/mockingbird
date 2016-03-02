@@ -1,4 +1,7 @@
-module Handler.Thread where
+module Handler.Thread ( getThreadR
+                      , postThreadR
+                      , getFileR
+                      ) where
 
 import Import as Import hiding (Status, last, urlEncode, urlDecode, sortBy)
 import Control.Arrow ((***))

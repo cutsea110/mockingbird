@@ -1,4 +1,11 @@
-module Handler.Home where
+module Handler.Home ( getMyTasksR
+                    , getMyTimelineR
+                    , getTimelineR
+                    , getTimelineBeforeR
+                    , getTasksR
+                    , putCloseTicketR
+                    , postSearchR
+                    ) where
 
 import Import hiding (Status, sortBy)
 import Data.List (sortBy)

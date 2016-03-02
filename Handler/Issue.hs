@@ -1,4 +1,18 @@
-module Handler.Issue where
+module Handler.Issue ( getNewIssueR
+                     , postNewIssueR
+                     , getEditIssueR
+                     , putEditIssueR
+                     , postNewChannelR
+                     , postCreateIssueR
+                     , postAddSelfChannelR
+                     , getIssueR
+                     , getAddChannelR
+                     , postAddChannelR
+                     , getChannelR
+                     , putChannelR
+                     , getCloneIssueR
+                     , postCloneIssueR
+                     ) where
 
 import Import as Import hiding ((\\))
 import Data.List ((\\))
