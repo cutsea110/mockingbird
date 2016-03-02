@@ -57,7 +57,7 @@ getComments tid = do
               return (Just fs)
             else return Nothing
       return (comment, u, mf)
-    return (Entity key issue, op, cod, mems', cs')
+    return (Entity key issue, op, t, cod, mems', cs')
 
 getThreadR :: TicketId -> Handler Html
 getThreadR tid = do
@@ -67,7 +67,7 @@ getThreadR tid = do
   attachBtnId <- newIdent
   master <- getYesod
   ((_, w), enc) <- runFormInline $ commentForm ((urlJqueryJs &&& urlFontAwesomeCss) master) uid tid render Nothing
-  (Entity key issue, opener, cod, mems, comments) <- runDB $ getComments tid
+  (Entity key issue, opener, tick, cod, mems, comments) <- runDB $ getComments tid
   let createdBefore = (issueCreated issue) `beforeFrom` now
   defaultLayout $ do
     setTitleI MsgThread
@@ -89,7 +89,8 @@ postThreadR tid = do
             (assign, status) = case turn of
               "YOU" -> (you, ticketStatus t)
               "ME"  -> (me, ticketStatus t)
-              "NOBODY" -> (ticketAssign t, CLOSE)
+              "CLOSE" -> (ticketAssign t, CLOSE)
+              "REOPEN" -> (ticketAssign t, OPEN)
         cid <- insert comment { commentAttached = maybe 0 length mfis }
         update tid [TicketAssign =. assign, TicketStatus =. status]
         let dir = s3dir </> T.unpack (toPathPiece uid) </> T.unpack (toPathPiece cid)

@@ -74,7 +74,11 @@
     ^{w}
     <button type=submit class="btn btn-default" name=turn value=YOU>_{MsgYourTurn}
     <button type=submit class="btn btn-default" name=turn value=ME>_{MsgMyTurn}
-    <button type=submit class="btn btn-default" name=turn value=NOBODY>_{MsgClosing}
+    $case ticketStatus tick
+      $of OPEN
+        <button type=submit class="btn btn-default" name=turn value=CLOSE>_{MsgClosing}
+      $of CLOSE
+        <button type=submit class="btn btn-default" name=turn value=REOPEN>_{MsgReopening}
     <button id=#{attachBtnId} type=button class="btn btn-default">
       <span class="fa fa-paperclip">
       _{MsgAttachFile}

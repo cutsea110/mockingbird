@@ -99,6 +99,7 @@ Commenting: コメントする
 YourTurn: おねがいします
 MyTurn: こちらでやります
 Closing: おしまいにする
+Reopening: やりなおし
 AttachFile: ファイルを添付する
 
 GotoThread: そうだんする
