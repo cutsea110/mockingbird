@@ -36,11 +36,12 @@
       <a href="https://gravatar.com">
         <img class="gravatar" src="#{userGravatarTiny cod}" alt=Gravatar>
         <span class="small text-muted">#{userName cod}
-      <span class="other-channel-members">
-        $forall m <- mems
-          <a href="https://gravatar.com">
-            <img class="gravatar" src="#{userGravatarTiny m}" alt=Gravatar>
-            <span class="small text-muted">#{userName m}
+      $if not (null mems)
+        <span class="other-channel-members">
+          $forall m <- mems
+            <a href="https://gravatar.com">
+              <img class="gravatar" src="#{userGravatarTiny m}" alt=Gravatar>
+              <span class="small text-muted">#{userName m}
 
   $forall (Entity cid c, spkr, mfs) <- comments
     <li class="media">
