@@ -10,9 +10,10 @@
 
       <a class="navbar-brand hidden-xs" href=@{TopR}>_{MsgSystemName}
       <a class="navbar-brand visible-xs" href=@{TopR}>_{MsgSystemInitialName}
-      <form class="navbar-form navbar-left" role=search>
-        <div class="form-group">
-          <input type=search class="form-control" placeholder="&#xF002; _{MsgSearch}">
+      $maybe _ <- mu
+        <form class="navbar-form navbar-left" role=search method=post action=@{SearchR}>
+          <div class="form-group">
+            <input name="q" type=search class="form-control" placeholder="&#xF002; _{MsgSearch}">
 
     <div class="collapse navbar-collapse" id=#{globalNavMenuId}>
       $maybe Entity uid u <- mu

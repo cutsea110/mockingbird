@@ -1,7 +1,12 @@
 module Handler.Home where
 
-import Import hiding (Status)
+import Import hiding (Status, sortBy)
+import Data.List (sortBy)
+import Data.Text as T (append)
+import Database.Persist.Sql
+
 import Model.Fields
+import Handler.Common (toFullEquipedComments, toFullEquipedIssue)
 import Handler.Issue.Form (selfIssueForm)
 
 getMyTasksR :: Handler Html
@@ -22,18 +27,7 @@ getComments :: MonadIO m =>
 getComments uid mcid = do
   ts <- selectList ([TicketDomain ==. uid] ||. [TicketCodomain ==. uid] ||. [TicketAssign ==. uid]) []
   cs <- selectList ([CommentTicket <-. map entityKey ts] ++ before) [Desc CommentCreated, LimitTo commentsPerPage]
-  forM cs $ \comment@(Entity cid c) -> do
-    u <- get404 $ commentSpeaker c
-    mf <- if commentAttached c > 0
-          then do
-            fs <- selectList [StoredFileComment ==. cid] []
-            return (Just fs)
-          else return Nothing
-    t <- get404 $ commentTicket c
-    ch <- get404 $ ticketChannel t
-    i <- get404 $ channelIssue ch
-    status <- channelStatus $ ticketChannel t
-    return (i, comment, u, mf, status)
+  toFullEquipedComments cs
   where
     before = maybe [] (\x -> [CommentId <. x]) mcid
 
@@ -144,3 +138,73 @@ putCloseTicketR tid = do
         update tid [TicketStatus =. CLOSE, TicketUpdated =. now]
       else invalidArgs [render MsgYouCouldnotTouchTheTicket]
   redirect MyTasksR
+
+postSearchR :: Handler Html
+postSearchR = do
+  uid <- requireAuthId
+  now <- liftIO getCurrentTime
+  Just q <- lookupPostParam "q"
+  rs <- searcher uid q
+  let createdBeforeC c = (commentCreated c) `beforeFrom` now
+      createdBeforeI i = (issueCreated i) `beforeFrom` now
+  defaultLayout $ do
+    setTitleI $ MsgSearchResult q
+    $(widgetFile "search-result")
+
+searcher :: UserId -> Text -> Handler [Either FullEquipedIssue FullEquipedComment]
+searcher uid q = do
+  let q' = "%" `T.append` q `T.append` "%"
+  runDB $ do
+    is <- issues uid q
+    is' <- toFullEquipedIssue is
+    cs <- comments uid q
+    cs' <- toFullEquipedComments cs
+    return $ sortBy cmp $ map Left is' ++ map Right cs'
+  where
+    fst4 (x, _, _, _) = x
+    snd5 (_, x, _, _, _) = x
+    rev LT = GT
+    rev GT = LT
+    rev EQ = EQ
+    compare' = (rev .) . compare
+    cmp = compare' `on` either (issueUpdated . entityVal . fst4) (commentUpdated . entityVal . snd5)
+
+    
+issues :: MonadIO m => UserId -> Text -> ReaderT SqlBackend m [Entity Issue]
+issues uid q = rawSql sql [toPersistValue uid, toPersistValue uid, toPersistValue q', toPersistValue q']
+    where
+      q' = "%" `T.append` q `T.append` "%"
+      sql :: Sql
+      sql = "SELECT \
+                DISTINCT ?? \
+             FROM \
+                issue, \
+                channel, \
+                ticket \
+             WHERE \
+                   issue.id=channel.issue \
+               AND channel.id=ticket.channel \
+               AND (ticket.domain=? OR ticket.codomain=?) \
+               AND (issue.subject like ? OR issue.description like ?)"
+
+comments :: MonadIO m => UserId -> Text -> ReaderT SqlBackend m [Entity Comment]
+comments uid q = rawSql sql [toPersistValue uid, toPersistValue uid, toPersistValue q', toPersistValue q']
+    where
+      q' = "%" `T.append` q `T.append` "%"
+      sql :: Sql
+      sql = "WITH ts AS \
+             (SELECT DISTINCT id \
+              FROM ticket \
+              WHERE channel IN (SELECT DISTINCT channel.id \
+                                FROM channel, \
+                                     ticket \
+                                WHERE \
+                                      channel.id=ticket.channel \
+                                  AND (ticket.domain=? OR ticket.codomain=?))) \
+             SELECT \
+                 DISTINCT ?? \
+             FROM \
+                comment LEFT OUTER JOIN stored_file ON comment.id=stored_file.comment \
+             WHERE \
+                   (comment.comment LIKE ? OR stored_file.fullname LIKE ?) \
+               AND comment.ticket IN (SELECT id FROM ts)"

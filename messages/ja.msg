@@ -109,3 +109,5 @@ YouAreNotOwnerOfThisIssue: あなたが作ったタスクではありません.
 YouAreNotMemberOfThisIssue: あなたはこのタスクに関わっていません.
 YouAreNotMemberOfThisChannel: あなたはこのチャンネルに関わっていません.
 YouDontAssignedThisTicket: あなたはこのチケットにアサインされていません.
+
+SearchResult q@Text: 検索結果 `#{q}'

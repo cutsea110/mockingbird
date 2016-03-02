@@ -109,3 +109,5 @@ YouAreNotOwnerOfThisIssue: You are NOT the owner of this issue.
 YouAreNotMemberOfThisIssue: You are NOT a member of this issue.
 YouAreNotMemberOfThisChannel: You are NOT a member of this channel.
 YouDontAssignedThisTicket: You don't assigned this ticket.
+
+SearchResult q@Text: Search results `#{q}'
