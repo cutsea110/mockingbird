@@ -6,6 +6,7 @@ import Data.Text as T (append)
 import Database.Persist.Sql
 
 import Model.Fields
+import Handler.Common (toFullEquipedComments, toFullEquipedIssue)
 import Handler.Issue.Form (selfIssueForm)
 
 getMyTasksR :: Handler Html
@@ -20,24 +21,6 @@ getMyTimelineR = do
 
 commentsPerPage :: Int
 commentsPerPage = 50
-
-type FullEquipedComment = (Issue, Entity Comment, Speaker, Maybe [Entity StoredFile], Status)
-
-toFullEquipedComments :: MonadIO m => [Entity Comment] -> ReaderT SqlBackend m [FullEquipedComment]
-toFullEquipedComments cs = do
-  forM cs $ \comment@(Entity cid c) -> do
-    u <- get404 $ commentSpeaker c
-    mf <- if commentAttached c > 0
-          then do
-            fs <- selectList [StoredFileComment ==. cid] []
-            return (Just fs)
-          else return Nothing
-    t <- get404 $ commentTicket c
-    ch <- get404 $ ticketChannel t
-    i <- get404 $ channelIssue ch
-    status <- channelStatus $ ticketChannel t
-    return (i, comment, u, mf, status)
-  
 
 getComments :: MonadIO m =>
                UserId -> Maybe CommentId -> ReaderT SqlBackend m [(Issue, Entity Comment, Speaker, Maybe [Entity StoredFile], Status)]
@@ -159,23 +142,27 @@ putCloseTicketR tid = do
 postSearchR :: Handler Html
 postSearchR = do
   uid <- requireAuthId
+  now <- liftIO getCurrentTime
   Just q <- lookupPostParam "q"
   rs <- searcher uid q
+  let createdBeforeC c = (commentCreated c) `beforeFrom` now
+      createdBeforeI i = (issueCreated i) `beforeFrom` now
   defaultLayout $ do
     setTitleI $ MsgSearchResult q
     $(widgetFile "search-result")
 
-searcher :: UserId -> Text -> Handler [Either (Entity Issue) FullEquipedComment]
+searcher :: UserId -> Text -> Handler [Either FullEquipedIssue FullEquipedComment]
 searcher uid q = do
   let q' = "%" `T.append` q `T.append` "%"
   runDB $ do
     is <- issues uid q
+    is' <- toFullEquipedIssue is
     cs <- comments uid q
     cs' <- toFullEquipedComments cs
-    return $ sortBy cmp $ map Left is ++ map Right cs'
+    return $ sortBy cmp $ map Left is' ++ map Right cs'
   where
     snd5 (_, x, _, _, _) = x
-    cmp = compare `on` either (issueUpdated . entityVal) (commentUpdated . entityVal . snd5)
+    cmp = compare `on` either (issueUpdated . entityVal . fst3) (commentUpdated . entityVal . snd5)
 
     
 issues :: MonadIO m => UserId -> Text -> ReaderT SqlBackend m [Entity Issue]

@@ -5,7 +5,58 @@
 <ul class="media-list">
   $forall r <- rs
     $case r
-      $of Left (Entity iid i)
-        <li>#{issueSubject i}
-      $of Right (i, Entity cid c, spkr, msf, s)
-        <li>#{commentComment c}
+      $of Left (Entity key issue, opnr, chans)
+        <li class="media">
+          <a href="https://gravatar.com" class="media-left">
+            <img src="#{userGravatar opnr}">
+            <span class="small text-muted">#{userName opnr}
+          <div class="media-body">
+            <p class="small text-muted pull-right">
+              $case createdBeforeI issue
+                $of Seconds n
+                    _{MsgSecondsAgo n}
+                $of Minutes n
+                    _{MsgMinutesAgo n}
+                $of Hours n
+                    _{MsgHoursAgo n}
+                $of Days n
+                    _{MsgDaysAgo n}
+                $of Months n
+                    _{MsgMonthsAgo n}
+                $of Years n
+                    _{MsgYearsAgo n}
+            <p>
+              <h4><a href="@{IssueR key}">#{issueSubject issue}</a>
+              $maybe desc <- issueDescription issue
+                <p>#{desc}
+
+      $of Right (issue, Entity cid c, spkr, mfs, status)
+        <li class="media" :status == CLOSE:.closed>
+          <a href="https://gravatar.com" class="media-left">
+            <img src="#{userGravatar spkr}">
+            <span class="small text-muted">#{userName spkr}
+          <div class="media-body">
+            <p class="small text-muted pull-right">
+              $case createdBeforeC c
+                $of Seconds n
+                    _{MsgSecondsAgo n}
+                $of Minutes n
+                    _{MsgMinutesAgo n}
+                $of Hours n
+                    _{MsgHoursAgo n}
+                $of Days n
+                    _{MsgDaysAgo n}
+                $of Months n
+                    _{MsgMonthsAgo n}
+                $of Years n
+                    _{MsgYearsAgo n}
+    
+            <p :status == CLOSE:.text-muted>
+              <h4>#{issueSubject issue}
+              <a href=@{ThreadR $ commentTicket c}>
+                #{commentComment c}
+              $maybe fs <- mfs
+                <br><br>
+                $forall Entity fid sf <- fs
+                  <a href=@{FileR fid}><span class="fa fa-#{storedFileFAClass sf}"></span> #{storedFileFullname sf}</a>
+

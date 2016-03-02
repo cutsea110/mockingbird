@@ -27,6 +27,8 @@ type Codomain = User
 type Speaker = User
 type IssueTree = (Issue, Opener, [ChannelTree])
 type ChannelTree = (ChannelId, Channel, [(TicketId, Ticket, Codomain)])
+type FullEquipedComment = (Issue, Entity Comment, Speaker, Maybe [Entity StoredFile], Status)
+type FullEquipedIssue = (Entity Issue, Opener, [ChannelTree])
 
 -- |
 -- Extensions for User
