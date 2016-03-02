@@ -24,10 +24,14 @@
             $of Years n
                 _{MsgYearsAgo n}
 
-        <p :status == CLOSE:.text-muted>
-          <h4>#{issueSubject issue}
+        <div :status == CLOSE:.text-muted>
           <a href=@{ThreadR $ commentTicket c}>
             #{commentComment c}
+          <br>
+          <h6>#{issueSubject issue}
+          <a href="https://gravatar.com">
+            <img class="gravatar" src="#{userGravatarTiny opp}" alt=Gravatar>
+            <span class="small text-muted">#{userName opp}
           $maybe fs <- mfs
             <br><br>
             $forall Entity fid sf <- fs

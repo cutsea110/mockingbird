@@ -11,8 +11,15 @@ $(window).scroll(function(){
 			 .append($('<img>').attr('src', c.userGravatar))
                          .append($('<span class="small text-muted">').text(c.userName)),
                 cdate = $('<p class="small text-muted pull-right">').text(c.createdBefore),
-                com = $('<p>')
-                      .append($('<a>').attr('href', c.threadUrl).text(c.comment)),
+                opponent = $("<a>")
+                           .attr('href', 'https://gravatar.com')
+                           .append($('<img>').attr('src', c.opponentGravatar))
+                           .append($('<span class="small text-muted">').text(c.opponentName)),
+                com = $('<div>')
+                      .append($('<a>').attr('href', c.threadUrl).text(c.comment))
+                      .append($("<br>"))
+                      .append($("<h6>").text(c.subject))
+                      .append(opponent),
                 div = $('<div class="media-body">')
                       .append(cdate)
                       .append(com),
@@ -21,7 +28,10 @@ $(window).scroll(function(){
                      .append(avatar)
                      .append(div);
 
-            if (c.status == 'CLOSE') li.addClass('closed');
+            if (c.status == 'CLOSE') {
+              com.addClass('text-muted')
+              li.addClass('closed');
+            }
 
             if (c.storedFiles.length > 0) {
               var files = $('<p>').append($('<br><br><br>'));

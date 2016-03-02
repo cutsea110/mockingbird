@@ -29,6 +29,7 @@ library
                      Handler.Issue
                      Handler.Issue.Form
                      Handler.Thread
+                     Handler.Search
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT
