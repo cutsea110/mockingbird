@@ -38,7 +38,7 @@
                   $of OPEN
                     <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: #{percent}%;">#{percent}%
 
-      $of Right (issue, Entity cid c, spkr, mfs, status)
+      $of Right (issue, Entity cid c, spkr, opp, mfs, status)
         <li class="media" :status == CLOSE:.closed>
           <a href="https://gravatar.com" class="media-left">
             <img src="#{userGravatar spkr}">
@@ -67,4 +67,8 @@
                 <br><br>
                 $forall Entity fid sf <- fs
                   <a href=@{FileR fid}><span class="fa fa-#{storedFileFAClass sf}"></span> #{storedFileFullname sf}</a>
-
+              $if userIdent opp /= userIdent spkr
+                <br>
+                <a href="@{ThreadR $ commentTicket c}">
+                  <img class="gravatar" src="#{userGravatarTiny opp}" alt=Gravatar>
+                  <span class="small text-muted">#{userName opp}

@@ -3,7 +3,7 @@
   <h1>_{MsgTimelineOf u}
 
 <ul id="comment-container" class="media-list">
-  $forall (issue, Entity cid c, spkr, mfs, status) <- comments
+  $forall (issue, Entity cid c, spkr, opp, mfs, status) <- comments
     <li class="media" :status == CLOSE:.closed data-next-comments-url="@{TimelineBeforeR uid cid}">
       <a href="https://gravatar.com" class="media-left">
         <img src="#{userGravatar spkr}">

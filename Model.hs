@@ -26,14 +26,16 @@ share [mkPersist sqlSettings, mkMigrate "migrateAll"]
 type Opener = User
 type Domain = User
 type Codomain = User
+type Opponent = User
 type Speaker = User
 type ChannelMembers = [(Entity Ticket, User)]
 type Percentage = Int
 type IssueTree = (Issue, Opener, [ChannelTree])
 type ChannelTree = (ChannelId, Channel, [(TicketId, Ticket, Codomain)])
-type FullEquipedComment = (Issue, Entity Comment, Speaker, Maybe [Entity StoredFile], Status)
+type FullEquipedComment = (Issue, Entity Comment, Speaker, Opponent, Maybe [Entity StoredFile], Status)
 type FullEquipedIssue = (Entity Issue, Opener, [ChannelTree], (Percentage, Status))
-
+type FullEquipedThread
+  = (Entity Issue, Opener, Codomain, ChannelMembers, [(Entity Comment, Speaker, Maybe [Entity StoredFile])])
 -- |
 -- Extensions for User
 --
