@@ -99,31 +99,31 @@ instance Yesod App where
     isAuthorized (AuthR _) _ = return Authorized
     isAuthorized FaviconR _ = return Authorized
     isAuthorized RobotsR _ = return Authorized
-    isAuthorized TopR _ = return Authorized
-
-    isAuthorized MyTimelineR _ = loggedInAuth
+    
     isAuthorized MyTasksR _ = loggedInAuth
+    isAuthorized MyTimelineR _ = loggedInAuth
     isAuthorized (TimelineR _) _ = loggedInAuth
     isAuthorized (TimelineBeforeR _ _) _ = loggedInAuth
     isAuthorized (TasksR _) _ = loggedInAuth
+    isAuthorized (CloseTicketR ticketId) _ = isAssigned ticketId
+    isAuthorized (ReopenTicketR ticketId) _ = isAssigned ticketId
+    isAuthorized SearchR _ = loggedInAuth
 
     isAuthorized NewIssueR _ = loggedInAuth
     isAuthorized (EditIssueR issueId) _ = isOwnerOf issueId
     isAuthorized NewChannelR _ = loggedInAuth
     isAuthorized CreateIssueR _ = loggedInAuth
-
+    isAuthorized (AddSelfChannelR issueId) _ = isOwnerOf issueId
     isAuthorized (IssueR issueId) _ = isMemberOf issueId Nothing
     isAuthorized (AddChannelR issueId) _ = isOwnerOf issueId
-    isAuthorized (AddSelfChannelR issueId) _ = isOwnerOf issueId
     isAuthorized (ChannelR issueId chanId) _ = isMemberOf issueId (Just chanId)
-
     isAuthorized (CloneIssueR issueId) _ = isMemberOf issueId Nothing
-
-    isAuthorized (ThreadR ticketId) _ = isAssigned ticketId
-    isAuthorized (CloseTicketR ticketId) _ = isAssigned ticketId
-
-    isAuthorized (FileR _) _ = loggedInAuth
     
+    isAuthorized (ThreadR ticketId) _ = isAssigned ticketId
+    isAuthorized (FileR _) _ = loggedInAuth
+
+    isAuthorized TopR _ = return Authorized
+
     -- Default to Authorized for now.
     isAuthorized _ _ = loggedInAuth
 

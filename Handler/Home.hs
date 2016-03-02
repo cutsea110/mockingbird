@@ -4,6 +4,7 @@ module Handler.Home ( getMyTasksR
                     , getTimelineBeforeR
                     , getTasksR
                     , putCloseTicketR
+                    , putReopenTicketR
                     , postSearchR
                     ) where
 
@@ -132,18 +133,24 @@ getTasksR uid = do
     sorter' _ Nothing = LT
     acc = fst3 . snd3
 
+putReopenTicketR :: TicketId -> Handler ()
+putReopenTicketR tid = do
+  uid <- requireAuthId
+  render <- getMessageRender
+  now <- liftIO getCurrentTime
+  runDB $ do
+    insert $ Comment tid (Textarea $ render MsgCloseTicket) uid 0 now now
+    update tid [TicketStatus =. OPEN, TicketUpdated =. now]
+  redirect MyTasksR
+
 putCloseTicketR :: TicketId -> Handler ()
 putCloseTicketR tid = do
   uid <- requireAuthId
   render <- getMessageRender
   now <- liftIO getCurrentTime
   runDB $ do
-    tick <- get404 tid
-    if uid `elem` [ticketAssign tick, ticketDomain tick, ticketCodomain tick]
-      then do
-        insert $ Comment tid (Textarea $ render MsgCloseTicket) uid 0 now now
-        update tid [TicketStatus =. CLOSE, TicketUpdated =. now]
-      else invalidArgs [render MsgYouCouldnotTouchTheTicket]
+    insert $ Comment tid (Textarea $ render MsgCloseTicket) uid 0 now now
+    update tid [TicketStatus =. CLOSE, TicketUpdated =. now]
   redirect MyTasksR
 
 postSearchR :: Handler Html

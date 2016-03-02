@@ -35,7 +35,7 @@ type ChannelTree = (ChannelId, Channel, [(TicketId, Ticket, Codomain)])
 type FullEquipedComment = (Issue, Entity Comment, Speaker, Opponent, Maybe [Entity StoredFile], Status)
 type FullEquipedIssue = (Entity Issue, Opener, [ChannelTree], (Percentage, Status))
 type FullEquipedThread
-  = (Entity Issue, Opener, Codomain, ChannelMembers, [(Entity Comment, Speaker, Maybe [Entity StoredFile])])
+  = (Entity Issue, Opener, Ticket, Codomain, ChannelMembers, [(Entity Comment, Speaker, Maybe [Entity StoredFile])])
 -- |
 -- Extensions for User
 --
@@ -115,7 +115,7 @@ close Ticket { ticketStatus = OPEN }  = False
 has :: MonadIO m => UserId -> TicketId -> ReaderT SqlBackend m Bool
 uid `has` key = do
   t <- get404 key
-  return $ ticketCodomain t == uid || ticketDomain t == uid
+  return $ uid `elem` [ticketCodomain t, ticketDomain t, ticketAssign t]
 
 -- |
 -- Extensions of Channel

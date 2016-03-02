@@ -99,6 +99,7 @@ Commenting: Commenting
 YourTurn: Your turn
 MyTurn: My turn
 Closing: Closing
+Reopening: Reopening
 AttachFile: Attach file
 
 GotoThread: Go to thread
