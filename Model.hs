@@ -24,8 +24,10 @@ share [mkPersist sqlSettings, mkMigrate "migrateAll"]
 -- type aliases
 --
 type Opener = User
+type Domain = User
 type Codomain = User
 type Speaker = User
+type ChannelMembers = [User]
 type Percentage = Int
 type IssueTree = (Issue, Opener, [ChannelTree])
 type ChannelTree = (ChannelId, Channel, [(TicketId, Ticket, Codomain)])
@@ -40,6 +42,9 @@ userName u = userFamilyName u <> " " <> userGivenName u
 
 userNameId :: User -> Text
 userNameId u = userName u <> "(" <> userIdent u <> ")"
+
+userGravatarTiny :: User -> Text
+userGravatarTiny = gravatarUrl 18 . toGravatarHash . userEmail
 
 userGravatarSmall :: User -> Text
 userGravatarSmall = gravatarUrl 36 . toGravatarHash . userEmail

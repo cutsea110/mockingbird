@@ -10,6 +10,7 @@
     <div class="media-body">
       <h4 class="media-heading">
         <a href=@{IssueR key} class="btn btn-link">#{issueSubject issue}
+
       <span class="small text-muted pull-right">
         $case beforeFrom (issueCreated issue) now
           $of Seconds n
@@ -30,6 +31,16 @@
 
       $maybe limit <- issueLimitDatetime issue
         <span class="text-info">_{MsgIssueLimitDatetime} #{showDate limit}
+
+      <br>
+      <a href="https://gravatar.com">
+        <img class="gravatar" src="#{userGravatarTiny cod}" alt=Gravatar>
+        <span class="small text-muted">#{userName cod}
+      <span class="other-channel-members">
+        $forall m <- mems
+          <a href="https://gravatar.com">
+            <img class="gravatar" src="#{userGravatarTiny m}" alt=Gravatar>
+            <span class="small text-muted">#{userName m}
 
   $forall (Entity cid c, spkr, mfs) <- comments
     <li class="media">

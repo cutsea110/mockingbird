@@ -1,11 +1,11 @@
 module Handler.Thread where
 
-import Import as Import hiding (Status, last, urlEncode, urlDecode)
+import Import as Import hiding (Status, last, urlEncode, urlDecode, sortBy)
 import Control.Arrow ((***))
 import qualified Data.ByteString.Lazy as L
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
-import Data.List (last)
+import Data.List (last, nubBy, sortBy)
 import Data.Conduit.List (consume)
 import Network.HTTP.Base (urlEncode, urlDecode)
 import System.Directory
@@ -31,13 +31,18 @@ commentForm (jqueryJs, faCss) uid tid render mv
     bfs'file = bfs' (render MsgAttachFile) (render MsgAttachFile)
 
 getComments :: MonadIO m =>
-     TicketId -> ReaderT SqlBackend m (Entity Issue, User, [(Entity Comment, Speaker, Maybe [Entity StoredFile])])
+     TicketId -> ReaderT SqlBackend m (Entity Issue, Opener, Codomain, ChannelMembers, [(Entity Comment, Speaker, Maybe [Entity StoredFile])])
 getComments tid = do
     t <- get404 tid
     ch <- get404 $ ticketChannel t
     let key = channelIssue ch
     issue <- get404 key
     op <- get404 $ issueOpener issue
+    cod <- get404 $ ticketCodomain t
+    mems <- do
+      ts <- selectList [TicketChannel ==. ticketChannel t] []
+      selectList [UserId <-. map (ticketCodomain . entityVal) ts] []
+    let mems' = filter (((/=) `on` userIdent) cod) $ map entityVal $ unique mems
     cs <- selectList [CommentTicket ==. tid] [Asc CommentCreated]
     cs' <- forM cs $ \comment@(Entity cid c) -> do
       u <- get404 $ commentSpeaker c
@@ -47,7 +52,7 @@ getComments tid = do
               return (Just fs)
             else return Nothing
       return (comment, u, mf)
-    return (Entity key issue, op, cs')
+    return (Entity key issue, op, cod, mems', cs')
 
 getThreadR :: TicketId -> Handler Html
 getThreadR tid = do
@@ -57,7 +62,7 @@ getThreadR tid = do
   attachBtnId <- newIdent
   master <- getYesod
   ((_, w), enc) <- runFormInline $ commentForm ((urlJqueryJs &&& urlFontAwesomeCss) master) uid tid render Nothing
-  (Entity key issue, opener, comments) <- runDB $ getComments tid
+  (Entity key issue, opener, cod, mems, comments) <- runDB $ getComments tid
   let createdBefore = (issueCreated issue) `beforeFrom` now
   defaultLayout $ do
     setTitleI MsgThread

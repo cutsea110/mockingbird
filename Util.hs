@@ -21,10 +21,13 @@ module Util
 
        , filesField
        , whenJust_
+
+       , unique
        )where
 
 import Prelude (read)
 import ClassyPrelude.Yesod
+import Data.List (nubBy)
 import Data.Text as T
 import Data.Time
 import Yesod.Form.Bootstrap3
@@ -153,3 +156,6 @@ filesField jqueryJs faCss = Field
 
 whenJust_ :: Monad m => Maybe a -> (a -> m ()) -> m ()
 whenJust_ mx f = maybe (return ()) f mx
+
+unique :: Ord (Key a) => [Entity a] -> [Entity a]
+unique = nubBy ((==) `on` entityKey) . sortBy (compare `on` entityKey)
