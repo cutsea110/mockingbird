@@ -26,7 +26,7 @@ toFullEquipedIssue is = do
         u <- get404 (ticketCodomain t)
         return (tid, t, u)
       return (cid, c, tu)
-    return (issue, opener, chans)
+    return (issue, opener, chans, (issueProgress chans, issueStatus chans))
 
 toFullEquipedComments :: MonadIO m => [Entity Comment] -> ReaderT SqlBackend m [FullEquipedComment]
 toFullEquipedComments cs = do

@@ -5,8 +5,8 @@
 <ul class="media-list">
   $forall r <- rs
     $case r
-      $of Left (Entity key issue, opnr, chans)
-        <li class="media">
+      $of Left (Entity key issue, opnr, chans, (percent, status))
+        <li class="media" :status == CLOSE:.closed>
           <a href="https://gravatar.com" class="media-left">
             <img src="#{userGravatar opnr}">
             <span class="small text-muted">#{userName opnr}
@@ -20,15 +20,23 @@
                 $of Hours n
                     _{MsgHoursAgo n}
                 $of Days n
-                    _{MsgDaysAgo n}
+                   _{MsgDaysAgo n}
                 $of Months n
                     _{MsgMonthsAgo n}
                 $of Years n
                     _{MsgYearsAgo n}
-            <p>
+            <p :status == CLOSE:.text-muted>
               <h4><a href="@{IssueR key}">#{issueSubject issue}</a>
               $maybe desc <- issueDescription issue
-                <p>#{desc}
+                #{desc}
+              $maybe limit <- issueLimitDatetime issue
+                <span class="text-info">_{MsgIssueLimitDatetime} #{showDate limit}
+              <div class="progress" style="width: 25%;">
+                $case status
+                  $of CLOSE
+                    <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" style="width: #{percent}%;">#{percent}%
+                  $of OPEN
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: #{percent}%;">#{percent}%
 
       $of Right (issue, Entity cid c, spkr, mfs, status)
         <li class="media" :status == CLOSE:.closed>

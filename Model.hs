@@ -1,11 +1,12 @@
 module Model where
 
-import ClassyPrelude.Yesod as Prelude hiding (Status, fromList, lookup)
+import ClassyPrelude.Yesod as Prelude hiding (Status, fromList, lookup, foldr)
 import Database.Persist.Quasi
 
 import qualified Data.ByteString.Lazy.UTF8 as BL
 import Data.Digest.Pure.MD5 (md5)
-import Data.Map
+import Data.List (foldr)
+import Data.Map (lookup, fromList)
 import Data.Text (strip)
 import Data.Time
 
@@ -25,10 +26,11 @@ share [mkPersist sqlSettings, mkMigrate "migrateAll"]
 type Opener = User
 type Codomain = User
 type Speaker = User
+type Percentage = Int
 type IssueTree = (Issue, Opener, [ChannelTree])
 type ChannelTree = (ChannelId, Channel, [(TicketId, Ticket, Codomain)])
 type FullEquipedComment = (Issue, Entity Comment, Speaker, Maybe [Entity StoredFile], Status)
-type FullEquipedIssue = (Entity Issue, Opener, [ChannelTree])
+type FullEquipedIssue = (Entity Issue, Opener, [ChannelTree], (Percentage, Status))
 
 -- |
 -- Extensions for User
@@ -74,6 +76,20 @@ uid `involved` key = do
   let cids = Prelude.map entityKey cs
   c <- count ([TicketChannel <-. cids] ++ ([TicketCodomain ==. uid] ||. [TicketDomain ==. uid]))
   return $ c > 0
+
+issueStatus :: [ChannelTree] -> Status
+issueStatus cs = if issueProgress cs == 100 then CLOSE else OPEN
+issueProgress :: [ChannelTree] -> Percentage
+issueProgress cs
+  = div' $ foldr (\s (c, t) -> (if chanTreeStatus s==CLOSE then c+1 else c, t+1)) (0, 0) cs
+    where
+      div' (num, den) = 100 * num `div` den
+      chanTreeStatus :: ChannelTree -> Status
+      chanTreeStatus (cid, ch, ts) = if pred (==CLOSE) (map (ticketStatus . snd3) ts) then CLOSE else OPEN
+        where
+          pred = case channelType ch of
+            ALL -> all
+            ANY -> any
 
 -- |
 -- Extensions for Ticket

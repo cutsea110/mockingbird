@@ -161,8 +161,13 @@ searcher uid q = do
     cs' <- toFullEquipedComments cs
     return $ sortBy cmp $ map Left is' ++ map Right cs'
   where
+    fst4 (x, _, _, _) = x
     snd5 (_, x, _, _, _) = x
-    cmp = compare `on` either (issueUpdated . entityVal . fst3) (commentUpdated . entityVal . snd5)
+    rev LT = GT
+    rev GT = LT
+    rev EQ = EQ
+    compare' = (rev .) . compare
+    cmp = compare' `on` either (issueUpdated . entityVal . fst4) (commentUpdated . entityVal . snd5)
 
     
 issues :: MonadIO m => UserId -> Text -> ReaderT SqlBackend m [Entity Issue]
