@@ -95,6 +95,8 @@ getTimelineBeforeR uid cid = do
                , "storedFiles" .= array (maybe [] (map (go' ur)) msf)
                ]
     go' ur (Entity fid sf) = object [ "fileUrl" .= ur (FileR fid)
+                                    , "isImageFile" .= toJSON (isImageFile sf)
+                                    , "isMovieFile" .= toJSON (isMovieFile sf)
                                     , "fileClass" .= storedFileFAClass sf
                                     , "filename" .= storedFileFullname sf
                                     ]

@@ -37,9 +37,24 @@ $(window).scroll(function(){
               var files = $('<p>').append($('<br><br><br>'));
               if (c.status == 'CLOSE') files.addClass('text-muted');
               $.each(c.storedFiles, function (j, f) {
-                var a = $('<a>').attr('href', f.fileUrl),
-                    s = $('<span class="fa fa-' + f.fileClass + '">');
-                files.append(a.append(s).append(' ' + f.filename + ' '));
+                if (f.isImageFile) {
+                  var div = $('<div class="col-sm-4 col-md-3">'),
+                      a = $('<a class="thumbnail">').attr('href', f.fileUrl),
+                      img = $('<img class="media-object img-rounded img-responsive">')
+                            .attr({'src': f.fileUrl , 'title': f.filename });
+                  files.append(div.append(a.append(img)));
+                } else if (f.isMovieFile) {
+                  var div = $('<div class="col-sm-4 col-md-3">'),
+                      embed = $('<div class="embed-responsive embed-responsive-16by9">'),
+                      video = $('<video controls class="embed-responsive-item">'),
+                      source = $('<source>').attr('src', f.fileUrl);
+                  files.append(div.append(embed.append(video.append(source))));
+
+                } else {
+                  var a = $('<a>').attr('href', f.fileUrl),
+                      s = $('<span class="fa fa-' + f.fileClass + '">');
+                  files.append(a.append(s).append(' ' + f.filename + ' '));
+                }
               });
               div.append(files);
             }

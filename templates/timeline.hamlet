@@ -33,7 +33,7 @@
             <img class="gravatar" src="#{userGravatarTiny opp}" alt=Gravatar>
             <span class="small text-muted">#{userName opp}
           $maybe fs <- mfs
-            <br>
+            <br><br>
             $forall Entity fid sf <- fs
               $if isImageFile sf
                 <div class="col-sm-4 col-md-3">
