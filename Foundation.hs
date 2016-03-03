@@ -304,7 +304,7 @@ instance YesodAuthOwl App where
     $(widgetFile "change-password")
 
 instance YesodJquery App where
-  urlJqueryJs _ = Right "//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"
+  urlJqueryJs _ = Right "//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"
   urlJqueryUiJs _ = Right "//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"
   urlJqueryUiCss _ = Right "//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/trontastic/jquery-ui.css"
 
