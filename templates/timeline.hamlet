@@ -33,6 +33,11 @@
             <img class="gravatar" src="#{userGravatarTiny opp}" alt=Gravatar>
             <span class="small text-muted">#{userName opp}
           $maybe fs <- mfs
-            <br><br>
+            <br>
             $forall Entity fid sf <- fs
-              <a href=@{FileR fid}><span class="fa fa-#{storedFileFAClass sf}"></span> #{storedFileFullname sf}</a>
+              $if isImageFile sf
+                <div class="col-sm-4 col-md-3">
+                  <a href="@{FileR fid}" class="thumbnail">
+                    <img title="#{storedFileFullname sf}" src="@{FileR fid}" class="media-object img-rounded img-responsive">
+              $else
+                <a href=@{FileR fid}><span class="fa fa-#{storedFileFAClass sf}"></span> #{storedFileFullname sf}</a>

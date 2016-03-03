@@ -138,8 +138,21 @@ uid `joined` key = do
 
 type FAClass = Text
 
+isImageFile :: StoredFile -> Bool
+isImageFile sf = Prelude.toLower (storedFileExtension sf) `elem` list
+    where
+      list = [ ".gif"
+             , ".jpeg"
+             , ".jpg"
+             , ".pct"
+             , ".pict"
+             , ".png"
+             , ".tif"
+             , ".tiff"
+             ]
+
 storedFileFAClass :: StoredFile -> FAClass
-storedFileFAClass sf = maybe "file-o" id $ lookup (storedFileExtension sf) dict
+storedFileFAClass sf = maybe "file-o" id $ lookup (Prelude.toLower $ storedFileExtension sf) dict
     where
       dict = fromList [ (".agda", "file-code-o")
                       , (".asm", "file-code-o")
