@@ -75,5 +75,10 @@
                     <div class="col-sm-4 col-md-3">
                       <a href="@{FileR fid}" class="thumbnail">
                         <img title="#{storedFileFullname sf}" src="@{FileR fid}" class="media-object img-rounded img-responsive">
+                  $elseif isMovieFile sf
+                    <div class="col-sm-4 col-md3">
+                      <div class="embed-responsive embed-responsive-16by9">
+                        <video controls class="embed-responsive-item">
+                          <source src="@{FileR fid}">
                   $else
                     <a href=@{FileR fid}><span class="fa fa-#{storedFileFAClass sf}"></span> #{storedFileFullname sf}</a>
