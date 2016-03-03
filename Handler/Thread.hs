@@ -128,7 +128,7 @@ getFileR :: StoredFileId -> Handler ()
 getFileR fid = do
   uid <- requireAuthId
   sf <- runDB $ get404 fid
-  let dir = s3dir </> T.unpack (toPathPiece uid) </> T.unpack (toPathPiece $ storedFileComment sf)
+  let dir = s3dir </> T.unpack (toPathPiece $ storedFileCreator sf) </> T.unpack (toPathPiece $ storedFileComment sf)
       fp = dir </> T.unpack (toPathPiece fid)
   addHeader "Content-Type" $ storedFileContentType sf
   addHeader "Content-Disposition" $ "attachment; filename*=UTF-8''" `T.append` (storedFileEncodedName sf)
