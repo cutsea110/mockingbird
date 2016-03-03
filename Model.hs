@@ -150,6 +150,16 @@ isImageFile sf = Prelude.toLower (storedFileExtension sf) `elem` list
              , ".tif"
              , ".tiff"
              ]
+isMovieFile :: StoredFile -> Bool
+isMovieFile sf = Prelude.toLower (storedFileExtension sf) `elem` list
+    where
+      list = [ ".avi"
+             , ".mov"
+             , ".mpeg"
+             , ".mpg"
+             , ".mp4"
+             , ".ogv"
+             ]
 
 storedFileFAClass :: StoredFile -> FAClass
 storedFileFAClass sf = maybe "file-o" id $ lookup (Prelude.toLower $ storedFileExtension sf) dict
@@ -224,6 +234,8 @@ storedFileFAClass sf = maybe "file-o" id $ lookup (Prelude.toLower $ storedFileE
                       , (".mov", "file-movie-o")
                       , (".mpeg", "file-movie-o")
                       , (".mpg", "file-movie-o")
+                      , (".mp4", "file-movie-o")
+                      , (".ogv", "file-movie-o")
                       , (".vdo", "file-movie-o")
                       , (".wrl", "file-movie-o")
                         
