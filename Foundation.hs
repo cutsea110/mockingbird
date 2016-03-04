@@ -101,12 +101,15 @@ instance Yesod App where
     isAuthorized RobotsR _ = return Authorized
     
     isAuthorized MyTasksR _ = loggedInAuth
+    isAuthorized MyFollowRequirementR _ = loggedInAuth
     isAuthorized MyTimelineR _ = loggedInAuth
     isAuthorized (TimelineR _) _ = loggedInAuth
     isAuthorized (TimelineBeforeR _ _) _ = loggedInAuth
-    isAuthorized (TasksR _) _ = loggedInAuth
+    isAuthorized (TasksR uid) _ = isMyown uid
+    isAuthorized (FollowRequirementR uid) _ = isMyown uid
     isAuthorized (CloseTicketR ticketId) _ = isAssigned ticketId
     isAuthorized (ReopenTicketR ticketId) _ = isAssigned ticketId
+
     isAuthorized SearchR _ = loggedInAuth
 
     isAuthorized NewIssueR _ = loggedInAuth
@@ -161,6 +164,15 @@ instance Yesod App where
 
 loggedInAuth :: Handler AuthResult
 loggedInAuth = fmap (maybe AuthenticationRequired $ const Authorized) maybeAuthId
+
+isMyown :: UserId -> Handler AuthResult
+isMyown uid = do
+  self <- requireAuthId
+  if self == uid
+     then return Authorized
+     else do
+       r <- getMessageRender
+       return $ Unauthorized $ r MsgThisPageIsNotYours
 
 isJoined :: TicketId -> Handler AuthResult
 isJoined tickId = do

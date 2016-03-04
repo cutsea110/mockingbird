@@ -112,3 +112,9 @@ YouAreNotMemberOfThisChannel: あなたはこのチャンネルに関わって�
 YouDontAssignedThisTicket: あなたはこのチケットにアサインされていません.
 
 SearchResult q@Text: 検索結果 `#{q}'
+
+FollowRequirements u@User: `#{userName u}'のフォローが必要
+MyOwnIssues: やること
+FollowRequiredIssues: やらせること
+
+ThisPageIsNotYours: あなたのページではありません.
