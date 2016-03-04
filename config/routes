@@ -12,6 +12,8 @@
 /tasks/#UserId                      TasksR               GET
 /myfollow-requirement               MyFollowRequirementR GET
 /follow-requirement/#UserId         FollowRequirementR   GET
+/myprivate                          MyPrivateR           GET
+/private/#UserId                    PrivateR             GET
 
 /new-issue                          NewIssueR            GET POST
 /edit-issue/#IssueId                EditIssueR           GET PUT

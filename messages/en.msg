@@ -120,5 +120,7 @@ SearchResult q@Text: Search results `#{q}'
 FollowRequirements u@User: Follow requirement issues of `#{userName u}'
 MyOwnIssues: My own issues
 FollowRequiredIssues: Follow required issues
+PrivateIssues: Private issues
+Private u@User: `#{userName u}' private issues
 
 ThisPageIsNotYours: This page is NOT yours

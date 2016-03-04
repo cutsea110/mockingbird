@@ -5,6 +5,8 @@ module Handler.Home ( getMyTasksR
                     , getTasksR
                     , getMyFollowRequirementR
                     , getFollowRequirementR
+                    , getMyPrivateR
+                    , getPrivateR
                     , putCloseTicketR
                     , putReopenTicketR
                     ) where
@@ -32,15 +34,15 @@ getMyTimelineR = do
 commentsPerPage :: Int
 commentsPerPage = 50
 
-othersPrivateIssues :: MonadIO m => UserId -> ReaderT SqlBackend m [IssueId]
-othersPrivateIssues uid = do
-  ids <- selectList [IssueOpener !=. uid, IssueScope ==. PRIVATE] []
+privateIssues :: MonadIO m => UserId -> ReaderT SqlBackend m [IssueId]
+privateIssues uid = do
+  ids <- selectList [IssueScope ==. PRIVATE] []
   return $ map entityKey ids
 
 comments :: MonadIO m => UserId -> Maybe CommentId -> ReaderT SqlBackend m [Entity Comment]
 comments uid mcid = rawSql sql param
     where
-      param = [toPersistValue PRIVATE, toPersistValue uid, toPersistValue uid, toPersistValue uid] ++
+      param = [toPersistValue PRIVATE, toPersistValue uid, toPersistValue uid] ++
               maybe [] (\cid -> [toPersistValue cid]) mcid ++
               [toPersistValue commentsPerPage]
       sql :: Sql
@@ -50,7 +52,7 @@ comments uid mcid = rawSql sql param
               WHERE channel IN (SELECT DISTINCT channel.id \
                                 FROM channel, ticket \
                                 WHERE \
-                                      channel.issue NOT IN (SELECT id FROM issue WHERE scope=? AND opener<>?) \
+                                      channel.issue NOT IN (SELECT id FROM issue WHERE scope=?) \
                                   AND channel.id=ticket.channel \
                                   AND (ticket.domain=? OR ticket.codomain=?))) \
             SELECT \
@@ -115,7 +117,7 @@ type AssignedTicket = (Entity Ticket, (Issue, Opener, Codomain), Maybe (Entity C
 getAssignedActiveChannelIds :: MonadIO m => UserId -> ReaderT SqlBackend m [ChannelId]
 getAssignedActiveChannelIds uid = do
   ticks <- selectList [TicketAssign ==. uid, TicketStatus ==. OPEN] []
-  privs <- othersPrivateIssues uid
+  privs <- privateIssues uid
   chans <- selectList [ChannelId <-. map (ticketChannel.entityVal) ticks, ChannelIssue /<-. privs] []
   cids <- forM chans $ \(Entity cid c) -> do
     case channelType c of
@@ -190,6 +192,34 @@ getFollowRequirementR uid = do
   defaultLayout $ do
     setTitleI $ MsgFollowRequirements u
     $(widgetFile "follow-requirement")
+  where
+    sorter = sorter' `on` issueLimitDatetime . acc
+    sorter2 = compare `on` issueUpdated . acc
+    sorter' (Just d1) (Just d2) = d1 `compare` d2
+    sorter' Nothing _ = GT
+    sorter' _ Nothing = LT
+    acc = entityVal . fst4
+    fst4 (x, _, _, _) = x
+
+getMyPrivateR :: Handler Html
+getMyPrivateR = do
+  uid <- requireAuthId
+  getPrivateR uid
+
+getPrivateR :: UserId -> Handler Html
+getPrivateR uid = do
+  Entity myuid myself <- requireAuth
+  now <- liftIO getCurrentTime
+  (u, is) <- runDB $ do
+    is <- selectList [IssueOpener ==. uid, IssueScope ==. PRIVATE] []
+    is' <- toFullEquipedIssue is
+    u' <- get404 uid
+    return (u', is')
+  let createdBeforeI i = (issueCreated i) `beforeFrom` now
+      issues = sortBy (\x y -> sorter x y <> sorter2 x y) is
+  defaultLayout $ do
+    setTitleI $ MsgPrivate u
+    $(widgetFile "private")
   where
     sorter = sorter' `on` issueLimitDatetime . acc
     sorter2 = compare `on` issueUpdated . acc
