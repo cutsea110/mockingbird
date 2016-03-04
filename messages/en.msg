@@ -117,3 +117,4 @@ FollowRequirements u@User: Follow requirement issues of `#{userName u}'
 MyOwnIssues: My own issues
 FollowRequiredIssues: Follow required issues
 
+ThisPageIsNotYours: This page is NOT yours

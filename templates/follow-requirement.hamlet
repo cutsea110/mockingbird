@@ -18,7 +18,7 @@ $else
         <img src="#{userGravatar opnr}">
         <span class="small text-muted">#{userName opnr}
       <div class="media-body">
-        <p class="small text-muted pull-right">
+        <p class="text-muted pull-right">
           $maybe limit <- issueLimitDatetime issue
             $case limitedBy now limit
               $of InTime diff
