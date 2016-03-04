@@ -114,3 +114,6 @@ YouDontAssignedThisTicket: You don't assigned this ticket.
 SearchResult q@Text: Search results `#{q}'
 
 FollowRequirements u@User: Follow requirement issues of `#{userName u}'
+MyOwnIssues: My own issues
+FollowRequiredIssues: Follow required issues
+

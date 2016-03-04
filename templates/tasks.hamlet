@@ -1,4 +1,13 @@
 <!-- Tasks page -->
+$if uid == myuid
+  <ul class="nav nav-tabs nav-justified">
+    <li role="presentation" class="active"><a href="#">_{MsgMyOwnIssues}</a>
+    <li role="presentation"><a href="@{MyFollowRequirementR}">_{MsgFollowRequiredIssues}</a>
+$else
+  <ul class="nav nav-tabs nav-justified">
+    <li role="presentation" class="active"><a href="#">_{MsgMyOwnIssues}</a>
+    <li role="presentation"><a href="@{FollowRequirementR uid}">_{MsgFollowRequiredIssues}</a>
+
 <div .page-header>
   <h1>_{MsgTasksOf u}
 

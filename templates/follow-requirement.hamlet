@@ -1,4 +1,13 @@
 <!-- Follow requirement issues -->
+$if uid == myuid
+  <ul class="nav nav-tabs nav-justified">
+    <li role="presentation"><a href="@{MyTasksR}">_{MsgMyOwnIssues}</a>
+    <li role="presentation" class="active"><a href="#">_{MsgFollowRequiredIssues}</a>
+$else
+  <ul class="nav nav-tabs nav-justified">
+    <li role="presentation"><a href="@{TasksR uid}">_{MsgMyOwnIssues}</a>
+    <li role="presentation" class="active"><a href="#">_{MsgFollowRequiredIssues}</a>
+
 <div .page-header>
   <h1>_{MsgFollowRequirements u}
 

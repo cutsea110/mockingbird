@@ -3,6 +3,7 @@ module Handler.Home ( getMyTasksR
                     , getTimelineR
                     , getTimelineBeforeR
                     , getTasksR
+                    , getMyFollowRequirementR
                     , getFollowRequirementR
                     , putCloseTicketR
                     , putReopenTicketR
@@ -162,8 +163,14 @@ type CloseNum = Int
 type MediumInternalRep = [(ChannelId, Logic, (OpenNum, CloseNum))]
 type MediumRep = (IssueId, MediumInternalRep)
 
+getMyFollowRequirementR :: Handler Html
+getMyFollowRequirementR = do
+  uid <- requireAuthId
+  getFollowRequirementR uid
+
 getFollowRequirementR :: UserId -> Handler Html
 getFollowRequirementR uid = do
+  Entity myuid myself <- requireAuth
   now <- liftIO getCurrentTime
   (u, is) <- runDB $ do
     is <- getOwnOpenedIssues uid
