@@ -40,7 +40,7 @@ searcher uid q = do
 
     
 issues :: MonadIO m => UserId -> Text -> ReaderT SqlBackend m [Entity Issue]
-issues uid q = rawSql sql [toPersistValue PUBLIC, toPersistValue uid, toPersistValue uid, toPersistValue uid, toPersistValue q', toPersistValue q']
+issues uid q = rawSql sql [toPersistValue PRIVATE, toPersistValue uid, toPersistValue uid, toPersistValue uid, toPersistValue q', toPersistValue q']
     where
       q' = "%" `T.append` q `T.append` "%"
       sql :: Sql
