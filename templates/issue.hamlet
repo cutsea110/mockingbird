@@ -3,9 +3,9 @@
   <!-- Default panel contents -->
   <div class="panel-heading">
     <span>
-      #{issueSubject issue}
       $if issueOpener issue == uid
         <a href=@{EditIssueR key}> <i class="fa fa-edit"></i> _{MsgEditIssue}
+      #{issueSubject issue}
     <span class="small text-muted pull-right">
       #{userName opener}
   <div class="panel-body">

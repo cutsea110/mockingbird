@@ -11,16 +11,6 @@
         $nothing
           <img src="#{userGravatar op}">
       <div class="media-body">
-        <h4 class="media-heading">
-          <form method=post action=@{CloseTicketR tid}?_method=PUT>
-            <button type=submit class="btn btn-success btn-xs">_{MsgCloseTicket}
-            <a href=@{ThreadR tid} class="btn btn-link">#{issueSubject issue}
-        $maybe (Entity cid com, _) <- mcu
-          #{commentComment com}
-        $nothing
-          $maybe desc <- issueDescription issue
-            #{desc}
-
         $maybe limit <- issueLimitDatetime issue
           $case limitedBy now limit
             $of InTime diff
@@ -53,6 +43,16 @@
                       _{MsgMonthsOver n}
                   $of Years n
                       _{MsgYearsOver n}
+        <h4 class="media-heading">
+          <form method=post action=@{CloseTicketR tid}?_method=PUT>
+            <button type=submit class="btn btn-success btn-xs">_{MsgCloseTicket}
+            <a href=@{ThreadR tid} class="btn btn-link">#{issueSubject issue}
+        $maybe (Entity cid com, _) <- mcu
+          #{commentComment com}
+        $nothing
+          $maybe desc <- issueDescription issue
+            #{desc}
+
   $if uid == myuid
     <li class="media">
       <a href="https://gravatar.com" class="media-left">
