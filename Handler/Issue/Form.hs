@@ -4,6 +4,7 @@ import Import as Import
 
 import qualified Data.Text as T
 import Yesod.Form.Bootstrap3
+import Model.Fields
 
 selfIssueForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
                  UserId -> (AppMessage -> Text) -> Maybe Issue -> AForm m Issue
@@ -14,13 +15,14 @@ selfIssueForm uid render mv
     <*> pure Nothing
     <*> pure Nothing
     <*> pure uid
+    <*> pure PUBLIC
     <*> lift (liftIO getCurrentTime)
     <*> lift (liftIO getCurrentTime)
   where
     bfs'subj = bfs'focus (render MsgIssueSubject) (render MsgCreateTaskForYourself)
 
-issueForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
-             UserId -> (AppMessage -> Text) -> Maybe Issue -> AForm m Issue
+issueForm :: RenderMessage site FormMessage =>
+             UserId -> (AppMessage -> Text) -> Maybe Issue -> AForm (HandlerT site IO) Issue
 issueForm uid render mv
   = Issue
     <$> areq textField bfs'subj (issueSubject <$> mv)
@@ -28,13 +30,17 @@ issueForm uid render mv
     <*> aopt dayField bfs'day (issueLimitdate <$> mv)
     <*> aopt timeFieldTypeTime bfs'time (issueLimittime <$> mv)
     <*> pure uid
+    <*> areq (selectFieldList scopes) bfs'scope (issueScope <$> mv)
     <*> lift (liftIO getCurrentTime)
     <*> lift (liftIO getCurrentTime)
     where
+      scopes :: [(Text, Scope)]
+      scopes = [(render MsgPUBLIC, PUBLIC), (render MsgPRIVATE, PRIVATE)]
       bfs'subj = bfs'focus (render MsgIssueSubject) (render MsgSimpleAndClarity)
       bfs'desc = bfs' (render MsgIssueDescription) (render MsgInDetail)
       bfs'day = bfs'  (render MsgIssueLimitDay) (render MsgIssueLimitDay)
       bfs'time = bfs'  (render MsgIssueLimitTime) (render MsgIssueLimitTime)
+      bfs'scope = bfs' (render MsgIssueScope) (render MsgIssueScope)
 
 hiddenIssueForm :: (MonadHandler m, RenderMessage (HandlerSite m) FormMessage) =>
                    UserId -> Maybe Issue -> AForm m Issue
@@ -45,6 +51,7 @@ hiddenIssueForm uid mv
     <*> aopt hiddenField "" (issueLimitdate <$> mv)
     <*> aopt hiddenField "" (issueLimittime <$> mv)
     <*> pure uid
+    <*> areq hiddenField "" (issueScope <$> mv)
     <*> lift (liftIO getCurrentTime)
     <*> lift (liftIO getCurrentTime)
 

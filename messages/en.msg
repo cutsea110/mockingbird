@@ -43,11 +43,15 @@ InDetail: In datail
 IssueLimitDay: Limit day
 IssueLimitTime: Limit time
 IssueOpener: Opener
+IssueScope: Scope
 IssueCreated: Created datetime
 IssueUpdated: Updated datetime
 IssueLimitDatetime: Limit datetime
 CreateIssue: Create issue
 CloneIssue: Clone issue
+
+PRIVATE: Private
+PUBLIC: Public
 
 SucceedToCreateIssue: Succeed to create a issue
 FailureToCreateIssue: Failure to create a issue
