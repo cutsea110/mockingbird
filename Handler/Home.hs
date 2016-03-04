@@ -3,6 +3,7 @@ module Handler.Home ( getMyTasksR
                     , getTimelineR
                     , getTimelineBeforeR
                     , getTasksR
+                    , getFollowRequirementR
                     , putCloseTicketR
                     , putReopenTicketR
                     ) where
@@ -155,6 +156,74 @@ getTasksR uid = do
     sorter' Nothing _ = GT
     sorter' _ Nothing = LT
     acc = fst3 . snd3
+
+type OpenNum = Int
+type CloseNum = Int
+type MediumInternalRep = [(ChannelId, Logic, (OpenNum, CloseNum))]
+type MediumRep = (IssueId, MediumInternalRep)
+
+getFollowRequirementR :: UserId -> Handler Html
+getFollowRequirementR uid = do
+  now <- liftIO getCurrentTime
+  (u, is) <- runDB $ do
+    is <- getOwnOpenedIssues uid
+    is' <- toFullEquipedIssue is
+    u' <- get404 uid
+    return (u', is')
+  let createdBeforeI i = (issueCreated i) `beforeFrom` now
+      issues = sortBy (\x y -> sorter x y <> sorter2 x y) is
+  defaultLayout $ do
+    setTitleI $ MsgFollowRequirements u
+    $(widgetFile "follow-requirement")
+  where
+    sorter = sorter' `on` issueLimitDatetime . acc
+    sorter2 = compare `on` issueUpdated . acc
+    sorter' (Just d1) (Just d2) = d1 `compare` d2
+    sorter' Nothing _ = GT
+    sorter' _ Nothing = LT
+    acc = entityVal . fst4
+    fst4 (x, _, _, _) = x
+
+getOwnOpenedIssues :: MonadIO m => UserId -> ReaderT SqlBackend m [Entity Issue]
+getOwnOpenedIssues uid = do
+  ts <- getOwnIssuesSummary uid
+  let openIssues = filter isOpen $ summarize ts
+  selectList [IssueId <-. map fst openIssues] []
+  where
+    isOpen :: MediumRep -> Bool
+    isOpen = any isOpen' . snd
+    isOpen' :: (ChannelId, Logic, (OpenNum, CloseNum)) -> Bool
+    isOpen' (_, ALL, (o, _)) = o > 0
+    isOpen' (_, ANY, (_, c)) = c == 0
+    summarize :: [(IssueId, ChannelId, Single Logic, Single Status, Single Int)] -> [MediumRep]
+    summarize = foldr (merge . toMediumRep) []
+        where
+          toMediumRep :: (IssueId, ChannelId, Single Logic, Single Status, Single Int) -> MediumRep
+          toMediumRep (iid, cid, l, s, n) = case unSingle s of
+            OPEN  -> (iid, [(cid, unSingle l, (unSingle n,          0))])
+            CLOSE -> (iid, [(cid, unSingle l, (0         , unSingle n))])
+          merge :: MediumRep -> [MediumRep] -> [MediumRep]
+          merge x [] = [x]
+          merge x@(iid, xs) yys@((iid', xs'):ys) | iid == iid' = (iid, merge' xs xs'):ys
+                                                 | iid /= iid' = x:yys
+          merge' :: MediumInternalRep -> MediumInternalRep -> MediumInternalRep
+          merge' [] xs = xs
+          merge' xs [] = xs
+          merge' (x@(cid, l, (o, c)):xs) (y@(cid', _, (o', c')):ys) | cid == cid' = (cid, l, (o+o', c+c')):(merge' xs ys)
+                                                                    | cid /= cid' = x:y:(merge' xs ys)
+
+getOwnIssuesSummary :: MonadIO m =>
+                       UserId -> ReaderT SqlBackend m [(IssueId, ChannelId, Single Logic, Single Status, Single Int)]
+getOwnIssuesSummary uid = rawSql sql [toPersistValue uid]
+    where
+      sql :: Sql
+      sql = "SELECT issue.id, channel.id, channel.type, ticket.status, count(*) \
+             FROM issue, channel, ticket \
+             WHERE issue.id IN (SELECT id FROM issue WHERE opener = ?) \
+             AND issue.id=channel.issue \
+             AND channel.id=ticket.channel \
+             GROUP BY issue.id, channel.id, channel.type, ticket.status \
+             ORDER BY issue.id, channel.id"
 
 putReopenTicketR :: TicketId -> Handler ()
 putReopenTicketR tid = do

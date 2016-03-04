@@ -1,0 +1,56 @@
+<!-- Follow requirement issues -->
+<div .page-header>
+  <h1>_{MsgFollowRequirements u}
+
+<ul class="media-list">
+  $forall (Entity key issue, opnr, chans, (percent, status)) <- issues
+    <li class="media" :status == CLOSE:.closed>
+      <a href="https://gravatar.com" class="media-left">
+        <img src="#{userGravatar opnr}">
+        <span class="small text-muted">#{userName opnr}
+      <div class="media-body">
+        <p class="small text-muted pull-right">
+          $maybe limit <- issueLimitDatetime issue
+            $case limitedBy now limit
+              $of InTime diff
+                <span class="label label-warning pull-right">
+                  $case diff
+                    $of Seconds n
+                        _{MsgSecondsLeft n}
+                    $of Minutes n
+                        _{MsgMinutesLeft n}
+                    $of Hours n
+                        _{MsgHoursLeft n}
+                    $of Days n
+                        _{MsgDaysLeft n}
+                    $of Months n
+                        _{MsgMonthsLeft n}
+                    $of Years n
+                        _{MsgYearsLeft n}
+              $of TimeOut diff
+                <span class="label label-danger pull-right">
+                  $case diff
+                    $of Seconds n
+                        _{MsgSecondsOver n}
+                    $of Minutes n
+                        _{MsgMinutesOver n}
+                    $of Hours n
+                        _{MsgHoursOver n}
+                    $of Days n
+                        _{MsgDaysOver n}
+                    $of Months n
+                        _{MsgMonthsOver n}
+                    $of Years n
+                        _{MsgYearsOver n}
+        <p :status == CLOSE:.text-muted>
+          <h4><a href="@{IssueR key}">#{issueSubject issue}</a>
+          $maybe desc <- issueDescription issue
+            #{desc}
+          $maybe limit <- issueLimitDatetime issue
+            <span class="text-info">_{MsgIssueLimitDatetime} #{showDate limit}
+          <div class="progress" style="width: 25%;">
+            $case status
+              $of CLOSE
+                <div class="progress-bar progress-bar-closed progress-bar-striped" role="progressbar" style="width: #{percent}%;">#{percent}%
+              $of OPEN
+                <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: #{percent}%;">#{percent}%

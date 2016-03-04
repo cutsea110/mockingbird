@@ -112,3 +112,5 @@ YouAreNotMemberOfThisChannel: You are NOT a member of this channel.
 YouDontAssignedThisTicket: You don't assigned this ticket.
 
 SearchResult q@Text: Search results `#{q}'
+
+FollowRequirements u@User: Follow requirement issues of `#{userName u}'
