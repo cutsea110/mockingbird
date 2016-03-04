@@ -37,8 +37,8 @@ instance PathPiece UTCTime where
   toPathPiece = T.pack . show
 
 instance PathPiece Scope where
-  fromPathPiece = undefined
-  toPathPiece = undefined
+  fromPathPiece = Just . read . T.unpack
+  toPathPiece = T.pack . show
 
 class FromText a where
   fromText :: Text -> a

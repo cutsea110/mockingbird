@@ -10,6 +10,7 @@ module Handler.Home ( getMyTasksR
                     ) where
 
 import Import hiding (Status, sortBy)
+import Data.Conduit.List (consume)
 import Data.List (sortBy)
 import Data.Text as T (append)
 import Database.Persist.Sql
@@ -31,10 +32,15 @@ getMyTimelineR = do
 commentsPerPage :: Int
 commentsPerPage = 50
 
+othersPrivateIssues :: MonadIO m => UserId -> ReaderT SqlBackend m [IssueId]
+othersPrivateIssues uid = do
+  ids <- selectList [IssueOpener !=. uid, IssueScope ==. PRIVATE] []
+  return $ map entityKey ids
+
 comments :: MonadIO m => UserId -> Maybe CommentId -> ReaderT SqlBackend m [Entity Comment]
 comments uid mcid = rawSql sql param
     where
-      param = [toPersistValue uid, toPersistValue uid] ++
+      param = [toPersistValue PRIVATE, toPersistValue uid, toPersistValue uid, toPersistValue uid] ++
               maybe [] (\cid -> [toPersistValue cid]) mcid ++
               [toPersistValue commentsPerPage]
       sql :: Sql
@@ -44,7 +50,8 @@ comments uid mcid = rawSql sql param
               WHERE channel IN (SELECT DISTINCT channel.id \
                                 FROM channel, ticket \
                                 WHERE \
-                                      channel.id=ticket.channel \
+                                      channel.issue NOT IN (SELECT id FROM issue WHERE scope=? AND opener<>?) \
+                                  AND channel.id=ticket.channel \
                                   AND (ticket.domain=? OR ticket.codomain=?))) \
             SELECT \
                DISTINCT ?? \
@@ -108,7 +115,8 @@ type AssignedTicket = (Entity Ticket, (Issue, Opener, Codomain), Maybe (Entity C
 getAssignedActiveChannelIds :: MonadIO m => UserId -> ReaderT SqlBackend m [ChannelId]
 getAssignedActiveChannelIds uid = do
   ticks <- selectList [TicketAssign ==. uid, TicketStatus ==. OPEN] []
-  chans <- selectList [ChannelId <-. map (ticketChannel.entityVal) ticks] []
+  privs <- othersPrivateIssues uid
+  chans <- selectList [ChannelId <-. map (ticketChannel.entityVal) ticks, ChannelIssue /<-. privs] []
   cids <- forM chans $ \(Entity cid c) -> do
     case channelType c of
       ALL -> return [cid]
@@ -221,12 +229,12 @@ getOwnOpenedIssues uid = do
 
 getOwnIssuesSummary :: MonadIO m =>
                        UserId -> ReaderT SqlBackend m [(IssueId, ChannelId, Single Logic, Single Status, Single Int)]
-getOwnIssuesSummary uid = rawSql sql [toPersistValue uid]
+getOwnIssuesSummary uid = rawSql sql [toPersistValue uid, toPersistValue PUBLIC]
     where
       sql :: Sql
       sql = "SELECT issue.id, channel.id, channel.type, ticket.status, count(*) \
              FROM issue, channel, ticket \
-             WHERE issue.id IN (SELECT id FROM issue WHERE opener = ?) \
+             WHERE issue.id IN (SELECT id FROM issue WHERE opener=? AND scope=?) \
              AND issue.id=channel.issue \
              AND channel.id=ticket.channel \
              GROUP BY issue.id, channel.id, channel.type, ticket.status \
