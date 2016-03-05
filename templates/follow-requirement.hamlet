@@ -1,14 +1,14 @@
 <!-- Follow requirement issues -->
 $if uid == myuid
   <ul class="nav nav-tabs nav-justified">
-    <li role="presentation"><a href="@{MyTasksR}">_{MsgMyOwnIssues}</a>
-    <li role="presentation" class="active"><a href="#">_{MsgFollowRequiredIssues}</a>
-    <li role="presentation"><a href="@{MyPrivateR}">_{MsgPrivateIssues}</a>
+    <li role="presentation"><a href="@{MyTasksR}"><i class="fa fa-check"></i> _{MsgMyOwnIssues}</a>
+    <li role="presentation" class="active"><a href="#"><i class="fa fa-bookmark-o"></i> _{MsgFollowRequiredIssues}</a>
+    <li role="presentation"><a href="@{MyPrivateR}"><i class="fa fa-lock"></i> _{MsgPrivateIssues}</a>
 $else
   <ul class="nav nav-tabs nav-justified">
-    <li role="presentation"><a href="@{TasksR uid}">_{MsgMyOwnIssues}</a>
-    <li role="presentation" class="active"><a href="#">_{MsgFollowRequiredIssues}</a>
-    <li role="presentation"><a href="@{PrivateR uid}">_{MsgPrivateIssues}</a>
+    <li role="presentation"><a href="@{TasksR uid}"><i class="fa fa-check"></i> _{MsgMyOwnIssues}</a>
+    <li role="presentation" class="active"><a href="#"><i class="fa fa-bookmark-o"></i> _{MsgFollowRequiredIssues}</a>
+    <li role="presentation"><a href="@{PrivateR uid}"><i class="fa fa-lock"></i> _{MsgPrivateIssues}</a>
 
 <div .page-header>
   <h1>_{MsgFollowRequirements u}
