@@ -24,7 +24,7 @@ $(function(){
   });
   $('#'+#{toJSON allUncheckBtnId}).click(function(e) {
     var q = escape($('input[type=search]').val());
-    $("div.checkbox:contains('" + q + "') input[type='checkbox']:checked").prop('checked', false);
+    $("input[type='checkbox']:checked").prop('checked', false);
     e.preventDefault();
   });
 });
