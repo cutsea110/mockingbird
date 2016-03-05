@@ -90,12 +90,14 @@ issueProgress :: [ChannelTree] -> Percentage
 issueProgress cs
   = div' $ foldr (\s (c, t) -> (if channelTreeStatus s==CLOSE then c+1 else c, t+1)) (0, 0) cs
     where
+      div' (num,   0) = 0
       div' (num, den) = 100 * num `div` den
 
 channelTreeProgress :: ChannelTree -> Percentage
 channelTreeProgress (_, ch, ts)
   = div' $ foldr (\(_, tick, _) (c, t) -> (if ticketStatus tick == CLOSE then c+1 else c, t+1)) (0, 0) ts
     where
+      div' (num,   0) = 0
       div' (num, den) = 100 * num `div` den
 
 channelTreeStatus :: ChannelTree -> Status
