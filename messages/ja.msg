@@ -94,7 +94,6 @@ YearsOver n@Integer: #{show n}年過ぎ
 SearchUser: やってもらう人をえらぼう
 UserNameOrIdent: ユーザ名またはID
 CreateGroup: グループをつくる
-AtLeastOneUserIsNecessary: だれかひとりはえらぼう
 
 BacktoIssue: 戻る
 CheckAll: 全選択

@@ -94,7 +94,6 @@ YearsOver n@Integer: #{show n}years over
 SearchUser: Search User
 UserNameOrIdent: User name or id
 CreateGroup: Create group
-AtLeastOneUserIsNecessary: At least, one user is necessary
 
 BacktoIssue: Back to the issue
 CheckAll: Check all

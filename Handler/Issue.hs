@@ -89,9 +89,6 @@ postCreateIssueR = do
   ((r, _), _) <- runFormInline $ searchAndHiddenIssueForm uid render Nothing Nothing
   case r of
     FormSuccess (issue, s) -> do
-      let us = users s
-      when (maybe True null us) $ do
-        invalidArgs [render MsgAtLeastOneUserIsNecessary]
       iid <- runDB $ do
         iid <- insert issue
         create iid logic mode (users s) now uid
@@ -237,6 +234,8 @@ create :: MonadIO m =>
           IssueId -> Logic -> Mode -> Maybe [Entity User] -> UTCTime -> UserId
           -> ReaderT SqlBackend m ()
 create key logic mode mus now creater = do
+  when (maybe True null mus) $ do
+    return ()
   case mode of
     ONE -> do
       cid <- insert $ Channel logic key
