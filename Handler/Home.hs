@@ -12,7 +12,6 @@ module Handler.Home ( getMyTasksR
                     ) where
 
 import Import hiding (Status, sortBy)
-import Data.Conduit.List (consume)
 import Data.List (sortBy)
 import Data.Text as T (append)
 import Database.Persist.Sql
