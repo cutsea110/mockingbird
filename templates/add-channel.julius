@@ -19,12 +19,12 @@ $(function(){
   });
   $('#'+#{toJSON allCheckBtnId}).click(function(e) {
     var q = escape($('input[type=search]').val());
-    $("div.checkbox:contains('" + q + "') input[type='checkbox']:not(:checked)").prop('checked', true);
+    $("input[type='checkbox']:visible").prop('checked', true);
     e.preventDefault();
   });
   $('#'+#{toJSON allUncheckBtnId}).click(function(e) {
     var q = escape($('input[type=search]').val());
-    $("input[type='checkbox']:checked").prop('checked', false);
+    $("input[type='checkbox']:visible").prop('checked', false);
     e.preventDefault();
   });
 });
