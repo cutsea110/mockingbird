@@ -26,7 +26,12 @@
                 $of Years n
                     _{MsgYearsAgo n}
             <p :status == CLOSE:.text-muted>
-              <h4><a href="@{IssueR key}">#{issueSubject issue}</a>
+              <h4>
+                <a href="@{IssueR key}">
+                  $if issueScope issue == PRIVATE
+                    <i class="fa fa-lock text-super"></i> #{issueSubject issue}
+                  $else
+                    #{issueSubject issue}
               $maybe desc <- issueDescription issue
                 #{desc}
               $maybe limit <- issueLimitDatetime issue
@@ -60,7 +65,11 @@
                     _{MsgYearsAgo n}
     
             <p :status == CLOSE:.text-muted>
-              <h4>#{issueSubject issue}
+              <h4>
+                $if issueScope issue == PRIVATE
+                  <i class="fa fa-lock text-super"></i> #{issueSubject issue}
+                $else
+                  #{issueSubject issue}
               <a href=@{ThreadR $ commentTicket c}>
                 #{commentComment c}
               $if userIdent opp /= userIdent spkr

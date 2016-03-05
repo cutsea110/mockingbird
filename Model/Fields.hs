@@ -15,6 +15,10 @@ data Status = OPEN | CLOSE
            deriving (Show, Read, Eq, Ord, Enum, Bounded)
 derivePersistField "Status"
 
+data Scope = PUBLIC | PRIVATE
+           deriving (Show, Read, Eq, Ord, Enum, Bounded)
+derivePersistField "Scope"
+
 instance PathPiece Textarea where
   fromPathPiece = Just . Textarea
   toPathPiece = unTextarea
@@ -29,6 +33,10 @@ instance PathPiece TimeOfDay where
   toPathPiece = T.pack . show
 
 instance PathPiece UTCTime where
+  fromPathPiece = Just . read . T.unpack
+  toPathPiece = T.pack . show
+
+instance PathPiece Scope where
   fromPathPiece = Just . read . T.unpack
   toPathPiece = T.pack . show
 

@@ -5,6 +5,8 @@ module Handler.Home ( getMyTasksR
                     , getTasksR
                     , getMyFollowRequirementR
                     , getFollowRequirementR
+                    , getMyPrivateR
+                    , getPrivateR
                     , putCloseTicketR
                     , putReopenTicketR
                     ) where
@@ -31,10 +33,15 @@ getMyTimelineR = do
 commentsPerPage :: Int
 commentsPerPage = 50
 
+privateIssues :: MonadIO m => UserId -> ReaderT SqlBackend m [IssueId]
+privateIssues uid = do
+  ids <- selectList [IssueScope ==. PRIVATE] []
+  return $ map entityKey ids
+
 comments :: MonadIO m => UserId -> Maybe CommentId -> ReaderT SqlBackend m [Entity Comment]
 comments uid mcid = rawSql sql param
     where
-      param = [toPersistValue uid, toPersistValue uid] ++
+      param = [toPersistValue PRIVATE, toPersistValue uid, toPersistValue uid] ++
               maybe [] (\cid -> [toPersistValue cid]) mcid ++
               [toPersistValue commentsPerPage]
       sql :: Sql
@@ -44,7 +51,8 @@ comments uid mcid = rawSql sql param
               WHERE channel IN (SELECT DISTINCT channel.id \
                                 FROM channel, ticket \
                                 WHERE \
-                                      channel.id=ticket.channel \
+                                      channel.issue NOT IN (SELECT id FROM issue WHERE scope=?) \
+                                  AND channel.id=ticket.channel \
                                   AND (ticket.domain=? OR ticket.codomain=?))) \
             SELECT \
                DISTINCT ?? \
@@ -108,7 +116,8 @@ type AssignedTicket = (Entity Ticket, (Issue, Opener, Codomain), Maybe (Entity C
 getAssignedActiveChannelIds :: MonadIO m => UserId -> ReaderT SqlBackend m [ChannelId]
 getAssignedActiveChannelIds uid = do
   ticks <- selectList [TicketAssign ==. uid, TicketStatus ==. OPEN] []
-  chans <- selectList [ChannelId <-. map (ticketChannel.entityVal) ticks] []
+  privs <- privateIssues uid
+  chans <- selectList [ChannelId <-. map (ticketChannel.entityVal) ticks, ChannelIssue /<-. privs] []
   cids <- forM chans $ \(Entity cid c) -> do
     case channelType c of
       ALL -> return [cid]
@@ -191,6 +200,34 @@ getFollowRequirementR uid = do
     acc = entityVal . fst4
     fst4 (x, _, _, _) = x
 
+getMyPrivateR :: Handler Html
+getMyPrivateR = do
+  uid <- requireAuthId
+  getPrivateR uid
+
+getPrivateR :: UserId -> Handler Html
+getPrivateR uid = do
+  Entity myuid myself <- requireAuth
+  now <- liftIO getCurrentTime
+  (u, is) <- runDB $ do
+    is <- selectList [IssueOpener ==. uid, IssueScope ==. PRIVATE] []
+    is' <- toFullEquipedIssue is
+    u' <- get404 uid
+    return (u', is')
+  let createdBeforeI i = (issueCreated i) `beforeFrom` now
+      issues = sortBy (\x y -> sorter x y <> sorter2 x y) is
+  defaultLayout $ do
+    setTitleI $ MsgPrivate u
+    $(widgetFile "private")
+  where
+    sorter = sorter' `on` issueLimitDatetime . acc
+    sorter2 = compare `on` issueUpdated . acc
+    sorter' (Just d1) (Just d2) = d1 `compare` d2
+    sorter' Nothing _ = GT
+    sorter' _ Nothing = LT
+    acc = entityVal . fst4
+    fst4 (x, _, _, _) = x
+
 getOwnOpenedIssues :: MonadIO m => UserId -> ReaderT SqlBackend m [Entity Issue]
 getOwnOpenedIssues uid = do
   ts <- getOwnIssuesSummary uid
@@ -221,12 +258,12 @@ getOwnOpenedIssues uid = do
 
 getOwnIssuesSummary :: MonadIO m =>
                        UserId -> ReaderT SqlBackend m [(IssueId, ChannelId, Single Logic, Single Status, Single Int)]
-getOwnIssuesSummary uid = rawSql sql [toPersistValue uid]
+getOwnIssuesSummary uid = rawSql sql [toPersistValue uid, toPersistValue PUBLIC]
     where
       sql :: Sql
       sql = "SELECT issue.id, channel.id, channel.type, ticket.status, count(*) \
              FROM issue, channel, ticket \
-             WHERE issue.id IN (SELECT id FROM issue WHERE opener = ?) \
+             WHERE issue.id IN (SELECT id FROM issue WHERE opener=? AND scope=?) \
              AND issue.id=channel.issue \
              AND channel.id=ticket.channel \
              GROUP BY issue.id, channel.id, channel.type, ticket.status \

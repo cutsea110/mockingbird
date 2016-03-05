@@ -16,6 +16,7 @@ Issue
     limittime TimeOfDay Maybe
 
     opener UserId
+    scope Scope
     created UTCTime default=now()
     updated UTCTime default=now()
 

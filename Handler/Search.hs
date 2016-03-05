@@ -40,7 +40,7 @@ searcher uid q = do
 
     
 issues :: MonadIO m => UserId -> Text -> ReaderT SqlBackend m [Entity Issue]
-issues uid q = rawSql sql [toPersistValue uid, toPersistValue uid, toPersistValue q', toPersistValue q']
+issues uid q = rawSql sql [toPersistValue PRIVATE, toPersistValue uid, toPersistValue uid, toPersistValue uid, toPersistValue q', toPersistValue q']
     where
       q' = "%" `T.append` q `T.append` "%"
       sql :: Sql
@@ -52,12 +52,13 @@ issues uid q = rawSql sql [toPersistValue uid, toPersistValue uid, toPersistValu
                 ticket \
              WHERE \
                    issue.id=channel.issue \
+               AND issue.id NOT IN (SELECT id FROM issue WHERE scope=? AND opener<>?) \
                AND channel.id=ticket.channel \
                AND (ticket.domain=? OR ticket.codomain=?) \
                AND (issue.subject like ? OR issue.description like ?)"
 
 comments :: MonadIO m => UserId -> Text -> ReaderT SqlBackend m [Entity Comment]
-comments uid q = rawSql sql [toPersistValue uid, toPersistValue uid, toPersistValue q', toPersistValue q']
+comments uid q = rawSql sql [toPersistValue PRIVATE, toPersistValue uid, toPersistValue uid, toPersistValue uid, toPersistValue q', toPersistValue q']
     where
       q' = "%" `T.append` q `T.append` "%"
       sql :: Sql
@@ -68,7 +69,8 @@ comments uid q = rawSql sql [toPersistValue uid, toPersistValue uid, toPersistVa
                                 FROM channel, \
                                      ticket \
                                 WHERE \
-                                      channel.id=ticket.channel \
+                                      channel.issue NOT IN (SELECT id FROM issue WHERE scope=? AND opener<>?) \
+                                  AND channel.id=ticket.channel \
                                   AND (ticket.domain=? OR ticket.codomain=?))) \
              SELECT \
                  DISTINCT ?? \

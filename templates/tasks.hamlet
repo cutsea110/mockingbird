@@ -3,10 +3,12 @@ $if uid == myuid
   <ul class="nav nav-tabs nav-justified">
     <li role="presentation" class="active"><a href="#">_{MsgMyOwnIssues}</a>
     <li role="presentation"><a href="@{MyFollowRequirementR}">_{MsgFollowRequiredIssues}</a>
+    <li role="presentation"><a href="@{MyPrivateR}"><i class="fa fa-lock text-super"></i> _{MsgPrivateIssues}</a>
 $else
   <ul class="nav nav-tabs nav-justified">
     <li role="presentation" class="active"><a href="#">_{MsgMyOwnIssues}</a>
     <li role="presentation"><a href="@{FollowRequirementR uid}">_{MsgFollowRequiredIssues}</a>
+    <li role="presentation"><a href="@{PrivateR uid}"><i class="fa fa-lock text-super"></i> _{MsgPrivateIssues}</a>
 
 <div .page-header>
   <h1>_{MsgTasksOf u}
@@ -55,7 +57,11 @@ $else
         <h4 class="media-heading">
           <form method=post action=@{CloseTicketR tid}?_method=PUT>
             <button type=submit class="btn btn-success btn-xs">_{MsgCloseTicket}
-            <a href=@{ThreadR tid} class="btn btn-link">#{issueSubject issue}
+            <a href=@{ThreadR tid} class="btn btn-link">
+              $if issueScope issue == PRIVATE
+                <i class="fa fa-lock text-super"></i> #{issueSubject issue}
+              $else
+                #{issueSubject issue}
         $maybe (Entity cid com, _) <- mcu
           #{commentComment com}
         $nothing

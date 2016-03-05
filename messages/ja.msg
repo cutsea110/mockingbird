@@ -43,11 +43,15 @@ InDetail: くわしく
 IssueLimitDay: 期限日
 IssueLimitTime: 期限時刻
 IssueOpener: 起票者
+IssueScope: 公開/非公開
 IssueCreated: 作成日
 IssueUpdated: 更新日
 IssueLimitDatetime: 期限
 CreateIssue: 起票する
 CloneIssue: テンプレとしてつかう
+
+PRIVATE: 非公開
+PUBLIC: 公開
 
 SucceedToCreateIssue: 起票に成功しました
 FailureToCreateIssue: 起票に失敗しました
@@ -116,5 +120,7 @@ SearchResult q@Text: 検索結果 `#{q}'
 FollowRequirements u@User: `#{userName u}'のフォローが必要
 MyOwnIssues: やること
 FollowRequiredIssues: やらせること
+PrivateIssues: ひみつ
+Private u@User: `#{userName u}'のひみつ
 
 ThisPageIsNotYours: あなたのページではありません.

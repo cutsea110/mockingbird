@@ -5,6 +5,8 @@
     <span>
       $if issueOpener issue == uid
         <a href=@{EditIssueR key}> <i class="fa fa-edit"></i> _{MsgEditIssue}
+      $if issueScope issue == PRIVATE
+        <i class="fa fa-lock text-super"></i>
       #{issueSubject issue}
     <span class="small text-muted pull-right">
       #{userName opener}
