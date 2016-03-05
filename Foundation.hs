@@ -119,7 +119,7 @@ instance Yesod App where
     isAuthorized (AddSelfChannelR issueId) _ = isOwnerOf issueId
     isAuthorized (IssueR issueId) _ = isMemberOf issueId Nothing
     isAuthorized (AddChannelR issueId) _ = isOwnerOf issueId
-    isAuthorized (ChannelR issueId chanId) _ = isMemberOf issueId (Just chanId)
+    isAuthorized (ChannelR issueId _) _ = isOwnerOf issueId
     isAuthorized (CloneIssueR issueId) _ = isMemberOf issueId Nothing
     
     isAuthorized (ThreadR ticketId) False = isJoined ticketId
