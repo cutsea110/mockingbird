@@ -140,6 +140,7 @@ getAddChannelR key = do
   render <- getMessageRender
   issue <- runDB $ get404 key
   (w, enc) <- genFormInline $ searchForm render Nothing
+  (allCheckBtnId, allUncheckBtnId) <- (,) <$> newIdent <*> newIdent
   defaultLayout $ do
     setTitleI $ MsgSubject issue
     $(widgetFile "add-channel")
@@ -173,6 +174,7 @@ getChannelR key cid = do
     us <- selectList [UserId <-. map (ticketCodomain.entityVal) ts] []
     return (ch, us)
   ((_, w), enc) <- runFormInline $ searchForm render $ Just (Search $ Just us)
+  (allCheckBtnId, allUncheckBtnId) <- (,) <$> newIdent <*> newIdent
   defaultLayout $ do
     setTitleI MsgUpdateChannel
     $(widgetFile "channel")

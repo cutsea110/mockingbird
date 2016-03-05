@@ -96,6 +96,8 @@ UserNameOrIdent: User name or id
 CreateGroup: Create group
 
 BacktoIssue: Back to the issue
+CheckAll: Check all
+UncheckAll: Uncheck all
 
 Thread: Thread
 Comment: Comment

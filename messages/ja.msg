@@ -96,6 +96,8 @@ UserNameOrIdent: ユーザ名またはID
 CreateGroup: グループをつくる
 
 BacktoIssue: 戻る
+CheckAll: 全選択
+UncheckAll: 全解除
 
 Thread: そうだんしよう
 Comment: わかりやすく
