@@ -89,6 +89,9 @@ postCreateIssueR = do
   ((r, _), _) <- runFormInline $ searchAndHiddenIssueForm uid render Nothing Nothing
   case r of
     FormSuccess (issue, s) -> do
+      let us = users s
+      when (maybe True null us) $ do
+        invalidArgs [render MsgAtLeastOneUserIsNecessary]
       iid <- runDB $ do
         iid <- insert issue
         create iid logic mode (users s) now uid
@@ -192,7 +195,8 @@ putChannelR key cid = do
         ts <- selectList [TicketChannel ==. cid] []
         let olds = map (ticketCodomain.entityVal) ts
         deleteWhere [TicketChannel ==. cid, TicketCodomain /<-. news]
-        insertMany_ $ map (\nid -> Ticket cid uid nid nid OPEN now now) $ news \\ olds
+        tids <- insertMany $ map (\nid -> Ticket cid uid nid nid OPEN now now) $ news \\ olds
+        when (null tids) $ delete cid
       redirect $ IssueR key
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
