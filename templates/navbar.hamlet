@@ -31,8 +31,16 @@
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               _{MsgDropdown u} <b class="caret"></b>
             <ul class="dropdown-menu">
+              <li><a href=@{MyTimelineR}><i class="fa fa-comment fa-fw text-info"></i> _{MsgTimeline}</a></li>
+              <li role="separator" class="divider">
+              <li><a href=@{MyTasksR}><i class="fa fa-tasks fa-fw text-info"></i> _{MsgMyOwnIssues}</a></li>
+              <li><a href=@{MyFollowRequirementR}><i class="fa fa-bookmark fa-fw text-info"></i> _{MsgFollowRequiredIssues}</a></li>
+              <li><a href=@{PrivateR uid}><i class="fa fa-lock fa-fw text-super"></i> _{MsgPrivateIssues}</a></li>
+              <li role="separator" class="divider">
+              <li><a href=@{NewIssueR}><i class="fa fa-plus fa-fw text-info"></i> _{MsgCreate}</a></li>
+              <li role="separator" class="divider">
               <li><a href=@{AuthR setPassR}><i class="fa fa-lock fa-fw text-info"></i> _{MsgChangePassword}</a></li>
-              <li class="divider">
+              <li role="separator" class="divider">
               <li><a href=@{AuthR LogoutR}><i class="fa fa-sign-out fa-fw text-info"></i> _{MsgLogout}</a></li>
           <li class="pull-right hidden-xs">
             <img class="gravatar" src="#{userGravatarSmall u}" alt=Gravatar>
