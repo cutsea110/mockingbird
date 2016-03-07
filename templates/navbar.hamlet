@@ -8,14 +8,21 @@
           <span class="icon-bar">
           <span class="icon-bar">
 
-      <a class="navbar-brand hidden-xs" href=@{TopR}>_{MsgSystemName}
-      <a class="navbar-brand visible-xs" href=@{TopR}>_{MsgSystemInitialName}
+      <a class="navbar-brand hidden-xs" href=@{TopR}>
+        <span class="fa-stack">
+          <i class="fa fa-square fa-stack-2x"></i>
+          <i class="fa fa-bookmark fa-flip-vertical fa-stack-1x fa-inverse fa-1x"></i>
+        _{MsgSystemName}
+      <a class="navbar-brand visible-xs" href=@{TopR}>
+        <span class="fa-stack">
+          <i class="fa fa-square fa-stack-2x"></i>
+          <i class="fa fa-bookmark fa-flip-vertical fa-stack-1x fa-inverse fa-1x"></i>
       $maybe _ <- mu
         <form class="navbar-form navbar-left" role=search method=post action=@{SearchR}>
           <div class="form-group">
             <input name="q" type=search class="form-control" placeholder="&#xF002; _{MsgSearch}">
 
-    <div class="collapse navbar-collapse" id=#{globalNavMenuId}>
+    <div class="collapse navbar-collapse pull-right" id=#{globalNavMenuId}>
       $maybe Entity uid u <- mu
         <ul class="nav navbar-nav">
           $maybe cr <- mcr
