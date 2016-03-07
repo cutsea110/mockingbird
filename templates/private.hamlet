@@ -1,13 +1,13 @@
 <!-- Private issues -->
 $if uid == myuid
   <ul class="nav nav-tabs nav-justified">
-    <li role="presentation"><a href="@{MyTasksR}">_{MsgMyOwnIssues}</a>
-    <li role="presentation"><a href="@{MyFollowRequirementR}">_{MsgFollowRequiredIssues}</a>
+    <li role="presentation"><a href="@{MyTasksR}"><i class="fa fa-tasks"></i> _{MsgMyOwnIssues}</a>
+    <li role="presentation"><a href="@{MyFollowRequirementR}"><i class="fa fa-bookmark"></i> _{MsgFollowRequiredIssues}</a>
     <li role="presentation" class="active"><a href="#"><i class="fa fa-lock text-super"></i> _{MsgPrivateIssues}</a>
 $else
   <ul class="nav nav-tabs nav-justified">
-    <li role="presentation"><a href="@{TasksR uid}">_{MsgMyOwnIssues}</a>
-    <li role="presentation"><a href="@{FollowRequirementR uid}">_{MsgFollowRequiredIssues}</a>
+    <li role="presentation"><a href="@{TasksR uid}"><i class="fa fa-tasks"></i> _{MsgMyOwnIssues}</a>
+    <li role="presentation"><a href="@{FollowRequirementR uid}"><i class="fa fa-bookmark"></i> _{MsgFollowRequiredIssues}</a>
     <li role="presentation" class="active"><a href="#"><i class="fa fa-lock text-super"></i> _{MsgPrivateIssues}</a>
 
 <div .page-header>
