@@ -37,8 +37,10 @@ instance PathPiece UTCTime where
   toPathPiece = T.pack . show
 
 instance PathPiece Scope where
-  fromPathPiece = Just . read . T.unpack
-  toPathPiece = T.pack . show
+  fromPathPiece "1" = Just PUBLIC     -- Why 1 and 2 on use case of hiddenField
+  fromPathPiece "2" = Just PRIVATE
+  toPathPiece PUBLIC = "1"
+  toPathPiece PRIVATE = "2"
 
 class FromText a where
   fromText :: Text -> a
