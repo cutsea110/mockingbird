@@ -8,3 +8,7 @@
     <button type=submit class="btn btn-default" name=mode value=ALL>_{MsgAddAllChannel}
     <button type=submit class="btn btn-default" name=mode value=ANY>_{MsgAddAnyChannel}
     <button type=submit class="btn btn-default" name=mode value=EACH>_{MsgAddEachChannel}
+
+    <div class="btn-group" role="group">
+      <a id="#{allCheckBtnId}" href="#" class="btn btn-default">_{MsgCheckAll}
+      <a id="#{allUncheckBtnId}" href="#" class="btn btn-default">_{MsgUncheckAll}

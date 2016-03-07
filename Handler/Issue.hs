@@ -70,6 +70,7 @@ postNewChannelR = do
   uid <- requireAuthId
   render <- getMessageRender
   ((r, _), _) <- runForm $ issueForm uid render Nothing
+  (allCheckBtnId, allUncheckBtnId) <- (,) <$> newIdent <*> newIdent
   case r of
     FormSuccess issue -> do
       ((_, w), enc) <- runFormInline $ searchAndHiddenIssueForm uid render (Just issue) Nothing

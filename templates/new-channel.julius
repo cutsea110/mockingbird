@@ -2,14 +2,29 @@ $(function(){
   // initialize
   $("input[type=checkbox]:not(:checked)").parent("div.checkbox").hide();
 
+  function escape(s) {
+    s = s.replace(/'/g, "\\'");
+    s = s.replace(/"/g, '\\"');
+    return s;
+  }
+
   // hook event
   $('input[type=search]').keyup(function(){
-    var q = $(this).val();
+    var q = escape($(this).val());
     $("input[type=checkbox]").parent("div.checkbox").hide();
     $("input[type=checkbox]:checked").parent("div.checkbox").show();
     if (q != "") {
       $("input[type=checkbox]").parent("div.checkbox:contains('" + q + "')").show();
     }
   });
+  $('#'+#{toJSON allCheckBtnId}).click(function(e) {
+    var q = escape($('input[type=search]').val());
+    $("input[type='checkbox']:visible").prop('checked', true);
+    e.preventDefault();
+  });
+  $('#'+#{toJSON allUncheckBtnId}).click(function(e) {
+    var q = escape($('input[type=search]').val());
+    $("input[type='checkbox']:visible").prop('checked', false);
+    e.preventDefault();
+  });
 });
-
