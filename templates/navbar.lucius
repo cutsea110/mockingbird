@@ -1,10 +1,10 @@
 /* Navbarを固定しているのでその分空ける */
-@media (max-width: 850px) {
+@media (max-width: 900px) {
   body{
     padding-top: 120px;
   }
 }
-@media (min-width: 851px) {
+@media (min-width: 901px) {
   body{
     padding-top: 70px;
   }
@@ -23,4 +23,7 @@ input[type=search] {
 }
 img.gravatar {
   margin: 5px 0 5px 5px;
+}
+.navbar-brand {
+  padding: 8px 15px !important;
 }
