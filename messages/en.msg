@@ -66,6 +66,7 @@ ALL: All
 ANY: Any
 EditChannel: Edit channel
 EditIssue: Edit issue
+DeleteIssue: Delete issue
 DeleteChannel: Delete channel
 
 Subject v@Issue: #{issueSubject v}

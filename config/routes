@@ -20,7 +20,7 @@
 /new-channel                              NewChannelR              POST
 /create-issue                             CreateIssueR             POST
 
-/issue/#IssueId                           IssueR               GET
+/issue/#IssueId                           IssueR               GET DELETE
 /issue/#IssueId/chan                      AddChannelR          GET POST
 /issue/#IssueId/chan-self                 AddSelfChannelR          POST
 /issue/#IssueId/chan/#ChannelId           ChannelR             GET PUT DELETE
