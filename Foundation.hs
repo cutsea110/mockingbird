@@ -101,12 +101,14 @@ instance Yesod App where
     isAuthorized RobotsR _ = return Authorized
     
     isAuthorized MyTasksR _ = loggedInAuth
-    isAuthorized MyFollowRequirementR _ = loggedInAuth
+    isAuthorized (TasksR uid) _ = isMyown uid
     isAuthorized MyTimelineR _ = loggedInAuth
     isAuthorized (TimelineR _) _ = loggedInAuth
     isAuthorized (TimelineBeforeR _ _) _ = loggedInAuth
-    isAuthorized (TasksR uid) _ = isMyown uid
+    isAuthorized MyFollowRequirementR _ = loggedInAuth
     isAuthorized (FollowRequirementR uid) _ = isMyown uid
+    isAuthorized MyPrivateR _ = loggedInAuth
+    isAuthorized (PrivateR uid) _ = isMyown uid
     isAuthorized (CloseTicketR ticketId) _ = isAssigned ticketId
     isAuthorized (ReopenTicketR ticketId) _ = isAssigned ticketId
 

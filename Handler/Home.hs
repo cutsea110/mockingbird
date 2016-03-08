@@ -1,8 +1,8 @@
 module Handler.Home ( getMyTasksR
+                    , getTasksR
                     , getMyTimelineR
                     , getTimelineR
                     , getTimelineBeforeR
-                    , getTasksR
                     , getMyFollowRequirementR
                     , getFollowRequirementR
                     , getMyPrivateR
