@@ -220,7 +220,8 @@ putChannelR key cid = do
         let olds = map (ticketCodomain.entityVal) ts
         deleteWhere [TicketChannel ==. cid, TicketCodomain /<-. news]
         tids <- insertMany $ map (\nid -> Ticket cid uid nid nid OPEN now now) $ news \\ olds
-        when (null tids) $ delete cid
+        c <- count [TicketChannel ==. cid]
+        when (c == 0) $ delete cid
       redirect $ IssueR key
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
