@@ -68,6 +68,8 @@ EditChannel: Edit channel
 EditIssue: Edit issue
 DeleteIssue: Delete issue
 DeleteChannel: Delete channel
+MatchUsers: # of matched
+CheckUsers: # of checked
 
 Subject v@Issue: #{issueSubject v}
 

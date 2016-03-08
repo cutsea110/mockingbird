@@ -1,12 +1,17 @@
 $(function(){
-  // initialize
-  $("input[type=checkbox]:not(:checked)").parent("div.checkbox").hide();
-
   function escape(s) {
     s = s.replace(/'/g, "\\'");
     s = s.replace(/"/g, '\\"');
     return s;
   }
+  function refreshCount() {
+    $('#match-users-count').text($("input[type=checkbox]:visible").length);
+    $('#check-users-count').text($("input[type=checkbox]:checked").length);
+  }
+
+  // initialize
+  $("input[type=checkbox]:not(:checked)").parent("div.checkbox").hide();
+  refreshCount();
 
   // hook event
   $('input[type=search]').keyup(function(){
@@ -16,15 +21,21 @@ $(function(){
     if (q != "") {
       $("input[type=checkbox]").parent("div.checkbox:contains('" + q + "')").show();
     }
+    refreshCount();
+  });
+  $('input[type=checkbox]').change(function(){
+    refreshCount();
   });
   $('#'+#{toJSON allCheckBtnId}).click(function(e) {
     var q = escape($('input[type=search]').val());
-    $("input[type='checkbox']:visible").prop('checked', true);
+    $("input[type=checkbox]:visible").prop('checked', true);
+    refreshCount();
     e.preventDefault();
   });
   $('#'+#{toJSON allUncheckBtnId}).click(function(e) {
     var q = escape($('input[type=search]').val());
-    $("input[type='checkbox']:visible").prop('checked', false);
+    $("input[type=checkbox]:visible").prop('checked', false);
+    refreshCount();
     e.preventDefault();
   });
 });

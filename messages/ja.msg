@@ -68,6 +68,8 @@ EditChannel: 編集
 EditIssue: 編集
 DeleteIssue: タスクを削除する
 DeleteChannel: 削除
+MatchUsers: 表示されている
+CheckUsers: えらんでいる
 
 Subject v@Issue: #{issueSubject v}
 
