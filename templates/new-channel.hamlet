@@ -2,6 +2,12 @@
 <div .page-header>
   <h1>_{MsgSearchUser}
 
+<div>
+  <button class="btn btn-default" type="button">
+    _{MsgMatchUsers} <span class="badge" id="match-users-count">0</span>
+  <button class="btn btn-success" type="button">
+    _{MsgCheckUsers} <span class="badge" id="check-users-count">0</span>
+
 <form .form-horizontal role=form method=post action=@{CreateIssueR} enctype=#{enc}>
   ^{w}
   <nav class="navbar navbar-default navbar-fixed-bottom">
