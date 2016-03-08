@@ -27,7 +27,7 @@
               _{MsgYearsAgo n}
 
       $maybe desc <- issueDescription issue
-        #{desc}
+        <p>#{desc}
 
       $maybe limit <- issueLimitDatetime issue
         <span class="text-info">_{MsgIssueLimitDatetime} #{showDate limit}

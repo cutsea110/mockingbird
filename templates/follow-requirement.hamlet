@@ -56,7 +56,7 @@ $else
         <p :status == CLOSE:.text-muted>
           <h4><a href="@{IssueR key}">#{issueSubject issue}</a>
           $maybe desc <- issueDescription issue
-            #{desc}
+            <p>#{desc}
           $maybe limit <- issueLimitDatetime issue
             <span class="text-info">_{MsgIssueLimitDatetime} #{showDate limit}
           <div class="progress" style="width: 25%;">
