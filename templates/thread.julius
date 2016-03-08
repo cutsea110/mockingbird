@@ -14,4 +14,13 @@ $(function(){
     });
   });
   observer.observe(target, config);
+
+
+  // auto fill comment
+  $('#'+#{toJSON closeButtonId} + ",#" + #{toJSON reopenButtonId}).click(function(){
+    var textarea = $('#'+#{toJSON nwId});
+    if (textarea.text().length == 0) {
+      textarea.text($(this).data('auto-fill'));
+    }
+  });
 });

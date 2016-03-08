@@ -19,7 +19,7 @@ import Yesod.Goodies.PNotify (urlFontAwesomeCss)
 import Model.Fields (Status(..))
 import Util
 
-commentForm (jqueryJs, faCss) uid tid render mv
+commentForm (nwId, jqueryJs, faCss) uid tid render mv
     = (,)
       <$> (Comment
            <$> pure tid
@@ -30,7 +30,7 @@ commentForm (jqueryJs, faCss) uid tid render mv
            <*> lift (liftIO getCurrentTime))
       <*>  aopt (filesField jqueryJs faCss) bfs'file Nothing
   where
-    bfs'comment = bfs'focus (render MsgComment) (render MsgCommenting)
+    bfs'comment = (bfs'focus (render MsgComment) (render MsgCommenting)) {fsId = Just nwId}
     bfs'file = bfs' (render MsgAttachFile) (render MsgAttachFile)
 
 getComments :: MonadIO m => TicketId -> ReaderT SqlBackend m FullEquipedThread
@@ -66,9 +66,11 @@ getThreadR tid = do
   now <- liftIO getCurrentTime
   attachBtnId <- newIdent
   master <- getYesod
-  ((_, w), enc) <- runFormInline $ commentForm ((urlJqueryJs &&& urlFontAwesomeCss) master) uid tid render Nothing
+  nwId <- newIdent
+  ((_, w), enc) <- runFormInline $ commentForm (nwId, urlJqueryJs master, urlFontAwesomeCss master) uid tid render Nothing
   (Entity key issue, opener, tick, cod, mems, comments) <- runDB $ getComments tid
   let createdBefore = (issueCreated issue) `beforeFrom` now
+  (closeButtonId, reopenButtonId) <- (,) <$> newIdent <*> newIdent
   defaultLayout $ do
     setTitleI MsgThread
     $(widgetFile "thread")
@@ -80,7 +82,8 @@ postThreadR tid = do
   now <- liftIO getCurrentTime
   Just turn <- lookupPostParam "turn"
   master <- getYesod
-  ((r, _), _) <- runFormInline $ commentForm ((urlJqueryJs &&& urlFontAwesomeCss) master) uid tid render Nothing
+  nwId <- newIdent
+  ((r, _), _) <- runFormInline $ commentForm (nwId, urlJqueryJs master, urlFontAwesomeCss master) uid tid render Nothing
   case r of
     FormSuccess (comment, mfis) -> do
       runDB $ do

@@ -87,9 +87,10 @@ $if elem uid [ticketDomain tick, ticketCodomain tick, ticketAssign tick]
       <button type=submit class="btn btn-default" name=turn value=ME>_{MsgMyTurn}
       $case ticketStatus tick
         $of OPEN
-          <button type=submit class="btn btn-default" name=turn value=CLOSE>_{MsgClosing}
+          <button id=#{closeButtonId} type=submit class="btn btn-default" name=turn value=CLOSE data-auto-fill=_{MsgClosing}>_{MsgClosing}
         $of CLOSE
-          <button type=submit class="btn btn-default" name=turn value=REOPEN>_{MsgReopening}
+          <button id=#{reopenButtonId} type=submit class="btn btn-default" name=turn value=REOPEN data-auto-fill=_{MsgReopening}>_{MsgReopening}
       <button id=#{attachBtnId} type=button class="btn btn-default">
         <span class="fa fa-paperclip">
         _{MsgAttachFile}
+
