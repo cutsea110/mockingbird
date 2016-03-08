@@ -63,10 +63,10 @@ $else
               $else
                 #{issueSubject issue}
         $maybe (Entity cid com, _) <- mcu
-          #{commentComment com}
+          <p>#{commentComment com}
         $nothing
           $maybe desc <- issueDescription issue
-            #{desc}
+            <p>#{desc}
 
   $if uid == myuid
     <li class="media">

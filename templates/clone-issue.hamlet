@@ -21,9 +21,8 @@
               _{MsgMonthsAgo n}
           $of Years n
               _{MsgYearsAgo n}
-    <p>
-      $maybe desc <- issueDescription issue
-        #{desc}
+    $maybe desc <- issueDescription issue
+      <p>#{desc}
     <hr>
     $maybe limit <- issueLimitDatetime issue
       <span class="text-info">_{MsgIssueLimitDatetime} #{showDate limit}
