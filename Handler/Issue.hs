@@ -10,6 +10,7 @@ module Handler.Issue ( getNewIssueR
                      , postAddChannelR
                      , getChannelR
                      , putChannelR
+                     , deleteChannelR
                      , getCloneIssueR
                      , postCloneIssueR
                      ) where
@@ -39,7 +40,7 @@ postNewIssueR = do
   Just mode <- lookupPostParam "mode"
   case mode of
     "SELF" -> createSelfIssue >>= \key -> redirect $ IssueR key
-    "QUICK" -> createSelfIssue >> redirect MyTasksR
+    "QUICK" -> createQuickIssue >> redirect MyTasksR
     _ -> postNewChannelR
 
 getEditIssueR :: IssueId -> Handler Html
@@ -112,6 +113,20 @@ createSelfIssue = do
     FormSuccess issue -> do
       let mdesc = maybe (Just $ Textarea $ issueSubject issue) Just (issueDescription issue)
       key <- runDB $ insert issue { issueDescription = mdesc }
+      postAddSelfChannelR key
+      return key
+    FormFailure (x:_) -> invalidArgs [x]
+    _ -> invalidArgs ["error occured"]
+
+createQuickIssue :: Handler IssueId
+createQuickIssue = do
+  uid <- requireAuthId
+  render <- getMessageRender
+  ((r, _), _) <- runForm $ selfIssueForm uid render Nothing
+  case r of
+    FormSuccess issue -> do
+      let mdesc = maybe (Just $ Textarea $ issueSubject issue) Just (issueDescription issue)
+      key <- runDB $ insert issue { issueDescription = mdesc, issueScope = PUBLIC }
       postAddSelfChannelR key
       return key
     FormFailure (x:_) -> invalidArgs [x]
@@ -198,6 +213,14 @@ putChannelR key cid = do
       redirect $ IssueR key
     FormFailure (x:_) -> invalidArgs [x]
     _ -> invalidArgs ["error occured"]
+
+deleteChannelR :: IssueId -> ChannelId -> Handler ()
+deleteChannelR key cid = do
+  runDB $ do
+    ts <- selectList [TicketChannel ==. cid] []
+    deleteWhere [TicketChannel ==. cid]
+    delete cid
+  redirect $ IssueR key
 
 getCloneIssueR :: IssueId -> Handler Html
 getCloneIssueR key = do
