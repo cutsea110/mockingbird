@@ -50,7 +50,11 @@
                 <a class="bg-danger" href=@{ThreadR tid}> #{userName u}
               $of CLOSE
                 <a class="bg-success" href=@{ThreadR tid}> #{userName u}
-          <a href=@{ChannelR key cid} class="pull-right"><i class="fa fa-user-plus"></i> _{MsgEditChannel}
+          <form class="form-inline pull-right" role=form method=post action=@{ChannelR key cid}?_method=DELETE>
+            <div class="btn-group" role=group>
+              <a href=@{ChannelR key cid} class="btn btn-link"><i class="fa fa-user-plus"></i> _{MsgEditChannel}
+              <button class="btn btn-link">
+                <i class="fa fa-remove text-danger"></i> <span class="text-danger">_{MsgDeleteChannel}
 
 <div class="btn-group" role="group">
 

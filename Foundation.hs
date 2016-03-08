@@ -189,7 +189,7 @@ isJoined tickId = do
 isMemberOf :: IssueId -> Maybe ChannelId -> Handler AuthResult
 isMemberOf issueId Nothing = do
   self <- requireAuthId
-  b <- runDB $ self `involved` issueId
+  b <- runDB $ (||) <$> self `involved` issueId <*> self `own` issueId
   if b
     then return Authorized
     else do
