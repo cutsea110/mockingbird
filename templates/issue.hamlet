@@ -56,7 +56,10 @@
               <button class="btn btn-link">
                 <i class="fa fa-remove text-danger"></i> <span class="text-danger">_{MsgDeleteChannel}
 
-<div class="btn-group" role="group">
+<form class="form-inline" role=form method=post action=@{IssueR key}?_method=DELETE>
+  <div class="btn-group" role="group">
+    <a href=@{AddChannelR key} class="btn btn-default"><i class="fa fa-plus"></i> _{MsgAddChannel}
+    <a href=@{CloneIssueR key} class="btn btn-info"><i class="fa fa-clone"></i> _{MsgCloneIssue}</a>
 
-  <a href=@{AddChannelR key} class="btn btn-default"><i class="fa fa-plus"></i> _{MsgAddChannel}
-  <a href=@{CloneIssueR key} class="btn btn-info"><i class="fa fa-clone"></i> _{MsgCloneIssue}</a>
+  <div class="btn-group pull-right" role="group">
+    <button class="btn btn-danger"><i class="fa fa-remove"></i> _{MsgDeleteIssue}

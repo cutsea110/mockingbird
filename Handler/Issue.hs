@@ -6,6 +6,7 @@ module Handler.Issue ( getNewIssueR
                      , postCreateIssueR
                      , postAddSelfChannelR
                      , getIssueR
+                     , deleteIssueR
                      , getAddChannelR
                      , postAddChannelR
                      , getChannelR
@@ -150,6 +151,16 @@ getIssueR key = do
   defaultLayout $ do
     setTitleI $ MsgSubject issue
     $(widgetFile "issue")
+
+deleteIssueR :: IssueId -> Handler ()
+deleteIssueR key = do
+  uid <- requireAuthId
+  runDB $ do
+    cs <- selectList [ChannelIssue ==. key] []
+    deleteWhere [TicketChannel <-. map entityKey cs]
+    deleteWhere [ChannelIssue ==. key]
+    delete key
+  redirect MyTasksR
 
 getAddChannelR :: IssueId -> Handler Html
 getAddChannelR key = do
