@@ -1,3 +1,16 @@
+h1 {
+  font-size: 20pt;
+}
+h2 {
+  font-size: 16pt;
+}
+h3 {
+  font-size: 14pt;
+}
+h1, h2, h3 {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
 .form-group.required .control-label:after {
   content:"*";
   color:red;
