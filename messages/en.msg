@@ -111,10 +111,16 @@ MyTurn: My turn
 Closing: Closing
 Reopening: Reopening
 AttachFile: Attach file
+YourTurnShort: Yours
+MyTurnShort: Mine
+ClosingShort: Close
+ReopeningShort: Reopen
 
 GotoThread: Go to thread
 CloseTicket: close
+CloseTicketShort: close
 Reply: Reply
+ReplyShort: Reply
 YouCouldnotTouchTheTicket: You couldn't touch this ticket.
 
 YouAreNotOwnerOfThisIssue: You are NOT the owner of this issue.

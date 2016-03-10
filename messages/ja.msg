@@ -111,10 +111,16 @@ MyTurn: こちらでやります
 Closing: おしまいにする
 Reopening: やりなおし
 AttachFile: ファイルを添付する
+YourTurnShort: やれ
+MyTurnShort: やる
+ClosingShort: おわり
+ReopeningShort: もっかい
 
 GotoThread: そうだんする
 CloseTicket: おしまいにする
+CloseTicketShort: おしまい
 Reply: 返信する
+ReplyShort: 返信
 YouCouldnotTouchTheTicket: あなたがおしまいにすることはできません.
 
 YouAreNotOwnerOfThisIssue: あなたが作ったタスクではありません.

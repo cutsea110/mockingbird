@@ -8,7 +8,8 @@
       $of Left (Entity key issue, opnr, chans, (percent, status))
         <li class="media" :status == CLOSE:.closed>
           <a href="https://gravatar.com" class="media-left">
-            <img src="#{userGravatar opnr}">
+            <img class="hidden-xs" src="#{userGravatar opnr}">
+            <img class="visible-xs" src="#{userGravatarSmall opnr}">
             <span class="small text-muted">#{userName opnr}
           <div class="media-body">
             <p class="small text-muted pull-right">
@@ -46,7 +47,8 @@
       $of Right (issue, Entity cid c, spkr, opp, mfs, status)
         <li class="media" :status == CLOSE:.closed>
           <a href="https://gravatar.com" class="media-left">
-            <img src="#{userGravatar spkr}">
+            <img class="hidden-xs" src="#{userGravatar spkr}">
+            <img class="visible-xs" src="#{userGravatarSmall spkr}">
             <span class="small text-muted">#{userName spkr}
           <div class="media-body">
             <p class="small text-muted pull-right">
