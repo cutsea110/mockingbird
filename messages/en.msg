@@ -50,6 +50,7 @@ IssueUpdated: Updated datetime
 IssueLimitDatetime: Limit datetime
 CreateIssue: Create issue
 CloneIssue: Clone issue
+CloneIssueShort: Clone
 
 PRIVATE: Private
 PUBLIC: Public
@@ -59,6 +60,7 @@ FailureToCreateIssue: Failure to create a issue
 
 UpdateChannel: Update channel
 AddChannel: Add channel
+AddChannelShort: Add
 AddAllChannel: Add `ALL' channel
 AddAnyChannel: Add `ANY' channel
 AddEachChannel: Add `EACH' channel
@@ -68,6 +70,7 @@ ANY: Any
 EditChannel: Edit channel
 EditIssue: Edit issue
 DeleteIssue: Delete issue
+DeleteIssueShort: Delete
 DeleteChannel: Delete channel
 MatchUsers: # of matched
 CheckUsers: # of checked
