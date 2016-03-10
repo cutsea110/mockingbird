@@ -55,24 +55,27 @@ $else
                   $of Years n
                       _{MsgYearsOver n}
         <h4 class="media-heading">
-          <form method=post action=@{CloseTicketR tid}?_method=PUT>
-            <button type=submit class="btn btn-success btn-xs">_{MsgCloseTicket}
-            <a href=@{ThreadR tid} class="btn btn-link">
-              $if issueScope issue == PRIVATE
-                <i class="fa fa-lock text-super"></i> #{issueSubject issue}
-              $else
-                #{issueSubject issue}
+          <a href=@{ThreadR tid} class="btn btn-link">
+            $if issueScope issue == PRIVATE
+              <i class="fa fa-lock text-super"></i> #{issueSubject issue}
+            $else
+              #{issueSubject issue}
         $maybe (Entity cid com, _) <- mcu
           <p>#{commentComment com}
         $nothing
           $maybe desc <- issueDescription issue
             <p>#{desc}
+        <form method=post action=@{CloseTicketR tid}?_method=PUT>
+          <div class="btn-group">
+            <a href=@{ThreadR tid} class="btn btn-primary btn-sm"><i class="fa fa-reply"></i> _{MsgReply}
+            <button type=submit class="btn btn-success btn-sm"><i class="fa fa-close"></i> _{MsgCloseTicket}
 
   $if uid == myuid
     <li class="media">
       <a href="https://gravatar.com" class="media-left">
         <img src="#{userGravatar u}">
       <div class="media-body">
+        <h4>_{MsgCreateNewMyIssue}
         <form .form-horizontal role=form method=post action=@{NewIssueR} enctype=#{enc}>
           <input type=hidden name=mode value=QUICK>
           ^{w}

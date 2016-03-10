@@ -22,6 +22,7 @@ Create: つくる
 CreateNewIssue: タスクをきめよう
 ChoiceMembers: やってもらう
 CreateNewSelfIssue: じぶんでやる
+CreateNewMyIssue: じぶんのあたらしいタスクをつくる
 Dropdown u@User: #{userName u}
 
 Search: さがす
@@ -113,6 +114,7 @@ AttachFile: ファイルを添付する
 
 GotoThread: そうだんする
 CloseTicket: おしまいにする
+Reply: 返信する
 YouCouldnotTouchTheTicket: あなたがおしまいにすることはできません.
 
 YouAreNotOwnerOfThisIssue: あなたが作ったタスクではありません.
