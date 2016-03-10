@@ -8,7 +8,8 @@ $(window).scroll(function(){
           $.each(clist, function (i, c) {
             var avatar = $('<a class="media-left">')
                          .attr('href', 'https://gravatar.com')
-			 .append($('<img>').attr('src', c.userGravatar))
+			 .append($('<img>').attr('src', c.userGravatar).addClass('hidden-xs'))
+			 .append($('<img>').attr('src', c.userGravatarSmall).addClass('visible-xs'))
                          .append($('<span class="small text-muted">').text(c.userName)),
                 cdate = $('<p class="small text-muted pull-right">').text(c.createdBefore),
                 opponent = $("<a>")
