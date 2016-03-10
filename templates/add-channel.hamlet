@@ -11,11 +11,17 @@
 <form .form-horizontal role=form method=post action=@{AddChannelR key} enctype=#{enc}>
   ^{w}
   <nav class="navbar navbar-default navbar-fixed-bottom">
-    <button type=submit class="btn btn-default" name=mode value=ALL>_{MsgAddAllChannel}
-    <button type=submit class="btn btn-default" name=mode value=ANY>_{MsgAddAnyChannel}
-    <button type=submit class="btn btn-default" name=mode value=EACH>_{MsgAddEachChannel}
-    <a href=@{IssueR key} class="btn btn-default"}>_{MsgBacktoIssue}
+    <div class="btn-group">
+      <button type=submit class="btn btn-default hidden-xs" name=mode value=ALL>_{MsgAddAllChannel}
+      <button type=submit class="btn btn-default visible-xs" name=mode value=ALL>_{MsgAddAllChannelShort}
+      <button type=submit class="btn btn-default hidden-xs" name=mode value=ANY>_{MsgAddAnyChannel}
+      <button type=submit class="btn btn-default visible-xs" name=mode value=ANY>_{MsgAddAnyChannelShort}
+      <button type=submit class="btn btn-default hidden-xs" name=mode value=EACH>_{MsgAddEachChannel}
+      <button type=submit class="btn btn-default visible-xs" name=mode value=EACH>_{MsgAddEachChannelShort}
+      <a href=@{IssueR key} class="btn btn-default hidden-xs">_{MsgBacktoIssue}
 
     <div class="btn-group" role="group">
-      <a id="#{allCheckBtnId}" href="#" class="btn btn-default">_{MsgCheckAll}
-      <a id="#{allUncheckBtnId}" href="#" class="btn btn-default">_{MsgUncheckAll}
+      <a id="#{allCheckBtnId}" href="#" class="btn btn-default hidden-xs"><i class="fa fa-check-square-o"></i> _{MsgCheckAll}
+      <a id="#{allCheckBtnId}" href="#" class="btn btn-default visible-xs"><i class="fa fa-check-square-o"></i>
+      <a id="#{allUncheckBtnId}" href="#" class="btn btn-default hidden-xs"><i class="fa fa-square-o"></i> _{MsgUncheckAll}
+      <a id="#{allUncheckBtnId}" href="#" class="btn btn-default visible-xs"><i class="fa fa-square-o"></i>

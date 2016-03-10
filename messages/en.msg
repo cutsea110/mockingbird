@@ -62,9 +62,13 @@ UpdateChannel: Update channel
 AddChannel: Add channel
 AddChannelShort: Add
 AddAllChannel: Add `ALL' channel
+AddAllChannelShort: Add `ALL'
 AddAnyChannel: Add `ANY' channel
+AddAnyChannelShort: Add `ANY'
 AddEachChannel: Add `EACH' channel
+AddEachChannelShort: Add `EACH'
 AddMyChannel: Add `MY' channel
+AddMyChannelShort: Add `MY'
 ALL: All
 ANY: Any
 EditChannel: Edit channel
