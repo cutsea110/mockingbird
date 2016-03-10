@@ -50,6 +50,7 @@ IssueUpdated: 更新日
 IssueLimitDatetime: 期限
 CreateIssue: 起票する
 CloneIssue: テンプレとしてつかう
+CloneIssueShort: コピー
 
 PRIVATE: 非公開
 PUBLIC: 公開
@@ -59,6 +60,7 @@ FailureToCreateIssue: 起票に失敗しました
 
 UpdateChannel: チャネル更新
 AddChannel: チャンネルをつくる
+AddChannelShort: チャンネル
 AddAllChannel: 「みんな」がやる
 AddAnyChannel: 「だれか」がやる
 AddEachChannel: 「それぞれ」でやる
@@ -68,6 +70,7 @@ ANY: だれか
 EditChannel: 編集
 EditIssue: 編集
 DeleteIssue: タスクを削除する
+DeleteIssueShort: 削除
 DeleteChannel: 削除
 MatchUsers: 表示されている
 CheckUsers: えらんでいる
@@ -111,10 +114,16 @@ MyTurn: こちらでやります
 Closing: おしまいにする
 Reopening: やりなおし
 AttachFile: ファイルを添付する
+YourTurnShort: やれ
+MyTurnShort: やる
+ClosingShort: おわり
+ReopeningShort: もっかい
 
 GotoThread: そうだんする
 CloseTicket: おしまいにする
+CloseTicketShort: おしまい
 Reply: 返信する
+ReplyShort: 返信
 YouCouldnotTouchTheTicket: あなたがおしまいにすることはできません.
 
 YouAreNotOwnerOfThisIssue: あなたが作ったタスクではありません.

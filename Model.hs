@@ -48,6 +48,9 @@ userNameId u = userName u <> "(" <> userIdent u <> ")"
 userGravatarTiny :: User -> Text
 userGravatarTiny = gravatarUrl 18 . toGravatarHash . userEmail
 
+userGravatarMini :: User -> Text
+userGravatarMini = gravatarUrl 24 . toGravatarHash . userEmail
+
 userGravatarSmall :: User -> Text
 userGravatarSmall = gravatarUrl 36 . toGravatarHash . userEmail
 

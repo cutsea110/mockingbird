@@ -36,7 +36,7 @@
       $forall (cid, ch, ts) <- chans
         <li class="list-group-item">
           $with percent <- channelTreeProgress (cid, ch, ts)
-            <div class="progress" style="width: 25%;">
+            <div class="progress" style="width: 50%;">
               <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: #{percent}%;">#{percent}%
           $case channelType ch
             $of ALL
@@ -57,8 +57,11 @@
 
 <form class="form-inline" role=form method=post action=@{IssueR key}?_method=DELETE>
   <div class="btn-group" role="group">
-    <a href=@{AddChannelR key} class="btn btn-default"><i class="fa fa-plus"></i> _{MsgAddChannel}
-    <a href=@{CloneIssueR key} class="btn btn-info"><i class="fa fa-clone"></i> _{MsgCloneIssue}</a>
+    <a href=@{AddChannelR key} class="btn btn-default hidden-xs"><i class="fa fa-plus"></i> _{MsgAddChannel}
+    <a href=@{AddChannelR key} class="btn btn-default visible-xs"><i class="fa fa-plus"></i> _{MsgAddChannelShort}
+    <a href=@{CloneIssueR key} class="btn btn-info hidden-xs"><i class="fa fa-clone"></i> _{MsgCloneIssue}
+    <a href=@{CloneIssueR key} class="btn btn-info visible-xs"><i class="fa fa-clone"></i> _{MsgCloneIssueShort}
 
   <div class="btn-group pull-right" role="group">
-    <button class="btn btn-danger"><i class="fa fa-remove"></i> _{MsgDeleteIssue}
+    <button class="btn btn-danger hidden-xs"><i class="fa fa-remove"></i> _{MsgDeleteIssue}
+    <button class="btn btn-danger visible-xs"><i class="fa fa-remove"></i> _{MsgDeleteIssueShort}

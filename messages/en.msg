@@ -50,6 +50,7 @@ IssueUpdated: Updated datetime
 IssueLimitDatetime: Limit datetime
 CreateIssue: Create issue
 CloneIssue: Clone issue
+CloneIssueShort: Clone
 
 PRIVATE: Private
 PUBLIC: Public
@@ -59,6 +60,7 @@ FailureToCreateIssue: Failure to create a issue
 
 UpdateChannel: Update channel
 AddChannel: Add channel
+AddChannelShort: Add
 AddAllChannel: Add `ALL' channel
 AddAnyChannel: Add `ANY' channel
 AddEachChannel: Add `EACH' channel
@@ -68,6 +70,7 @@ ANY: Any
 EditChannel: Edit channel
 EditIssue: Edit issue
 DeleteIssue: Delete issue
+DeleteIssueShort: Delete
 DeleteChannel: Delete channel
 MatchUsers: # of matched
 CheckUsers: # of checked
@@ -111,10 +114,16 @@ MyTurn: My turn
 Closing: Closing
 Reopening: Reopening
 AttachFile: Attach file
+YourTurnShort: Yours
+MyTurnShort: Mine
+ClosingShort: Close
+ReopeningShort: Reopen
 
 GotoThread: Go to thread
 CloseTicket: close
+CloseTicketShort: close
 Reply: Reply
+ReplyShort: Reply
 YouCouldnotTouchTheTicket: You couldn't touch this ticket.
 
 YouAreNotOwnerOfThisIssue: You are NOT the owner of this issue.

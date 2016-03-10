@@ -17,7 +17,8 @@ $else
   $forall (Entity key issue, opnr, chans, (percent, status)) <- issues
     <li class="media" :status == CLOSE:.closed>
       <a href="https://gravatar.com" class="media-left">
-        <img src="#{userGravatar opnr}">
+        <img class="hidden-xs" src="#{userGravatar opnr}">
+        <img class="visible-xs" src="#{userGravatarSmall opnr}">
         <span class="small text-muted">#{userName opnr}
       <div class="media-body">
         <p class="text-muted pull-right">
@@ -59,7 +60,7 @@ $else
             <p>#{desc}
           $maybe limit <- issueLimitDatetime issue
             <span class="text-info">_{MsgIssueLimitDatetime} #{showDate limit}
-          <div class="progress" style="width: 25%;">
+          <div class="progress" style="width: 50%;">
             $case status
               $of CLOSE
                 <div class="progress-bar progress-bar-closed progress-bar-striped" role="progressbar" style="width: #{percent}%;">#{percent}%
