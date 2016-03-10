@@ -87,6 +87,7 @@ getTimelineBeforeR uid cid = do
   where
     go cb ur mr (issue, Entity cid' com, spkr, opp, msf, st)
       = object [ "userGravatar" .= userGravatar spkr
+               , "userGravatarSmall" .= userGravatarSmall spkr
                , "userName" .= userName spkr
                , "createdBefore" .= case cb com of
                                       Seconds n -> mr (MsgSecondsAgo n)
