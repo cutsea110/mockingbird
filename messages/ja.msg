@@ -62,9 +62,13 @@ UpdateChannel: チャネル更新
 AddChannel: チャンネルをつくる
 AddChannelShort: チャンネル
 AddAllChannel: 「みんな」がやる
+AddAllChannelShort: みんな
 AddAnyChannel: 「だれか」がやる
+AddAnyChannelShort: だれか
 AddEachChannel: 「それぞれ」でやる
+AddEachChannelShort: それぞれ
 AddMyChannel: 「じぶん」でやる
+AddMyChannelShort: じぶん
 ALL: みんな
 ANY: だれか
 EditChannel: 編集
