@@ -126,8 +126,8 @@ ReopeningShort: もっかい
 GotoThread: そうだんする
 CloseTicket: おしまいにする
 CloseTicketShort: おしまい
-Reply: 返信する
-ReplyShort: 返信
+Reply: リプライする
+ReplyShort: リプライ
 YouCouldnotTouchTheTicket: あなたがおしまいにすることはできません.
 
 YouAreNotOwnerOfThisIssue: あなたが作ったタスクではありません.
