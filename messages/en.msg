@@ -22,6 +22,7 @@ Create: Create
 CreateNewIssue: Create new issue
 ChoiceMembers: Choice members
 CreateNewSelfIssue: I do
+CreateNewMyIssue: Create new issue for myself
 Dropdown u@User: #{userName u}
 
 Search: Search
@@ -113,6 +114,7 @@ AttachFile: Attach file
 
 GotoThread: Go to thread
 CloseTicket: close
+Reply: Reply
 YouCouldnotTouchTheTicket: You couldn't touch this ticket.
 
 YouAreNotOwnerOfThisIssue: You are NOT the owner of this issue.
