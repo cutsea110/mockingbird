@@ -10,8 +10,6 @@ module Util.Widget ( wGravatar
 import Import
 import Yesod.Core
 
-import Text.Blaze (ToMarkup)
-
 wGravatar :: (MonadIO m, MonadBaseControl IO m, MonadThrow m) => User -> WidgetT site m ()
 wGravatar = wGravatarRoute (Right ("https://gravatar.com"::Text))
 
@@ -21,12 +19,12 @@ wGravatar' = wGravatarRoute' (Right ("https://gravatar.com"::Text)) True
 wGravatarTiny' :: (MonadIO m, MonadBaseControl IO m, MonadThrow m) => User -> WidgetT site m ()
 wGravatarTiny' = wGravatarRouteTiny' (Right ("https://gravatar.com"::Text))
 
-wGravatarRoute :: (MonadIO m, MonadBaseControl IO m, ToMarkup a, MonadThrow m) =>
-                  Either (Route site) a -> User -> WidgetT site m ()
+wGravatarRoute :: (MonadIO m, MonadBaseControl IO m, MonadThrow m) =>
+                  Either (Route site) Text -> User -> WidgetT site m ()
 wGravatarRoute r = wGravatarRoute' r False
 
-wGravatarRoute' :: (MonadIO m, MonadBaseControl IO m, ToMarkup a, MonadThrow m) =>
-                  Either (Route site) a -> Bool -> User -> WidgetT site m ()
+wGravatarRoute' :: (MonadIO m, MonadBaseControl IO m, MonadThrow m) =>
+                  Either (Route site) Text -> Bool -> User -> WidgetT site m ()
 wGravatarRoute' (Right r) b u =
   [whamlet|<a href="#{r}" class="media-left">
              <img class="hidden-xs" src="#{userGravatar u}">
@@ -43,8 +41,8 @@ wGravatarRoute' (Left r) b u =
                <span class="small text-muted">#{userName u}
           |]
 
-wGravatarRouteTiny' :: (MonadIO m, MonadBaseControl IO m, ToMarkup a, MonadThrow m) =>
-                       Either (Route site) a -> User -> WidgetT site m ()
+wGravatarRouteTiny' :: (MonadIO m, MonadBaseControl IO m, MonadThrow m) =>
+                       Either (Route site) Text -> User -> WidgetT site m ()
 wGravatarRouteTiny' (Right r) u =
   [whamlet|<a href="#{r}">
              <img class="gravatar" src="#{userGravatarTiny u}" alt=Gravatar>

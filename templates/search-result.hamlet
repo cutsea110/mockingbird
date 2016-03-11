@@ -70,9 +70,7 @@
                 #{commentComment c}
               $if userIdent opp /= userIdent spkr
                 <br>
-                <a href="@{ThreadR $ commentTicket c}">
-                  <img class="gravatar" src="#{userGravatarTiny opp}" alt=Gravatar>
-                  <span class="small text-muted">#{userName opp}
+                ^{wGravatarRouteTiny' (Left (ThreadR $ commentTicket c)) opp}
               $maybe fs <- mfs
                 <br><br>
                 $forall Entity fid sf <- fs
