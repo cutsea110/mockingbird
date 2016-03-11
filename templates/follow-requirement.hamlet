@@ -18,9 +18,8 @@ $else
     <li class="media" :status == CLOSE:.closed>
       ^{wGravatar' opnr}
       <div class="media-body">
-        <p class="text-muted pull-right">
-          $maybe limit <- issueLimitDatetime issue
-            ^{wLimitDiffBadge now limit}
+        $maybe limit <- issueLimitDatetime issue
+          ^{wLimitDiffBadge now limit}
         <p :status == CLOSE:.text-muted>
           <h4><a href="@{IssueR key}">#{issueSubject issue}</a>
           $maybe desc <- issueDescription issue
