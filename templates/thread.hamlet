@@ -4,29 +4,11 @@
 
 <ul class="media-list">
   <li class="media">
-    <a href="https://gravatar.com" class="media-left">
-      <img class="hidden-xs" src="#{userGravatar opener}">
-      <img class="visible-xs" src="#{userGravatarSmall opener}">
-      <span class="small text-muted">#{userName opener}
+    ^{wGravatar' opener}
     <div class="media-body">
       <h4 class="media-heading">
         <a href=@{IssueR key} class="btn btn-link">#{issueSubject issue}
-
-      <span class="small text-muted pull-right">
-        $case beforeFrom (issueCreated issue) now
-          $of Seconds n
-              _{MsgSecondsAgo n}
-          $of Minutes n
-              _{MsgMinutesAgo n}
-          $of Hours n
-              _{MsgHoursAgo n}
-          $of Days n
-              _{MsgDaysAgo n}
-          $of Months n
-              _{MsgMonthsAgo n}
-          $of Years n
-              _{MsgYearsAgo n}
-
+      ^{wCreatedBefore (issueCreated issue) now}
       $maybe desc <- issueDescription issue
         <p>#{desc}
 
@@ -34,37 +16,17 @@
         <span class="text-info">_{MsgIssueLimitDatetime} #{showDate limit}
 
       <br>
-      <a href="https://gravatar.com">
-        <img class="gravatar" src="#{userGravatarTiny cod}" alt=Gravatar>
-        <span class="small text-muted">#{userName cod}
+      ^{wGravatarTiny' cod}
       $if not (null mems)
         <span class="other-channel-members">
           $forall (Entity tid t, m) <- mems
-            <a href="@{ThreadR tid}">
-              <img class="gravatar" src="#{userGravatarTiny m}" alt=Gravatar>
-              <span class="small text-muted">#{userName m}
+            ^{wGravatarRouteTiny' (Left (ThreadR tid)) m}
 
   $forall (Entity cid c, spkr, mfs) <- comments
     <li class="media">
-      <a href="https://gravatar.com" class="media-left">
-        <img class="hidden-xs" src="#{userGravatar spkr}">
-        <img class="visible-xs" src="#{userGravatarSmall spkr}">
-        <span class="small text-muted">#{userName spkr}
+      ^{wGravatar' spkr}
       <div class="media-body">
-        <span class="small text-muted pull-right">
-          $case beforeFrom (commentCreated c) now
-            $of Seconds n
-                _{MsgSecondsAgo n}
-            $of Minutes n
-                _{MsgMinutesAgo n}
-            $of Hours n
-                _{MsgHoursAgo n}
-            $of Days n
-                _{MsgDaysAgo n}
-            $of Months n
-                _{MsgMonthsAgo n}
-            $of Years n
-                _{MsgYearsAgo n}
+        ^{wCreatedBefore (commentCreated c) now}
         <p>#{commentComment c}
         $maybe fs <- mfs
           <br><br>

@@ -88,6 +88,13 @@ DaysAgo n@Integer: #{show n}日
 MonthsAgo n@Integer: #{show n}ヶ月
 YearsAgo n@Integer: #{show n}年
 
+SecondsAgoShort n@Integer: #{show n}s
+MinutesAgoShort n@Integer: #{show n}m
+HoursAgoShort n@Integer: #{show n}h
+DaysAgoShort n@Integer: #{show n}d
+MonthsAgoShort n@Integer: #{show n}M
+YearsAgoShort n@Integer: #{show n}y
+
 SecondsLeft n@Integer: あと#{show n}秒
 MinutesLeft n@Integer: あと#{show n}分
 HoursLeft n@Integer: あと#{show n}時間
@@ -95,12 +102,26 @@ DaysLeft n@Integer: あと#{show n}日
 MonthsLeft n@Integer: あと#{show n}ヶ月
 YearsLeft n@Integer: あと#{show n}年
 
+SecondsLeftShort n@Integer: #{show n}s
+MinutesLeftShort n@Integer: #{show n}m
+HoursLeftShort n@Integer: #{show n}h
+DaysLeftShort n@Integer: #{show n}d
+MonthsLeftShort n@Integer: #{show n}M
+YearsLeftShort n@Integer: #{show n}y
+
 SecondsOver n@Integer: #{show n}秒過ぎ
 MinutesOver n@Integer: #{show n}分過ぎ
 HoursOver n@Integer: #{show n}時間過ぎ
 DaysOver n@Integer: #{show n}日過ぎ
 MonthsOver n@Integer: #{show n}ヶ月過ぎ
 YearsOver n@Integer: #{show n}年過ぎ
+
+SecondsOverShort n@Integer: #{show n}s
+MinutesOverShort n@Integer: #{show n}m
+HoursOverShort n@Integer: #{show n}h
+DaysOverShort n@Integer: #{show n}d
+MonthsOverShort n@Integer: #{show n}M
+YearsOverShort n@Integer: #{show n}y
 
 SearchUser: やってもらう人をえらぼう
 UserNameOrIdent: ユーザ名またはID

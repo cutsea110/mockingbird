@@ -11,7 +11,8 @@ $(window).scroll(function(){
 			 .append($('<img>').attr('src', c.userGravatar).addClass('hidden-xs'))
 			 .append($('<img>').attr('src', c.userGravatarSmall).addClass('visible-xs'))
                          .append($('<span class="small text-muted">').text(c.userName)),
-                cdate = $('<p class="small text-muted pull-right">').text(c.createdBefore),
+                cdate = $('<p class="small text-muted pull-right hidden-xs">').text(c.createdBefore.l),
+                cdates = $('<p class="small text-muted pull-right visible-xs">').text(c.createdBefore.s),
                 opponent = $("<a>")
                            .attr('href', 'https://gravatar.com')
                            .append($('<img>').attr('src', c.opponentGravatar))
@@ -23,6 +24,7 @@ $(window).scroll(function(){
                       .append(opponent),
                 div = $('<div class="media-body">')
                       .append(cdate)
+		      .append(cdates)
                       .append(com),
                 li = $('<li class="media">')
                      .attr('data-next-comments-url', c.nextUrl)

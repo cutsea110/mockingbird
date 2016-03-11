@@ -7,6 +7,7 @@ import Database.Persist.Sql
 
 import Model.Fields
 import Handler.Common (toFullEquipedComments, toFullEquipedIssue)
+import Util.Widget (wGravatar', wGravatarRouteTiny', wCreatedBefore)
 
 postSearchR :: Handler Html
 postSearchR = do
@@ -14,8 +15,6 @@ postSearchR = do
   now <- liftIO getCurrentTime
   Just q <- lookupPostParam "q"
   rs <- searcher uid q
-  let createdBeforeC c = (commentCreated c) `beforeFrom` now
-      createdBeforeI i = (issueCreated i) `beforeFrom` now
   defaultLayout $ do
     setTitleI $ MsgSearchResult q
     $(widgetFile "search-result")

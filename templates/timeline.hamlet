@@ -6,34 +6,15 @@
 <ul id="comment-container" class="media-list">
   $forall (issue, Entity cid c, spkr, opp, mfs, status) <- comments
     <li class="media" :status == CLOSE:.closed data-next-comments-url="@{TimelineBeforeR uid cid}">
-      <a href="https://gravatar.com" class="media-left">
-        <img class="hidden-xs" src="#{userGravatar spkr}">
-        <img class="visible-xs" src="#{userGravatarSmall spkr}">
-        <span class="small text-muted">#{userName spkr}
+      ^{wGravatar spkr}
       <div class="media-body">
-        <p class="small text-muted pull-right">
-          $case createdBefore c
-            $of Seconds n
-                _{MsgSecondsAgo n}
-            $of Minutes n
-                _{MsgMinutesAgo n}
-            $of Hours n
-                _{MsgHoursAgo n}
-            $of Days n
-                _{MsgDaysAgo n}
-            $of Months n
-                _{MsgMonthsAgo n}
-            $of Years n
-                _{MsgYearsAgo n}
-
+        ^{wCreatedBefore (commentCreated c) now}
         <div :status == CLOSE:.text-muted>
           <a href=@{ThreadR $ commentTicket c}>
             #{commentComment c}
           <br>
           <h6>#{issueSubject issue}
-          <a href="https://gravatar.com">
-            <img class="gravatar" src="#{userGravatarTiny opp}" alt=Gravatar>
-            <span class="small text-muted">#{userName opp}
+          ^{wGravatarTiny' opp}
           $maybe fs <- mfs
             <br><br>
             $forall Entity fid sf <- fs

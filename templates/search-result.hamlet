@@ -7,25 +7,9 @@
     $case r
       $of Left (Entity key issue, opnr, chans, (percent, status))
         <li class="media" :status == CLOSE:.closed>
-          <a href="https://gravatar.com" class="media-left">
-            <img class="hidden-xs" src="#{userGravatar opnr}">
-            <img class="visible-xs" src="#{userGravatarSmall opnr}">
-            <span class="small text-muted">#{userName opnr}
+          ^{wGravatar' opnr}
           <div class="media-body">
-            <p class="small text-muted pull-right">
-              $case createdBeforeI issue
-                $of Seconds n
-                    _{MsgSecondsAgo n}
-                $of Minutes n
-                    _{MsgMinutesAgo n}
-                $of Hours n
-                    _{MsgHoursAgo n}
-                $of Days n
-                   _{MsgDaysAgo n}
-                $of Months n
-                    _{MsgMonthsAgo n}
-                $of Years n
-                    _{MsgYearsAgo n}
+            ^{wCreatedBefore (issueCreated issue) now}
             <p :status == CLOSE:.text-muted>
               <h4>
                 <a href="@{IssueR key}">
@@ -46,26 +30,9 @@
 
       $of Right (issue, Entity cid c, spkr, opp, mfs, status)
         <li class="media" :status == CLOSE:.closed>
-          <a href="https://gravatar.com" class="media-left">
-            <img class="hidden-xs" src="#{userGravatar spkr}">
-            <img class="visible-xs" src="#{userGravatarSmall spkr}">
-            <span class="small text-muted">#{userName spkr}
+          ^{wGravatar' spkr}
           <div class="media-body">
-            <p class="small text-muted pull-right">
-              $case createdBeforeC c
-                $of Seconds n
-                    _{MsgSecondsAgo n}
-                $of Minutes n
-                    _{MsgMinutesAgo n}
-                $of Hours n
-                    _{MsgHoursAgo n}
-                $of Days n
-                    _{MsgDaysAgo n}
-                $of Months n
-                    _{MsgMonthsAgo n}
-                $of Years n
-                    _{MsgYearsAgo n}
-    
+            ^{wCreatedBefore (commentCreated c) now}
             <p :status == CLOSE:.text-muted>
               <h4>
                 $if issueScope issue == PRIVATE
@@ -76,9 +43,7 @@
                 #{commentComment c}
               $if userIdent opp /= userIdent spkr
                 <br>
-                <a href="@{ThreadR $ commentTicket c}">
-                  <img class="gravatar" src="#{userGravatarTiny opp}" alt=Gravatar>
-                  <span class="small text-muted">#{userName opp}
+                ^{wGravatarRouteTiny' (Left (ThreadR $ commentTicket c)) opp}
               $maybe fs <- mfs
                 <br><br>
                 $forall Entity fid sf <- fs

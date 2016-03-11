@@ -19,6 +19,7 @@ import Database.Persist.Sql
 import Model.Fields
 import Handler.Common (toFullEquipedComments, toFullEquipedIssue)
 import Handler.Issue.Form (selfIssueForm)
+import Util.Widget (wGravatar, wGravatar', wGravatarTiny', wLimitDiffBadge, wCreatedBefore)
 
 getMyTasksR :: Handler Html
 getMyTasksR = do
@@ -72,7 +73,6 @@ getTimelineR uid = do
   Entity _ u <- requireAuth
   now <- liftIO getCurrentTime
   comments <- runDB $ getComments uid Nothing
-  let createdBefore c = (commentCreated c) `beforeFrom` now
   defaultLayout $ do
     setTitleI $ MsgTimelineOf u
     $(widgetFile "timeline")
@@ -90,12 +90,24 @@ getTimelineBeforeR uid cid = do
                , "userGravatarSmall" .= userGravatarSmall spkr
                , "userName" .= userName spkr
                , "createdBefore" .= case cb com of
-                                      Seconds n -> mr (MsgSecondsAgo n)
-                                      Minutes n -> mr (MsgMinutesAgo n)
-                                      Hours n -> mr (MsgHoursAgo n)
-                                      Days n -> mr (MsgDaysAgo n)
-                                      Months n -> mr (MsgMonthsAgo n)
-                                      Years n -> mr (MsgYearsAgo n)
+                                      Seconds n -> object [ "l" .= mr (MsgSecondsAgo n)
+                                                          , "s" .= mr (MsgSecondsAgoShort n)
+                                                          ]
+                                      Minutes n -> object [ "l" .= mr (MsgMinutesAgo n)
+                                                          , "s" .= mr (MsgMinutesAgoShort n)
+                                                          ]
+                                      Hours n -> object [ "l" .= mr (MsgHoursAgo n)
+                                                        , "s" .= mr (MsgHoursAgoShort n)
+                                                        ]
+                                      Days n -> object [ "l" .= mr (MsgDaysAgo n)
+                                                       , "s" .= mr (MsgDaysAgoShort n)
+                                                       ]
+                                      Months n -> object [ "l" .= mr (MsgMonthsAgo n)
+                                                         , "s" .= mr (MsgMonthsAgoShort n)
+                                                         ]
+                                      Years n -> object [ "l" .= mr (MsgYearsAgo n)
+                                                        , "s" .= mr (MsgYearsAgoShort n)
+                                                        ]
                , "threadUrl" .= ur (ThreadR $ commentTicket com)
                , "status" .= show st
                , "subject" .= issueSubject issue
@@ -187,8 +199,7 @@ getFollowRequirementR uid = do
     is' <- toFullEquipedIssue is
     u' <- get404 uid
     return (u', is')
-  let createdBeforeI i = (issueCreated i) `beforeFrom` now
-      issues = sortBy (\x y -> sorter x y <> sorter2 x y) is
+  let issues = sortBy (\x y -> sorter x y <> sorter2 x y) is
   defaultLayout $ do
     setTitleI $ MsgFollowRequirements u
     $(widgetFile "follow-requirement")
@@ -215,8 +226,7 @@ getPrivateR uid = do
     is' <- toFullEquipedIssue is
     u' <- get404 uid
     return (u', is')
-  let createdBeforeI i = (issueCreated i) `beforeFrom` now
-      issues = sortBy (\x y -> sorter x y <> sorter2 x y) is
+  let issues = sortBy (\x y -> sorter x y <> sorter2 x y) is
   defaultLayout $ do
     setTitleI $ MsgPrivate u
     $(widgetFile "private")

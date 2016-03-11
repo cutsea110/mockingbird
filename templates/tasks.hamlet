@@ -16,46 +16,13 @@ $else
 <ul class="media-list">
   $forall (Entity tid t, (issue, op, cod), mcu) <- tickets
     <li class="media">
-      <a href="https://gravatar.com" class="media-left">
-        $maybe (_, spkr) <- mcu
-          <img class="hidden-xs" src="#{userGravatar spkr}">
-          <img class="visible-xs" src="#{userGravatarSmall spkr}">
-        $nothing
-          <img class="hidden-xs" src="#{userGravatar op}">
-          <img class="visible-xs" src="#{userGravatarSmall op}">
+      $maybe (_, spkr) <- mcu
+        ^{wGravatar spkr}
+      $nothing
+        ^{wGravatar op}
       <div class="media-body">
         $maybe limit <- issueLimitDatetime issue
-          $case limitedBy now limit
-            $of InTime diff
-              <span class="label label-warning pull-right">
-                $case diff
-                  $of Seconds n
-                      _{MsgSecondsLeft n}
-                  $of Minutes n
-                      _{MsgMinutesLeft n}
-                  $of Hours n
-                      _{MsgHoursLeft n}
-                  $of Days n
-                      _{MsgDaysLeft n}
-                  $of Months n
-                      _{MsgMonthsLeft n}
-                  $of Years n
-                      _{MsgYearsLeft n}
-            $of TimeOut diff
-              <span class="label label-danger pull-right">
-                $case diff
-                  $of Seconds n
-                      _{MsgSecondsOver n}
-                  $of Minutes n
-                      _{MsgMinutesOver n}
-                  $of Hours n
-                      _{MsgHoursOver n}
-                  $of Days n
-                      _{MsgDaysOver n}
-                  $of Months n
-                      _{MsgMonthsOver n}
-                  $of Years n
-                      _{MsgYearsOver n}
+          ^{wLimitDiffBadge now limit}
         <h4 class="media-heading">
           <a href=@{ThreadR tid} class="btn btn-link">
             $if issueScope issue == PRIVATE
@@ -76,9 +43,7 @@ $else
 
   $if uid == myuid
     <li class="media">
-      <a href="https://gravatar.com" class="media-left">
-        <img class="hidden-xs" src="#{userGravatar u}">
-        <img class="visible-xs" src="#{userGravatarSmall u}">
+      ^{wGravatar u}
       <div class="media-body">
         <h4>_{MsgCreateNewMyIssue}
         <form .form-horizontal role=form method=post action=@{NewIssueR} enctype=#{enc}>
