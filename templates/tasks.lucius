@@ -19,3 +19,16 @@ ul.media-list li.media:hover {
   margin: 8px;
   padding: 5px;
 }
+
+.media-heading a {
+  overflow: hidden;
+  max-width: 70%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.media-heading,
+.media-body > p,
+.media-body > span {
+  word-break: break-all;
+}
