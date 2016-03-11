@@ -21,6 +21,7 @@ import Data.List ((\\))
 
 import Handler.Issue.Form
 import Model.Fields
+import Util.Widget (wGravatar')
 
 data Mode = ONE
           | SELF

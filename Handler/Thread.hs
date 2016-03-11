@@ -18,6 +18,7 @@ import Yesod.Goodies.PNotify (urlFontAwesomeCss)
 
 import Model.Fields (Status(..))
 import Util
+import Util.Widget (wGravatar', wGravatarTiny')
 
 commentForm (nwId, jqueryJs, faCss) uid tid render mv
     = (,)

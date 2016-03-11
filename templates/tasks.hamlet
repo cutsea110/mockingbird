@@ -16,13 +16,10 @@ $else
 <ul class="media-list">
   $forall (Entity tid t, (issue, op, cod), mcu) <- tickets
     <li class="media">
-      <a href="https://gravatar.com" class="media-left">
-        $maybe (_, spkr) <- mcu
-          <img class="hidden-xs" src="#{userGravatar spkr}">
-          <img class="visible-xs" src="#{userGravatarSmall spkr}">
-        $nothing
-          <img class="hidden-xs" src="#{userGravatar op}">
-          <img class="visible-xs" src="#{userGravatarSmall op}">
+      $maybe (_, spkr) <- mcu
+        ^{wGravatar spkr}
+      $nothing
+        ^{wGravatar op}
       <div class="media-body">
         $maybe limit <- issueLimitDatetime issue
           $case limitedBy now limit
@@ -76,9 +73,7 @@ $else
 
   $if uid == myuid
     <li class="media">
-      <a href="https://gravatar.com" class="media-left">
-        <img class="hidden-xs" src="#{userGravatar u}">
-        <img class="visible-xs" src="#{userGravatarSmall u}">
+      ^{wGravatar u}
       <div class="media-body">
         <h4>_{MsgCreateNewMyIssue}
         <form .form-horizontal role=form method=post action=@{NewIssueR} enctype=#{enc}>

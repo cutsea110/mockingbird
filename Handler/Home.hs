@@ -19,6 +19,7 @@ import Database.Persist.Sql
 import Model.Fields
 import Handler.Common (toFullEquipedComments, toFullEquipedIssue)
 import Handler.Issue.Form (selfIssueForm)
+import Util.Widget (wGravatar, wGravatar', wGravatarTiny')
 
 getMyTasksR :: Handler Html
 getMyTasksR = do

@@ -7,6 +7,7 @@ import Database.Persist.Sql
 
 import Model.Fields
 import Handler.Common (toFullEquipedComments, toFullEquipedIssue)
+import Util.Widget (wGravatar', wGravatarRouteTiny')
 
 postSearchR :: Handler Html
 postSearchR = do

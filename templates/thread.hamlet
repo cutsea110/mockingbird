@@ -4,10 +4,7 @@
 
 <ul class="media-list">
   <li class="media">
-    <a href="https://gravatar.com" class="media-left">
-      <img class="hidden-xs" src="#{userGravatar opener}">
-      <img class="visible-xs" src="#{userGravatarSmall opener}">
-      <span class="small text-muted">#{userName opener}
+    ^{wGravatar' opener}
     <div class="media-body">
       <h4 class="media-heading">
         <a href=@{IssueR key} class="btn btn-link">#{issueSubject issue}
@@ -34,9 +31,7 @@
         <span class="text-info">_{MsgIssueLimitDatetime} #{showDate limit}
 
       <br>
-      <a href="https://gravatar.com">
-        <img class="gravatar" src="#{userGravatarTiny cod}" alt=Gravatar>
-        <span class="small text-muted">#{userName cod}
+      ^{wGravatarTiny' cod}
       $if not (null mems)
         <span class="other-channel-members">
           $forall (Entity tid t, m) <- mems
@@ -46,10 +41,7 @@
 
   $forall (Entity cid c, spkr, mfs) <- comments
     <li class="media">
-      <a href="https://gravatar.com" class="media-left">
-        <img class="hidden-xs" src="#{userGravatar spkr}">
-        <img class="visible-xs" src="#{userGravatarSmall spkr}">
-        <span class="small text-muted">#{userName spkr}
+      ^{wGravatar' spkr}
       <div class="media-body">
         <span class="small text-muted pull-right">
           $case beforeFrom (commentCreated c) now
