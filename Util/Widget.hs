@@ -6,7 +6,7 @@ module Util.Widget ( wGravatar
                    , wGravatarRoute'
                    , wGravatarRouteTiny'
 
-                   , limitDiffBadge
+                   , wLimitDiffBadge
                    )where
 
 import Import
@@ -58,9 +58,9 @@ wGravatarRouteTiny' (Left r) u =
 
 data TimeUp = I | O deriving (Show, Read, Eq, Ord)
 
-limitDiffBadge :: (MonadIO m, RenderMessage site AppMessage, MonadBaseControl IO m, MonadThrow m) =>
+wLimitDiffBadge :: (MonadIO m, RenderMessage site AppMessage, MonadBaseControl IO m, MonadThrow m) =>
                   UTCTime -> UTCTime -> WidgetT site m ()
-limitDiffBadge now limit =
+wLimitDiffBadge now limit =
   case limitDiff of
     (I, msg, smsg) ->
         [whamlet|

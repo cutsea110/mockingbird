@@ -20,37 +20,7 @@ $else
       <div class="media-body">
         <p class="text-muted pull-right">
           $maybe limit <- issueLimitDatetime issue
-            $case limitedBy now limit
-              $of InTime diff
-                <span class="label label-warning pull-right">
-                  $case diff
-                    $of Seconds n
-                        _{MsgSecondsLeft n}
-                    $of Minutes n
-                        _{MsgMinutesLeft n}
-                    $of Hours n
-                        _{MsgHoursLeft n}
-                    $of Days n
-                        _{MsgDaysLeft n}
-                    $of Months n
-                        _{MsgMonthsLeft n}
-                    $of Years n
-                        _{MsgYearsLeft n}
-              $of TimeOut diff
-                <span class="label label-danger pull-right">
-                  $case diff
-                    $of Seconds n
-                        _{MsgSecondsOver n}
-                    $of Minutes n
-                        _{MsgMinutesOver n}
-                    $of Hours n
-                        _{MsgHoursOver n}
-                    $of Days n
-                        _{MsgDaysOver n}
-                    $of Months n
-                        _{MsgMonthsOver n}
-                    $of Years n
-                        _{MsgYearsOver n}
+            ^{wLimitDiffBadge now limit}
         <p :status == CLOSE:.text-muted>
           <h4>
             <a href="@{IssueR key}">

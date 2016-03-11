@@ -22,7 +22,7 @@ $else
         ^{wGravatar op}
       <div class="media-body">
         $maybe limit <- issueLimitDatetime issue
-          ^{limitDiffBadge now limit}
+          ^{wLimitDiffBadge now limit}
         <h4 class="media-heading">
           <a href=@{ThreadR tid} class="btn btn-link">
             $if issueScope issue == PRIVATE
