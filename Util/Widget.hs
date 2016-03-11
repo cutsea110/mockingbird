@@ -5,6 +5,8 @@ module Util.Widget ( wGravatar
                    , wGravatarRoute
                    , wGravatarRoute'
                    , wGravatarRouteTiny'
+
+                   , limitDiffBadge
                    )where
 
 import Import
@@ -54,3 +56,38 @@ wGravatarRouteTiny' (Left r) u =
              <span class="small text-muted">#{userName u}
           |]
 
+data TimeUp = I | O deriving (Show, Read, Eq, Ord)
+
+limitDiffBadge :: (MonadIO m, RenderMessage site AppMessage, MonadBaseControl IO m, MonadThrow m) =>
+                  UTCTime -> UTCTime -> WidgetT site m ()
+limitDiffBadge now limit =
+  case limitDiff of
+    (I, msg, smsg) ->
+        [whamlet|
+         <span class="label label-warning pull-right hidden-xs">_{msg}
+         <span class="label label-warning pull-right visible-xs">_{smsg}
+         |]
+    (O, msg, smsg) ->
+        [whamlet|
+         <span class="label label-danger pull-right hidden-xs">_{msg}
+         <span class="label label-danger pull-right visible-xs">_{smsg}
+         |]
+    where
+      limitDiff =
+          case limitedBy now limit of
+            InTime diff ->
+              case diff of
+                Seconds n -> (I, MsgSecondsLeft n, MsgSecondsLeftShort n)
+                Minutes n -> (I, MsgMinutesLeft n, MsgMinutesLeftShort n)
+                Hours n -> (I, MsgHoursLeft n, MsgHoursLeftShort n)
+                Days n -> (I, MsgDaysLeft n, MsgDaysLeftShort n)
+                Months n -> (I, MsgMonthsLeft n, MsgMonthsLeftShort n)
+                Years n -> (I, MsgYearsLeft n, MsgYearsLeftShort n)
+            TimeOut diff ->
+              case diff of
+                Seconds n -> (O, MsgSecondsOver n, MsgSecondsOverShort n)
+                Minutes n -> (O, MsgMinutesOver n, MsgMinutesOverShort n)
+                Hours n -> (O, MsgHoursOver n, MsgHoursOverShort n)
+                Days n -> (O, MsgDaysOver n, MsgDaysOverShort n)
+                Months n -> (O, MsgMonthsOver n, MsgMonthsOverShort n)
+                Years n -> (O, MsgYearsOver n, MsgYearsOverShort n)

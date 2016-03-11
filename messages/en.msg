@@ -95,12 +95,26 @@ DaysLeft n@Integer: by #{show n}days
 MonthsLeft n@Integer: by #{show n}months
 YearsLeft n@Integer: by #{show n}years
 
+SecondsLeftShort n@Integer: #{show n}s
+MinutesLeftShort n@Integer: #{show n}m
+HoursLeftShort n@Integer: #{show n}h
+DaysLeftShort n@Integer: #{show n}d
+MonthsLeftShort n@Integer: #{show n}M
+YearsLeftShort n@Integer: #{show n}y
+
 SecondsOver n@Integer: #{show n}secs over
 MinutesOver n@Integer: #{show n}mins over
 HoursOver n@Integer: #{show n}hrs over
 DaysOver n@Integer: #{show n}days over
 MonthsOver n@Integer: #{show n}months over
 YearsOver n@Integer: #{show n}years over
+
+SecondsOverShort n@Integer: #{show n}s
+MinutesOverShort n@Integer: #{show n}m
+HoursOverShort n@Integer: #{show n}h
+DaysOverShort n@Integer: #{show n}d
+MonthsOverShort n@Integer: #{show n}M
+YearsOverShort n@Integer: #{show n}y
 
 SearchUser: Search User
 UserNameOrIdent: User name or id
