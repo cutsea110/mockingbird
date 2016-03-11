@@ -22,6 +22,13 @@ $(function(){
       $("input[type=checkbox]").parent("div.checkbox:contains('" + q + "')").show();
     }
     refreshCount();
+  }).keydown(function(e){
+    if (e.which && e.which === 13 || e.keyCode && e.keyCode === 13) {
+      $(this).keyup();
+      return false;
+    } else {
+      return true;
+    }
   });
   $('input[type=checkbox]').change(function(){
     refreshCount();
