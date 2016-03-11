@@ -76,7 +76,7 @@ postNewChannelR = do
   (allCheckBtnId, allUncheckBtnId) <- (,) <$> newIdent <*> newIdent
   case r of
     FormSuccess issue -> do
-      ((_, w), enc) <- runFormInline $ searchAndHiddenIssueForm uid render (Just issue) Nothing
+      (w, enc) <- genFormInline $ searchAndHiddenIssueForm uid render (Just issue) Nothing
       defaultLayout $ do
         setTitleI MsgCreateIssue
         $(widgetFile "new-channel")
