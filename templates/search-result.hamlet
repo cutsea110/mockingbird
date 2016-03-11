@@ -9,20 +9,7 @@
         <li class="media" :status == CLOSE:.closed>
           ^{wGravatar' opnr}
           <div class="media-body">
-            <p class="small text-muted pull-right">
-              $case createdBeforeI issue
-                $of Seconds n
-                    _{MsgSecondsAgo n}
-                $of Minutes n
-                    _{MsgMinutesAgo n}
-                $of Hours n
-                    _{MsgHoursAgo n}
-                $of Days n
-                   _{MsgDaysAgo n}
-                $of Months n
-                    _{MsgMonthsAgo n}
-                $of Years n
-                    _{MsgYearsAgo n}
+            ^{wCreatedBefore (issueCreated issue) now}
             <p :status == CLOSE:.text-muted>
               <h4>
                 <a href="@{IssueR key}">
@@ -45,21 +32,7 @@
         <li class="media" :status == CLOSE:.closed>
           ^{wGravatar' spkr}
           <div class="media-body">
-            <p class="small text-muted pull-right">
-              $case createdBeforeC c
-                $of Seconds n
-                    _{MsgSecondsAgo n}
-                $of Minutes n
-                    _{MsgMinutesAgo n}
-                $of Hours n
-                    _{MsgHoursAgo n}
-                $of Days n
-                    _{MsgDaysAgo n}
-                $of Months n
-                    _{MsgMonthsAgo n}
-                $of Years n
-                    _{MsgYearsAgo n}
-    
+            ^{wCreatedBefore (commentCreated c) now}
             <p :status == CLOSE:.text-muted>
               <h4>
                 $if issueScope issue == PRIVATE

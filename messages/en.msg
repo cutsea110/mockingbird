@@ -88,6 +88,13 @@ DaysAgo n@Integer: #{show n}days
 MonthsAgo n@Integer: #{show n}months
 YearsAgo n@Integer: #{show n}years
 
+SecondsAgoShort n@Integer: #{show n}s
+MinutesAgoShort n@Integer: #{show n}m
+HoursAgoShort n@Integer: #{show n}h
+DaysAgoShort n@Integer: #{show n}d
+MonthsAgoShort n@Integer: #{show n}M
+YearsAgoShort n@Integer: #{show n}y
+
 SecondsLeft n@Integer: by #{show n}secs
 MinutesLeft n@Integer: by #{show n}mins
 HoursLeft n@Integer: by #{show n}hrs

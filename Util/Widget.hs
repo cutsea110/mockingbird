@@ -7,6 +7,7 @@ module Util.Widget ( wGravatar
                    , wGravatarRouteTiny'
 
                    , wLimitDiffBadge
+                   , wCreatedBefore
                    )where
 
 import Import
@@ -57,6 +58,24 @@ wGravatarRouteTiny' (Left r) u =
           |]
 
 data TimeUp = I | O deriving (Show, Read, Eq, Ord)
+
+wCreatedBefore :: (MonadIO m, RenderMessage site AppMessage, MonadBaseControl IO m, MonadThrow m) =>
+                  UTCTime -> UTCTime -> WidgetT site m ()
+wCreatedBefore dt now =
+    let (msg, smsg) = createdBefore
+    in [whamlet|
+        <p class="small text-muted pull-right hidden-xs">_{msg}
+        <p class="small text-muted pull-right visible-xs">_{smsg}
+        |]
+  where  
+    createdBefore =
+        case dt `beforeFrom` now of
+          Seconds n -> (MsgSecondsAgo n, MsgSecondsAgoShort n)
+          Minutes n -> (MsgMinutesAgo n, MsgMinutesAgoShort n)
+          Hours n -> (MsgHoursAgo n, MsgHoursAgoShort n)
+          Days n -> (MsgDaysAgo n, MsgDaysAgoShort n)
+          Months n -> (MsgMonthsAgo n, MsgMonthsAgoShort n)
+          Years n -> (MsgYearsAgo n, MsgYearsAgoShort n)
 
 wLimitDiffBadge :: (MonadIO m, RenderMessage site AppMessage, MonadBaseControl IO m, MonadThrow m) =>
                   UTCTime -> UTCTime -> WidgetT site m ()

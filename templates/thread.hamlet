@@ -8,22 +8,7 @@
     <div class="media-body">
       <h4 class="media-heading">
         <a href=@{IssueR key} class="btn btn-link">#{issueSubject issue}
-
-      <span class="small text-muted pull-right">
-        $case beforeFrom (issueCreated issue) now
-          $of Seconds n
-              _{MsgSecondsAgo n}
-          $of Minutes n
-              _{MsgMinutesAgo n}
-          $of Hours n
-              _{MsgHoursAgo n}
-          $of Days n
-              _{MsgDaysAgo n}
-          $of Months n
-              _{MsgMonthsAgo n}
-          $of Years n
-              _{MsgYearsAgo n}
-
+      ^{wCreatedBefore (issueCreated issue) now}
       $maybe desc <- issueDescription issue
         <p>#{desc}
 
@@ -41,20 +26,7 @@
     <li class="media">
       ^{wGravatar' spkr}
       <div class="media-body">
-        <span class="small text-muted pull-right">
-          $case beforeFrom (commentCreated c) now
-            $of Seconds n
-                _{MsgSecondsAgo n}
-            $of Minutes n
-                _{MsgMinutesAgo n}
-            $of Hours n
-                _{MsgHoursAgo n}
-            $of Days n
-                _{MsgDaysAgo n}
-            $of Months n
-                _{MsgMonthsAgo n}
-            $of Years n
-                _{MsgYearsAgo n}
+        ^{wCreatedBefore (commentCreated c) now}
         <p>#{commentComment c}
         $maybe fs <- mfs
           <br><br>

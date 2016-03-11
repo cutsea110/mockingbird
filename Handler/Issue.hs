@@ -21,7 +21,7 @@ import Data.List ((\\))
 
 import Handler.Issue.Form
 import Model.Fields
-import Util.Widget (wGravatar')
+import Util.Widget (wGravatar', wCreatedBefore)
 
 data Mode = ONE
           | SELF
@@ -148,7 +148,6 @@ getIssueR key = do
   uid <- requireAuthId
   (issue, opener, chans) <- runDB $ getIssueTree key
   now <- liftIO getCurrentTime
-  let createdBefore = (issueCreated issue) `beforeFrom` now
   defaultLayout $ do
     setTitleI $ MsgSubject issue
     $(widgetFile "issue")
@@ -241,7 +240,6 @@ getCloneIssueR key = do
   render <- getMessageRender
   (issue, opener, chans) <- runDB $ getIssueTree key
   now <- liftIO getCurrentTime
-  let createdBefore = (issueCreated issue) `beforeFrom` now
   (w, enc) <- genForm $ issueForm uid render Nothing
   defaultLayout $ do
     setTitleI MsgCloneIssue

@@ -8,21 +8,7 @@
     <li class="media" :status == CLOSE:.closed data-next-comments-url="@{TimelineBeforeR uid cid}">
       ^{wGravatar spkr}
       <div class="media-body">
-        <p class="small text-muted pull-right">
-          $case createdBefore c
-            $of Seconds n
-                _{MsgSecondsAgo n}
-            $of Minutes n
-                _{MsgMinutesAgo n}
-            $of Hours n
-                _{MsgHoursAgo n}
-            $of Days n
-                _{MsgDaysAgo n}
-            $of Months n
-                _{MsgMonthsAgo n}
-            $of Years n
-                _{MsgYearsAgo n}
-
+        ^{wCreatedBefore (commentCreated c) now}
         <div :status == CLOSE:.text-muted>
           <a href=@{ThreadR $ commentTicket c}>
             #{commentComment c}

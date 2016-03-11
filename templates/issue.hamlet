@@ -11,20 +11,7 @@
     <span class="small text-muted pull-right">
       #{userName opener}
   <div class="panel-body">
-    <p class="small text-muted pull-right">
-        $case createdBefore
-          $of Seconds n
-              _{MsgSecondsAgo n}
-          $of Minutes n
-              _{MsgMinutesAgo n}
-          $of Hours n
-              _{MsgHoursAgo n}
-          $of Days n
-              _{MsgDaysAgo n}
-          $of Months n
-              _{MsgMonthsAgo n}
-          $of Years n
-              _{MsgYearsAgo n}
+    ^{wCreatedBefore (issueCreated issue) now}
     $maybe desc <- issueDescription issue
       <p>#{desc}
     <hr>

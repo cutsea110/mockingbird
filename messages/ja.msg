@@ -88,6 +88,13 @@ DaysAgo n@Integer: #{show n}日
 MonthsAgo n@Integer: #{show n}ヶ月
 YearsAgo n@Integer: #{show n}年
 
+SecondsAgoShort n@Integer: #{show n}s
+MinutesAgoShort n@Integer: #{show n}m
+HoursAgoShort n@Integer: #{show n}h
+DaysAgoShort n@Integer: #{show n}d
+MonthsAgoShort n@Integer: #{show n}M
+YearsAgoShort n@Integer: #{show n}y
+
 SecondsLeft n@Integer: あと#{show n}秒
 MinutesLeft n@Integer: あと#{show n}分
 HoursLeft n@Integer: あと#{show n}時間

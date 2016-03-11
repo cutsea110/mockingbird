@@ -18,7 +18,7 @@ import Yesod.Goodies.PNotify (urlFontAwesomeCss)
 
 import Model.Fields (Status(..))
 import Util
-import Util.Widget (wGravatar', wGravatarTiny', wGravatarRouteTiny')
+import Util.Widget (wGravatar', wGravatarTiny', wGravatarRouteTiny', wCreatedBefore)
 
 commentForm (nwId, jqueryJs, faCss) uid tid render mv
     = (,)
@@ -70,7 +70,6 @@ getThreadR tid = do
   nwId <- newIdent
   ((_, w), enc) <- runFormInline $ commentForm (nwId, urlJqueryJs master, urlFontAwesomeCss master) uid tid render Nothing
   (Entity key issue, opener, tick, cod, mems, comments) <- runDB $ getComments tid
-  let createdBefore = (issueCreated issue) `beforeFrom` now
   (closeButtonId, reopenButtonId) <- (,) <$> newIdent <*> newIdent
   defaultLayout $ do
     setTitleI MsgThread
