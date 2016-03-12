@@ -20,15 +20,15 @@ ul.media-list li.media:hover {
   padding: 5px;
 }
 
-.media-heading a {
-  overflow: hidden;
-  max-width: 70%;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+.media-body p {
+  display: block;
 
-.media-heading,
-.media-body > p,
-.media-body > span {
-  word-break: break-all;
+  .media-heading {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 70%;
+    a {
+      display: block;
+    }
+  }
 }
