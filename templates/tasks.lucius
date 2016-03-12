@@ -20,15 +20,14 @@ ul.media-list li.media:hover {
   padding: 5px;
 }
 
-.media-body p {
-  display: block;
-
+.media-body {
   .media-heading {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 70%;
-    a {
-      display: block;
-    }
+    float: left;
+    max-width: 90%;
+  }
+  p {
+    display: block;
+    clear: both;
   }
 }
+
