@@ -16,10 +16,6 @@ $else
 <ul class="media-list">
   $forall (Entity tid t, (issue, op, cod), mcu) <- tickets
     <li class="media">
-      $maybe (_, spkr) <- mcu
-        ^{wGravatar spkr}
-      $nothing
-        ^{wGravatar op}
       <div class="media-body">
         $maybe limit <- issueLimitDatetime issue
           ^{wLimitDiffBadge now limit}
@@ -40,6 +36,10 @@ $else
             <a href=@{ThreadR tid} class="btn btn-primary btn-sm visible-xs"><i class="fa fa-reply"></i> _{MsgReplyShort}
             <button type=submit class="btn btn-success btn-sm hidden-xs"><i class="fa fa-close"></i> _{MsgCloseTicket}
             <button type=submit class="btn btn-success btn-sm visible-xs"><i class="fa fa-close"></i> _{MsgCloseTicketShort}
+      $maybe (_, spkr) <- mcu
+        ^{wGravatar spkr}
+      $nothing
+        ^{wGravatar op}
 
   $if uid == myuid
     <li class="media">

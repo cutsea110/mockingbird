@@ -20,14 +20,48 @@ ul.media-list li.media:hover {
   padding: 5px;
 }
 
-.media-body {
-  .media-heading {
-    float: left;
-    max-width: 90%;
+/* sync to bootstrap's visible-xs */
+@media (max-width: 767px) {
+  .media .media-body {
+    margin-left: 40px;
   }
-  p {
-    display: block;
-    clear: both;
+}
+@media (min-width: 768px) {
+  .media .media-body {
+    margin-left: 90px;
   }
 }
 
+.media {
+  position: relative;
+  .media-left {
+    position: absolute;
+    top: 0;
+    margin-top: 5px;
+  }
+
+  .media-body {
+    display: block;
+    width: auto;
+    span.pull-right {
+      float: none;
+      position: absolute;
+      right: 0;
+      margin-right: 5px;
+    }
+    .media-heading {
+      margin-right: 80px;
+      a {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        height: 1em;
+        white-space: nowrap;
+      }
+    }
+    p {
+      display: block;
+      clear: both;
+    }
+  }
+}
