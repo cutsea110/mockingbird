@@ -37,9 +37,9 @@ $else
             <button type=submit class="btn btn-success btn-sm hidden-xs"><i class="fa fa-close"></i> _{MsgCloseTicket}
             <button type=submit class="btn btn-success btn-sm visible-xs"><i class="fa fa-close"></i> _{MsgCloseTicketShort}
       $maybe (_, spkr) <- mcu
-        ^{wGravatar spkr}
+        ^{wGravatar' spkr}
       $nothing
-        ^{wGravatar op}
+        ^{wGravatar' op}
 
   $if uid == myuid
     <li class="media">

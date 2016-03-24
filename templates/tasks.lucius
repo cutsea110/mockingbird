@@ -22,13 +22,23 @@ ul.media-list li.media:hover {
 
 /* sync to bootstrap's visible-xs */
 @media (max-width: 767px) {
-  .media .media-body {
-    margin-left: 40px;
+  .media {
+    .media-left {
+      img + span {
+        display: none;
+      }
+    }
+    .media-body {
+      margin-left: 40px;
+    }
   }
 }
 @media (min-width: 768px) {
-  .media .media-body {
-    margin-left: 90px;
+  .media {
+    min-height: 110px;
+    .media-body {
+      margin-left: 90px;
+    }
   }
 }
 
@@ -38,6 +48,9 @@ ul.media-list li.media:hover {
     position: absolute;
     top: 0;
     margin-top: 5px;
+    img {
+      display: block;
+    }
   }
 
   .media-body {
