@@ -16,11 +16,11 @@ $else
 <ul class="media-list">
   $forall (Entity key issue, opnr, chans, (percent, status)) <- issues
     <li class="media" :status == CLOSE:.closed>
-      ^{wGravatar' opnr}
       <div class="media-body" :status == CLOSE:.text-muted>
         $maybe limit <- issueLimitDatetime issue
           ^{wLimitDiffBadge now limit}
-        <h4><a href="@{IssueR key}">#{issueSubject issue}</a>
+        <h4 class="media-heading" title="#{issueSubject issue}">
+          <a href="@{IssueR key}">#{issueSubject issue}
         $maybe desc <- issueDescription issue
           <p>#{desc}
         $maybe limit <- issueLimitDatetime issue
@@ -31,3 +31,4 @@ $else
               <div class="progress-bar progress-bar-closed progress-bar-striped" role="progressbar" style="width: #{percent}%;">#{percent}%
             $of OPEN
               <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: #{percent}%;">#{percent}%
+      ^{wGravatar' opnr}
