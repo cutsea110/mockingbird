@@ -19,7 +19,7 @@ $else
       <div class="media-body">
         $maybe limit <- issueLimitDatetime issue
           ^{wLimitDiffBadge now limit}
-        <h4 class="media-heading">
+        <h4 class="media-heading" title="#{issueSubject issue}">
           <a href=@{ThreadR tid}>
             $if issueScope issue == PRIVATE
               <i class="fa fa-lock text-super"></i> #{issueSubject issue}
