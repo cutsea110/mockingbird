@@ -4,11 +4,10 @@
 
 <ul class="media-list">
   <li class="media">
-    ^{wGravatar' opener}
     <div class="media-body">
-      <h4 class="media-heading">
-        <a href=@{IssueR key} class="btn btn-link">#{issueSubject issue}
       ^{wCreatedBefore (issueCreated issue) now}
+      <h4 class="media-heading" title="#{issueSubject issue}">
+        <a href=@{IssueR key}>#{issueSubject issue}
       $maybe desc <- issueDescription issue
         <p>#{desc}
 
@@ -21,10 +20,10 @@
         <span class="other-channel-members">
           $forall (Entity tid t, m) <- mems
             ^{wGravatarRouteTiny' (Left (ThreadR tid)) m}
+    ^{wGravatar' opener}
 
   $forall (Entity cid c, spkr, mfs) <- comments
     <li class="media">
-      ^{wGravatar' spkr}
       <div class="media-body">
         ^{wCreatedBefore (commentCreated c) now}
         <p>#{commentComment c}
@@ -42,6 +41,7 @@
                     <source src="@{FileR fid}">
             $else
               <a href=@{FileR fid}><span class="fa fa-#{storedFileFAClass sf}"></span> #{storedFileFullname sf}</a>
+      ^{wGravatar' spkr}
 
 $if elem uid [ticketDomain tick, ticketCodomain tick, ticketAssign tick]
   <nav class="navbar navbar-default navbar-fixed-bottom">

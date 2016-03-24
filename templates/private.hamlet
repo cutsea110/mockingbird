@@ -16,24 +16,23 @@ $else
 <ul class="media-list">
   $forall (Entity key issue, opnr, chans, (percent, status)) <- issues
     <li class="media" :status == CLOSE:.closed>
-      ^{wGravatar' opnr}
-      <div class="media-body">
+      <div class="media-body" :status == CLOSE:.text-muted>
         $maybe limit <- issueLimitDatetime issue
           ^{wLimitDiffBadge now limit}
-        <p :status == CLOSE:.text-muted>
-          <h4>
-            <a href="@{IssueR key}">
-              $if issueScope issue == PRIVATE
-                <i class="fa fa-lock text-super"></i> #{issueSubject issue}
-              $else
-                #{issueSubject issue}
-          $maybe desc <- issueDescription issue
-            <p>#{desc}
-          $maybe limit <- issueLimitDatetime issue
-            <span class="text-info">_{MsgIssueLimitDatetime} #{showDate limit}
-          <div class="progress" style="width: 50%;">
-            $case status
-              $of CLOSE
-                <div class="progress-bar progress-bar-closed progress-bar-striped" role="progressbar" style="width: #{percent}%;">#{percent}%
-              $of OPEN
-                <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: #{percent}%;">#{percent}%
+        <h4 class="media-heading" title="#{issueSubject issue}">
+          <a href="@{IssueR key}">
+            $if issueScope issue == PRIVATE
+              <i class="fa fa-lock text-super"></i> #{issueSubject issue}
+            $else
+              #{issueSubject issue}
+        $maybe desc <- issueDescription issue
+          <p>#{desc}
+        $maybe limit <- issueLimitDatetime issue
+          <span class="text-info">_{MsgIssueLimitDatetime} #{showDate limit}
+        <div class="progress" style="width: 50%;">
+          $case status
+            $of CLOSE
+              <div class="progress-bar progress-bar-closed progress-bar-striped" role="progressbar" style="width: #{percent}%;">#{percent}%
+            $of OPEN
+              <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: #{percent}%;">#{percent}%
+      ^{wGravatar' opnr}

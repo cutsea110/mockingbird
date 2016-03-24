@@ -64,8 +64,8 @@ wCreatedBefore :: (MonadIO m, RenderMessage site AppMessage, MonadBaseControl IO
 wCreatedBefore dt now =
     let (msg, smsg) = createdBefore
     in [whamlet|
-        <p class="small text-muted pull-right hidden-xs">_{msg}
-        <p class="small text-muted pull-right visible-xs">_{smsg}
+        <span class="small text-muted pull-right hidden-xs">_{msg}
+        <span class="small text-muted pull-right visible-xs">_{smsg}
         |]
   where  
     createdBefore =
